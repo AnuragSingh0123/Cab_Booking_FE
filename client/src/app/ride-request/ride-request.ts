@@ -27,6 +27,7 @@ export class RideRequest {
 
   loading$ = this.rideService.loading$;
   rideDetails$ = this.rideService.rideDetails$;
+  msg$ = this.rideService.msg$;
 
   pickupSuggestions: any[] = [];
   dropSuggestions: any[] = [];
@@ -91,7 +92,7 @@ export class RideRequest {
 
   rideRequest() {
 
-    const loginData = localStorage.getItem("login");
+    const loginData = localStorage.getItem("user");
     let isLoggedIn = false;
 
     if (loginData) {

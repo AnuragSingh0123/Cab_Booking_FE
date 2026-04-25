@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { RideService } from '../ride-service';
 
 @Component({
   selector: 'app-ride-success',
@@ -7,4 +8,11 @@ import { RouterModule } from '@angular/router';
   templateUrl: './ride-success.html',
   styleUrl: './ride-success.css',
 })
-export class RideSuccess {}
+export class RideSuccess {
+  rideService=inject(RideService);
+
+  ngOnInit(){
+    this.rideService.setRideDetails('','');
+    this.rideService.setRide('','');
+  }
+}
