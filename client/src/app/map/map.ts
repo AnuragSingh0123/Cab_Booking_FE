@@ -15,6 +15,10 @@ export class Map {
 
   map: any;
 
+  routeLine: any;
+  pickupMarker: any;
+  dropMarker: any;
+
   pickup: string = '';
   drop: string = '';
 
@@ -77,25 +81,51 @@ export class Map {
 
   // Draw route
   drawRoute(latlngs: any, start: any, end: any) {
-
-
-    L.polyline(latlngs, {
-      color: 'blue',
-      weight: 5
-    }).addTo(this.map);
-
-    L.marker([start.lat, start.lng])
-      .addTo(this.map)
-      .bindPopup('Pickup');
-
-    L.marker([end.lat, end.lng])
-      .addTo(this.map)
-      .bindPopup('Drop');
-
-    this.map.fitBounds(latlngs);
-
-    this.rideService.setLoading(false);
+  // remove old route
+  if (this.routeLine) {
+    this.map.removeLayer(this.routeLine);
   }
+
+  if (this.pickupMarker) {
+    this.map.removeLayer(this.pickupMarker);
+  }
+
+  if (this.dropMarker) {
+    this.map.removeLayer(this.dropMarker);
+  }
+
+  // save new route
+  this.routeLine = L.polyline(latlngs, {
+    color: 'blue',
+    weight: 4,
+  }).addTo(this.map);
+
+  const locationIcon = L.icon({
+    iconUrl: 'location-pin.png',
+    iconSize: [22, 22],
+    iconAnchor: [11, 22],
+    popupAnchor: [0, -22],
+  });
+
+  // save markers
+  this.pickupMarker = L.marker(
+    [start.lat, start.lng],
+    { icon: locationIcon }
+  )
+    .addTo(this.map)
+    .bindPopup('Pickup');
+
+  this.dropMarker = L.marker(
+    [end.lat, end.lng],
+    { icon: locationIcon }
+  )
+    .addTo(this.map)
+    .bindPopup('Drop');
+
+  this.map.fitBounds(this.routeLine.getBounds());
+
+  this.rideService.setLoading(false);
+}
 
   //Convert names → route
   getRouteFromNames() {

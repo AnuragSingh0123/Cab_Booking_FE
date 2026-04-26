@@ -6,46 +6,46 @@
 
         <div class="summary-card">
 
-            <div class="row">
-                <span class="label">FROM</span>
-                <span class="value">{{rideCheckoutDetails.pickup}}</span>
-            </div>
+    <div class="row">
+        <span class="label">FROM</span>
+        <span class="value">{{rideCheckoutDetails.pickup}}</span>
+    </div>
 
-            <div class="row">
-                <span class="label">TO</span>
-                <span class="value">{{rideCheckoutDetails.drop}}</span>
-            </div>
+    <div class="row">
+        <span class="label">TO</span>
+        <span class="value">{{rideCheckoutDetails.drop}}</span>
+    </div>
 
-            <div class="divider"></div>
+    <div class="divider"></div>
 
-            <div class="row">
-                <span class="label">DISTANCE</span>
-                <span class="value">{{rideCheckoutDetails.distance}} KM</span>
-            </div>
+    <div class="row">
+        <span class="label">DISTANCE</span>
+        <span class="value">{{rideCheckoutDetails.distance}} KM</span>
+    </div>
 
-            <div class="row">
-                <span class="label">VEHICLE</span>
-                <span class="value">{{rideCheckoutDetails.vehicle | titlecase}}</span>
-            </div>
+    <div class="row">
+        <span class="label">VEHICLE</span>
+        <span class="value">{{rideCheckoutDetails.vehicle | titlecase}}</span>
+    </div>
 
-            <div class="divider"></div>
+    <div class="divider"></div>
 
-            <div class="row">
-                <span class="label">Fare</span>
-                <span class="value">₹ {{rideCheckoutDetails.fare}}</span>
-            </div>
+    <div class="row">
+        <span class="label">Fare</span>
+        <span class="value">₹ {{rideCheckoutDetails.fare}}</span>
+    </div>
 
-            <div class="row">
-                <span class="label">GST</span>
-                <span class="value">₹ {{rideCheckoutDetails.gst}}</span>
-            </div>
+    <div class="row">
+        <span class="label">GST</span>
+        <span class="value">₹ {{rideCheckoutDetails.gst}}</span>
+    </div>
 
-            <div class="total-row">
-                <span>Total</span>
-                <span>₹ {{rideCheckoutDetails.fare + rideCheckoutDetails.gst}}</span>
-            </div>
+    <div class="total-row">
+        <span>Total</span>
+        <span>₹ {{rideCheckoutDetails.fare + rideCheckoutDetails.gst}}</span>
+    </div>
 
-        </div>
+</div>
 
         <button (click)="bookRide()" class="book-btn">
             Book Ride
@@ -55,7 +55,7 @@
 </div>
 }
 @else if((rideDetails$ | async)?.distance && (rideDetails$ | async)?.time){
-    <div>
+<div>
     <h1 class="title">Choose a ride</h1>
     <p class="route">{{pickup | titlecase}} → {{drop | titlecase}}</p>
 
@@ -67,8 +67,8 @@
 
             <div class="vcard-content">
                 <div class="left">
-                    <img src="https://cdn3d.iconscout.com/3d/premium/thumb/auto-rickshaw-10831542-8778534.png" alt="Auto">
-                    <div>
+                    <img src="https://cdn3d.iconscout.com/3d/premium/thumb/auto-rickshaw-10831542-8778534.png">
+                    <div class="vehicle-info">
                         <span class="name">Auto</span>
                         <span class="meta">{{ (rideDetails$|async)?.distance }} KM</span>
                     </div>
@@ -86,8 +86,8 @@
 
             <div class="vcard-content">
                 <div class="left">
-                    <img src="https://cdn3d.iconscout.com/3d/premium/thumb/motorcycle-3d-icon-png-download-9656130.png" alt="Bike">
-                    <div>
+                    <img src="https://cdn3d.iconscout.com/3d/premium/thumb/motorcycle-3d-icon-png-download-9656130.png">
+                    <div class="vehicle-info">
                         <span class="name">Bike</span>
                         <span class="meta">{{ (rideDetails$|async)?.distance }} KM</span>
                     </div>
@@ -105,8 +105,8 @@
 
             <div class="vcard-content">
                 <div class="left">
-                    <img src="suv.png" alt="SUV">
-                    <div>
+                    <img src="suv.png">
+                    <div class="vehicle-info">
                         <span class="name">SUV</span>
                         <span class="meta">{{ (rideDetails$|async)?.distance }} KM</span>
                     </div>
@@ -124,7 +124,7 @@
 
     </div>
 </div>
-} 
+}
 @else{
     <div>
     <h1 class="title">Request a ride</h1>
@@ -174,7 +174,12 @@
                 Search
             }
         </button>
-
+        @if(msg$ | async; as msg) {
+    <div class="message error">
+        <span class="icon">⚠</span>
+        <span>{{ msg }}</span>
+    </div>
+}
     </div>
 </div>
 }

@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AuthService } from '../auth-service';
 
 @Component({
   selector: 'app-login',
@@ -15,15 +16,17 @@ export class Login {
 
   route=inject(Router);
 
+  authService=inject(AuthService);
+
   login(){
-    let loginData = {
+    let userData = {
       name:"Anurag",
       email: this.email,
       password: this.password,
       isLoggedIn: true
     }
     
-    localStorage.setItem("login",JSON.stringify(loginData));
+    this.authService.login(userData);
     this.route.navigate([""]);
   }
 }
