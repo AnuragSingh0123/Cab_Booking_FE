@@ -1,30 +1,102 @@
-<div class="dashboard-container" style="position: absolute; left: 0; right: 0; top: 83px;">
-  <nav class="sidebar">
-    <h3>Driver Portal</h3>
-    <ul>
-      <li>Dashboard</li>
-      <li>Active Trips</li>
-      <li>Earnings</li>
-      <li>Settings</li>
-    </ul>
-  </nav>
+    <div class="dashboard">
 
-  <main class="main-content">
-    <header>
-      <h1>Welcome back, Driver!</h1>
-      <div class="status-badge">Status: <span class="online">Online</span></div>
-    </header>
+    <h1 class="title">Driver Dashboard</h1>
 
-    <section class="stats-grid">
-      <div class="card"><h3>Today's Earnings</h3><p>$124.50</p></div>
-      <div class="card"><h3>Trips Completed</h3><p>12</p></div>
-      <div class="card"><h3>Rating</h3><p>4.9/5.0</p></div>
-    </section>
+    <!-- profile -->
+    <div class="profile-card">
+        <div class="avatar">
+            {{driver.name.substring(0,1)}}
+        </div>
 
-    <section class="active-trip">
-      <h2>Current Trip</h2>
-      <p>Destination: 123 Maple St.</p>
-      <button>View Details</button>
-    </section>
-  </main>
+        <div class="driver-info">
+            <p class="name">{{driver.name}}</p>
+            <p class="email">{{driver.email}}</p>
+            <p class="meta">
+                {{driver.vehicle}} • {{driver.vehicleNo}} • ⭐ {{driver.rating}}
+            </p>
+        </div>
+    </div>
+
+    <!-- online toggle -->
+    <div class="status-card">
+        <div>
+            <span class="label">Status</span>
+            <p class="status" [class.online]="driver.online">
+                ● {{driver.online ? 'Online' : 'Offline'}}
+            </p>
+        </div>
+
+        <button class="toggle-btn" (click)="toggleStatus()">
+            Go {{driver.online ? 'Offline' : 'Online'}}
+        </button>
+    </div>
+
+    <!-- stats -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <span>Trips</span>
+            <strong>{{stats.trips}}</strong>
+        </div>
+
+        <div class="stat-card">
+            <span>Earnings</span>
+            <strong>₹ {{stats.earnings}}</strong>
+        </div>
+
+        <div class="stat-card">
+            <span>Distance</span>
+            <strong>{{stats.distance}} km</strong>
+        </div>
+
+        <div class="stat-card">
+            <span>Hours</span>
+            <strong>{{stats.hours}}</strong>
+        </div>
+    </div>
+
+    <!-- available ride -->
+    @if(availableRide){
+        <div class="ride-card">
+            <h2>New Ride Request</h2>
+
+            <p><strong>From:</strong> {{availableRide.pickup}}</p>
+            <p><strong>To:</strong> {{availableRide.drop}}</p>
+            <p><strong>Vehicle:</strong> {{availableRide.vehicle}}</p>
+            <p><strong>Fare:</strong> ₹ {{availableRide.total}}</p>
+
+            <div class="actions">
+                <button class="accept-btn" (click)="acceptRide()">
+                    Accept
+                </button>
+
+                <button class="reject-btn" (click)="rejectRide()">
+                    Reject
+                </button>
+            </div>
+        </div>
+    }
+
+    <!-- active ride -->
+    @if(activeRide){
+        <div class="ride-card">
+            <h2>Current Ride</h2>
+
+            <p><strong>From:</strong> {{activeRide.pickup}}</p>
+            <p><strong>To:</strong> {{activeRide.drop}}</p>
+            <p><strong>Status:</strong> {{activeRide.status}}</p>
+
+            @if(activeRide.status === 'ACCEPTED'){
+                <button class="accept-btn" (click)="startRide()">
+                    Start Ride
+                </button>
+            }
+
+            @if(activeRide.status === 'STARTED'){
+                <button class="accept-btn" (click)="completeRide()">
+                    Complete Ride
+                </button>
+            }
+        </div>
+    }
+
 </div>

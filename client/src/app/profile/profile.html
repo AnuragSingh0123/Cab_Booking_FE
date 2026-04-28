@@ -1,33 +1,62 @@
-<div style="display: flex; flex-direction: column; gap: 30px;">
-    <div style="display: flex; align-items: center; gap: 30px;">
-        <div style="background-color: black; width: 80px; height: 80px; display: flex; justify-content: center; align-items: center; border-radius: 100px;">
-            <p style="font-size: 50px; color: white;">
-                {{user?.name?.substring(0,1)}}
-            </p>
+<div class="profile-page">
+
+    <h1 class="title">Profile</h1>
+
+    <!-- user -->
+    <div class="profile-card">
+        <div class="avatar">
+            {{ user?.name?.substring(0,1) }}
         </div>
-        <p style="font-weight: bold; font-size: 30px;">{{user?.name}}</p>
-    </div>
 
-    <div style="display: flex; align-items: center; gap: 20px;">
-        <div style="font-size: 20px; font-weight: 500;">Email:</div>
-        <div style="font-size: 15px;">{{user?.email}}</div>
-    </div>
-
-    <div>
-        <div style="font-weight: 600; font-size: 20px; margin-bottom: 15px;">Ride History</div>
-        
-        <div style="display: flex; flex-direction: column; gap: 10px;">
-            @for (ride of userRides; track ride.id) {
-                <div style="padding: 10px; border: 1px solid #ccc; border-radius: 8px;">
-                    <!-- <div><strong>Date:</strong> {{ride.date}}</div> -->
-                    <div><strong>Route:</strong> {{ride.pickup}} to {{ride.drop}}</div>
-                    <div><strong>Distance:</strong> {{ride.distance}}</div>
-                    <div><strong>Fare:</strong> ${{ride.total}}</div>
-                    <div><strong>Vehicle Type:</strong> {{ride.vehicle}}</div>
-                </div>
-            } @empty {
-                <p>No ride history found.</p>
-            }
+        <div class="user-info">
+            <p class="name">{{ user?.name || 'Anurag Singh' }}</p>
+            <p class="email">{{ user?.email || 'anurag@email.com' }}</p>
+            <p class="joined">Member since Apr 2026</p>
         </div>
     </div>
+
+    <!-- stats -->
+    <div class="stats-grid">
+
+        <div class="stat-card">
+            <span class="stat-label">Total Rides</span>
+            <p class="stat-value">23</p>
+        </div>
+
+        <div class="stat-card">
+            <span class="stat-label">Distance Travelled</span>
+            <p class="stat-value">148 km</p>
+        </div>
+
+        <div class="stat-card">
+            <span class="stat-label">Total Spent</span>
+            <p class="stat-value">₹ 4,320</p>
+        </div>
+
+        <div class="stat-card">
+            <span class="stat-label">Preferred Ride</span>
+            <p class="stat-value">Mini</p>
+        </div>
+
+    </div>
+
+    <!-- quick actions -->
+    <div class="actions-section">
+        <h2 class="section-title">Quick Actions</h2>
+
+        <div class="actions-grid">
+
+            <button class="action-card">
+                <span class="action-title">Book Ride</span>
+                <span class="action-subtitle">Request a new cab</span>
+            </button>
+
+            <button class="action-card">
+                <span class="action-title">My Rides</span>
+                <span class="action-subtitle">View ride history</span>
+            </button>
+
+        </div>
+    </div>
+
 </div>

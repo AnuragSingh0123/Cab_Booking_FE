@@ -6,23 +6,33 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class RideService {
 
-  bookRide(RideData:any){
-    let {pickup, drop, fare, gst, vehicle, distance} = RideData;
-    
-    let userRides = JSON.parse(localStorage.getItem("userRides")??"[]");
-    userRides.push({
-      pickup,
-      drop,
-      fare,
-      gst,
-      vehicle,
-      distance,
-      total: Number(fare)+ Number(gst)
-    });
+  bookRide(rideData: any) {
+  let { pickup, drop, fare, gst, vehicle, distance } = rideData;
 
-    localStorage.setItem("userRides", JSON.stringify(userRides));
-    
-  }
+  const activeRide = {
+    id: crypto.randomUUID(),
+
+    pickup,
+    drop,
+    fare,
+    gst,
+    vehicle,
+    distance,
+
+    total: Number(fare) + Number(gst),
+
+    status: "SEARCHING_DRIVER",
+    driver: null,
+
+    createdAt: Date.now(),
+    expiresAt: Date.now() + 60000
+  };
+
+  localStorage.setItem(
+    "activeRide",
+    JSON.stringify(activeRide)
+  );
+}
 
   rideSubject = new BehaviorSubject<any>({
     pickUp: '',
