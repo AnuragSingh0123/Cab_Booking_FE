@@ -6,6 +6,24 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class RideService {
 
+  bookRide(RideData:any){
+    let {pickup, drop, fare, gst, vehicle, distance} = RideData;
+    
+    let userRides = JSON.parse(localStorage.getItem("userRides")??"[]");
+    userRides.push({
+      pickup,
+      drop,
+      fare,
+      gst,
+      vehicle,
+      distance,
+      total: Number(fare)+ Number(gst)
+    });
+
+    localStorage.setItem("userRides", JSON.stringify(userRides));
+    
+  }
+
   rideSubject = new BehaviorSubject<any>({
     pickUp: '',
     drop: ''

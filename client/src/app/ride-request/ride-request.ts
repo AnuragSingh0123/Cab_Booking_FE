@@ -181,6 +181,7 @@ export class RideRequest {
 }
 
   bookRide() {
+    this.rideService.bookRide(this.rideCheckoutDetails);
     this.route.navigate(['ride-booked']);
   }
 }
