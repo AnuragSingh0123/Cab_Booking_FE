@@ -1,19 +1,33 @@
-<div class="success-container">
+@if(activeRide && activeRide.status === 'SEARCHING_DRIVER') {
+    <div class="status-card">
+        <h1>Searching for driver...</h1>
+        <p>Finding nearby drivers for your trip</p>
 
-    <div class="success-card">
+        <div class="timer">
+            {{countdown}}
+        </div>
 
-        <div class="icon">✔</div>
-
-        <h1 class="title">Ride Booked</h1>
-
-        <p class="subtitle">
-            Your driver is on the way 🚗
-        </p>
-
-        <button routerLink="" class="btn">
-            Book Another Ride
+        <button (click)="cancelRide()">
+            Cancel Ride
         </button>
-
     </div>
+}
 
-</div>
+@else if(activeRide?.status === 'ACCEPTED') {
+    <div class="status-card">
+        <h1>Driver Found</h1>
+
+        <p>{{activeRide.driver.name}}</p>
+        <p>{{activeRide.driver.vehicleNo}}</p>
+        <p>⭐ {{activeRide.driver.rating}}</p>
+    </div>
+}
+
+@else if(activeRide?.status === 'CANCELLED') {
+    <div class="status-card">
+        <h1>No drivers available</h1>
+        <button routerLink="/ride-request">
+            Try Again
+        </button>
+    </div>
+}

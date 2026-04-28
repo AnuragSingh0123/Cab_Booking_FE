@@ -1,0 +1,46 @@
+    <div class="history-section">
+        <h2 class="section-title">Recent Rides</h2>
+
+        <div class="history-list">
+            @for (ride of userRides; track ride.id) {
+                <div class="ride-card">
+
+                    <div class="ride-route">
+                        <div class="point">
+                            <span class="tag">FROM</span>
+                            <p>{{ ride.pickup }}</p>
+                        </div>
+
+                        <div class="arrow">→</div>
+
+                        <div class="point">
+                            <span class="tag">TO</span>
+                            <p>{{ ride.drop }}</p>
+                        </div>
+                    </div>
+
+                    <div class="ride-meta">
+                        <div class="meta-box">
+                            <span>Distance</span>
+                            <strong>{{ ride.distance }} km</strong>
+                        </div>
+
+                        <div class="meta-box">
+                            <span>Vehicle</span>
+                            <strong>{{ ride.vehicle | titlecase }}</strong>
+                        </div>
+
+                        <div class="meta-box fare">
+                            <span>Fare</span>
+                            <strong>₹ {{ ride.total | number }}</strong>
+                        </div>
+                    </div>
+
+                </div>
+            } @empty {
+                <div class="empty-card">
+                    No ride history found
+                </div>
+            }
+        </div>
+    </div>
