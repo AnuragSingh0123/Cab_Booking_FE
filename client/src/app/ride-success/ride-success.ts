@@ -3,10 +3,12 @@ import {
   Component,
   OnInit,
   OnDestroy,
-  signal
+  signal,
+  inject
 } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { interval, Subscription } from 'rxjs';
+import { RideService } from '../ride-service';
 
 @Component({
   selector: 'app-ride-success',
@@ -17,6 +19,8 @@ import { interval, Subscription } from 'rxjs';
 })
 export class RideSuccess implements OnInit, OnDestroy {
   constructor(private router: Router) {}
+
+  rideService=inject(RideService);
 
   activeRide = signal<any>(null);
   progress = signal(100);
@@ -144,7 +148,9 @@ export class RideSuccess implements OnInit, OnDestroy {
   );
 
   localStorage.removeItem('activeRide');
-
+  this.rideService.setRide('','');
+  this.rideService.setRideDetails('','');
+  alert("Feedback Submitted");
   this.goHome();
 }
 
@@ -155,6 +161,6 @@ export class RideSuccess implements OnInit, OnDestroy {
 
   bookAgain() {
     localStorage.removeItem('activeRide');
-    this.router.navigate(['/ride-request']);
+    this.router.navigate(['/']);
   }
 }
