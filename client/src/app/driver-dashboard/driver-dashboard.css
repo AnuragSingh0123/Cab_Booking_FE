@@ -110,3 +110,78 @@
     gap:12px;
     margin-top:20px;
 }
+
+.review-section {
+    margin-top: 28px;
+    width: 100%;
+}
+
+.section-title {
+    font-size: 24px;
+    font-weight: 800;
+    margin-bottom: 16px;
+    color: #111;
+}
+
+.review-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.review-card {
+    background: #f8f9fa;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    padding: 18px;
+    transition: 0.2s;
+}
+
+.review-card:hover {
+    background: #f1f3f5;
+    transform: translateY(-1px);
+}
+
+.review-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.stars {
+    font-size: 18px;
+    letter-spacing: 2px;
+    color: #f59e0b;
+    font-weight: 700;
+}
+
+.fare {
+    font-size: 14px;
+    font-weight: 700;
+    color: #111;
+    background: white;
+    border-radius: 100px;
+    padding: 6px 12px;
+    border: 1px solid #e5e7eb;
+}
+
+.feedback {
+    margin: 0;
+    margin-bottom: 12px;
+    padding: 12px 14px;
+    background: white;
+    border-radius: 10px;
+    font-size: 14px;
+    color: #444;
+    line-height: 1.5;
+    font-style: italic;
+}
+
+.route {
+    margin: 0;
+    font-size: 13px;
+    color: #6b7280;
+    font-weight: 600;
+}

@@ -1,33 +1,40 @@
-    <div class="dashboard">
+<div class="dashboard">
 
     <h1 class="title">Driver Dashboard</h1>
 
     <!-- profile -->
     <div class="profile-card">
         <div class="avatar">
-            {{driver.name.substring(0,1)}}
+            {{driver().name.substring(0,1)}}
         </div>
 
         <div class="driver-info">
-            <p class="name">{{driver.name}}</p>
-            <p class="email">{{driver.email}}</p>
+            <p class="name">{{driver().name}}</p>
+            <p class="email">{{driver().email}}</p>
             <p class="meta">
-                {{driver.vehicle}} • {{driver.vehicleNo}} • ⭐ {{driver.rating}}
-            </p>
+    {{driver().vehicle}} •
+    {{driver().vehicleNo}} •
+    ⭐ {{driver().rating || 'New'}}
+</p>
         </div>
     </div>
 
-    <!-- online toggle -->
+    <!-- online -->
     <div class="status-card">
         <div>
-            <span class="label">Status</span>
-            <p class="status" [class.online]="driver.online">
-                ● {{driver.online ? 'Online' : 'Offline'}}
+            <span class="label">STATUS</span>
+
+            <p
+                class="status"
+                [class.online]="driver().online">
+                ● {{driver().online ? 'Online' : 'Offline'}}
             </p>
         </div>
 
-        <button class="toggle-btn" (click)="toggleStatus()">
-            Go {{driver.online ? 'Offline' : 'Online'}}
+        <button
+            class="toggle-btn"
+            (click)="toggleStatus()">
+            Go {{driver().online ? 'Offline' : 'Online'}}
         </button>
     </div>
 
@@ -35,68 +42,170 @@
     <div class="stats-grid">
         <div class="stat-card">
             <span>Trips</span>
-            <strong>{{stats.trips}}</strong>
+            <strong>{{stats().trips}}</strong>
         </div>
 
         <div class="stat-card">
             <span>Earnings</span>
-            <strong>₹ {{stats.earnings}}</strong>
+            <strong>₹ {{stats().earnings}}</strong>
         </div>
 
         <div class="stat-card">
             <span>Distance</span>
-            <strong>{{stats.distance}} km</strong>
+            <strong>{{stats().distance}} km</strong>
         </div>
 
         <div class="stat-card">
             <span>Hours</span>
-            <strong>{{stats.hours}}</strong>
+            <strong>{{stats().hours}}</strong>
         </div>
     </div>
 
     <!-- available ride -->
-    @if(availableRide){
-        <div class="ride-card">
-            <h2>New Ride Request</h2>
+    @if(availableRide()){
+    <div class="ride-card">
 
-            <p><strong>From:</strong> {{availableRide.pickup}}</p>
-            <p><strong>To:</strong> {{availableRide.drop}}</p>
-            <p><strong>Vehicle:</strong> {{availableRide.vehicle}}</p>
-            <p><strong>Fare:</strong> ₹ {{availableRide.total}}</p>
+        <h2 class="card-title">
+            New Ride Request
+        </h2>
 
-            <div class="actions">
-                <button class="accept-btn" (click)="acceptRide()">
-                    Accept
-                </button>
-
-                <button class="reject-btn" (click)="rejectRide()">
-                    Reject
-                </button>
-            </div>
+        <div class="ride-row">
+            <span class="label">FROM</span>
+            <span class="value">
+                {{availableRide()?.pickup}}
+            </span>
         </div>
+
+        <div class="ride-row">
+            <span class="label">TO</span>
+            <span class="value">
+                {{availableRide()?.drop}}
+            </span>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="ride-row">
+            <span class="label">VEHICLE</span>
+            <span class="value">
+                {{availableRide()?.vehicle | titlecase}}
+            </span>
+        </div>
+
+        <div class="ride-row">
+            <span class="label">FARE</span>
+            <span class="value">
+                ₹ {{availableRide()?.total}}
+            </span>
+        </div>
+
+        <div class="actions">
+            <button
+                class="accept-btn"
+                (click)="acceptRide()">
+                Accept
+            </button>
+
+            <button
+                class="reject-btn"
+                (click)="rejectRide()">
+                Reject
+            </button>
+        </div>
+
+    </div>
     }
 
     <!-- active ride -->
-    @if(activeRide){
-        <div class="ride-card">
-            <h2>Current Ride</h2>
+    @if(activeRide()){
+    <div class="ride-card">
 
-            <p><strong>From:</strong> {{activeRide.pickup}}</p>
-            <p><strong>To:</strong> {{activeRide.drop}}</p>
-            <p><strong>Status:</strong> {{activeRide.status}}</p>
+        <h2 class="card-title">
+            Current Ride
+        </h2>
 
-            @if(activeRide.status === 'ACCEPTED'){
-                <button class="accept-btn" (click)="startRide()">
-                    Start Ride
-                </button>
-            }
-
-            @if(activeRide.status === 'STARTED'){
-                <button class="accept-btn" (click)="completeRide()">
-                    Complete Ride
-                </button>
-            }
+        <div class="ride-row">
+            <span class="label">FROM</span>
+            <span class="value">
+                {{activeRide()?.pickup}}
+            </span>
         </div>
+
+        <div class="ride-row">
+            <span class="label">TO</span>
+            <span class="value">
+                {{activeRide()?.drop}}
+            </span>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="ride-row">
+            <span class="label">STATUS</span>
+            <span class="value">
+                {{activeRide()?.status}}
+            </span>
+        </div>
+
+        @if(activeRide()?.status === 'ACCEPTED'){
+        <button
+            class="accept-btn full-btn"
+            (click)="startRide()">
+            Start Ride
+        </button>
+        }
+
+        @if(activeRide()?.status === 'STARTED'){
+        <button
+            class="accept-btn full-btn"
+            (click)="completeRide()">
+            Complete Ride
+        </button>
+        }
+
+    </div>
+    }
+
+    <!-- reviews -->
+    @if(reviews().length){
+    <div class="review-section">
+
+        <h2 class="section-title">
+            Recent Reviews
+        </h2>
+
+        <div class="review-list">
+
+            @for(review of reviews(); track review.reviewedAt){
+            <div class="review-card">
+
+                <div class="review-top">
+                    <span class="stars">
+                        {{ '★'.repeat(review.rating) }}
+                        {{ '☆'.repeat(5 - review.rating) }}
+                    </span>
+
+                    <span class="fare">
+                        ₹ {{review.total}}
+                    </span>
+                </div>
+
+                @if(review.feedback){
+                <p class="feedback">
+                    "{{review.feedback}}"
+                </p>
+                }
+
+                <p class="route">
+                    {{review.pickup}} → {{review.drop}}
+                </p>
+
+            </div>
+            }
+
+        </div>
+
+    </div>
     }
 
 </div>

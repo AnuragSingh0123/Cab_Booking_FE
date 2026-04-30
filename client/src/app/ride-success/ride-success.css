@@ -1,52 +1,256 @@
-.success-container {
-    height: 70vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.ride-page{
+    display:flex;
+    flex-direction:column;
+    gap:24px;
+    width:100%;
 }
 
-.success-card {
-    text-align: center;
-    padding: 40px 30px;
-    border-radius: 16px;
-    width: 350px;
+.title{
+    margin:0;
+    font-size:40px;
+    font-weight:900;
+    color:#111;
 }
 
-
-.icon {
-    font-size: 50px;
-    color: #16a34a;
-    margin-bottom: 15px;
+.subtitle{
+    margin:-10px 0 0;
+    font-size:15px;
+    color:#666;
 }
 
-
-.title {
-    font-size: 36px;
-    font-weight: 800;
-    margin-bottom: 10px;
+.status-card,
+.driver-card{
+    background:#f8f9fa;
+    border:1px solid #e5e7eb;
+    border-radius:14px;
+    padding:24px;
 }
 
-
-.subtitle {
-    font-size: 14px;
-    color: #666;
-    margin-bottom: 25px;
+.searching-card{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:20px;
 }
 
-
-.btn {
-    width: 100%;
-    padding: 12px;
-    border-radius: 10px;
-    border: none;
-    background: black;
-    color: white;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: 0.2s;
+.spinner{
+    width:54px;
+    height:54px;
+    border-radius:50%;
+    border:4px solid #ddd;
+    border-top:4px solid black;
+    animation:spin 1s linear infinite;
 }
 
-.btn:hover {
-    background: #222;
+@keyframes spin{
+    to{
+        transform:rotate(360deg);
+    }
+}
+
+.status-text{
+    margin:0;
+    font-size:16px;
+    font-weight:600;
+}
+
+.timer-card{
+    font-size:36px;
+    font-weight:800;
+    letter-spacing:2px;
+}
+
+.driver-top{
+    display:flex;
+    gap:18px;
+    align-items:center;
+}
+
+.avatar{
+    width:70px;
+    height:70px;
+    border-radius:50%;
+    background:black;
+    color:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:28px;
+    font-weight:700;
+}
+
+.name{
+    margin:0;
+    font-size:22px;
+    font-weight:700;
+}
+
+.meta,
+.rating{
+    margin:4px 0 0;
+    color:#666;
+    font-size:14px;
+}
+
+.divider{
+    height:1px;
+    background:#e5e7eb;
+    margin:18px 0;
+}
+
+.info-row,
+.route-row{
+    display:flex;
+    justify-content:space-between;
+    gap:16px;
+    padding:10px 0;
+}
+
+.label{
+    font-size:12px;
+    font-weight:700;
+    color:#6b7280;
+}
+
+.value{
+    text-align:right;
+    font-weight:600;
+    color:#111;
+}
+
+.route-box{
+    margin-top:10px;
+}
+
+.actions{
+    display:flex;
+    gap:12px;
+    margin-top:22px;
+}
+
+.primary-btn,
+.cancel-btn,
+.call-btn{
+    flex:1;
+    padding:14px;
+    border:none;
+    border-radius:10px;
+    font-size:15px;
+    font-weight:600;
+    cursor:pointer;
+    text-decoration:none;
+    text-align:center;
+}
+
+.primary-btn,
+.call-btn{
+    background:black;
+    color:white;
+}
+
+.cancel-btn{
+    background:#ef4444;
+    color:white;
+}
+
+.status-big{
+    margin:0;
+    text-align:center;
+    font-size:26px;
+    font-weight:800;
+}
+
+.success-card{
+    text-align:center;
+}
+
+.fare{
+    margin:14px 0 0;
+    font-size:36px;
+    font-weight:900;
+}
+
+.progress-wrapper{
+    width:100%;
+    height:10px;
+    border-radius:100px;
+    background:#e5e7eb;
+    overflow:hidden;
+}
+
+.progress-bar{
+    height:100%;
+    width:100%;
+    background:black;
+    border-radius:100px;
+    transition:width 1s linear;
+}
+
+.progress-text{
+    margin:0;
+    font-size:14px;
+    color:#666;
+}
+
+.feedback-card{
+    background:#f8f9fa;
+    border:1px solid #e5e7eb;
+    border-radius:14px;
+    padding:24px;
+}
+
+.feedback-title{
+    margin:0;
+    font-size:22px;
+    font-weight:700;
+    color:#111;
+}
+
+.feedback-subtitle{
+    margin:6px 0 20px;
+    color:#666;
+    font-size:14px;
+}
+
+.stars{
+    display:flex;
+    gap:10px;
+    margin-bottom:20px;
+}
+
+.star{
+    border:none;
+    background:none;
+    cursor:pointer;
+    font-size:34px;
+    color:#d1d5db;
+    padding:0;
+}
+
+.star.active{
+    color:black;
+}
+
+.feedback-input{
+    width:100%;
+    min-height:110px;
+    resize:none;
+    padding:14px;
+    border-radius:10px;
+    border:none;
+    background:#eef1f4;
+    font-size:14px;
+    margin-bottom:20px;
+    outline:none;
+}
+
+.secondary-btn{
+    flex:1;
+    padding:14px;
+    border-radius:10px;
+    border:1px solid #d1d5db;
+    background:white;
+    font-size:15px;
+    font-weight:600;
+    cursor:pointer;
 }

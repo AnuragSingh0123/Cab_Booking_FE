@@ -1,33 +1,231 @@
-@if(activeRide && activeRide.status === 'SEARCHING_DRIVER') {
-    <div class="status-card">
-        <h1>Searching for driver...</h1>
-        <p>Finding nearby drivers for your trip</p>
+@if(activeRide()?.status === 'SEARCHING_DRIVER'){
+<div class="ride-page">
 
-        <div class="timer">
-            {{countdown}}
+    <h1 class="title">Searching for Driver</h1>
+    <p class="subtitle">
+        We're finding the nearest available driver for your ride.
+    </p>
+
+    <div class="status-card searching-card">
+
+        <div class="spinner"></div>
+
+        <p class="status-text">
+            Looking for nearby drivers...
+        </p>
+
+        <div class="progress-wrapper">
+            <div
+                class="progress-bar"
+                [style.width.%]="progress()">
+            </div>
         </div>
 
-        <button (click)="cancelRide()">
+        <p class="progress-text">
+            Searching nearby drivers...
+        </p>
+
+        <button
+            class="cancel-btn"
+            (click)="cancelRide()">
             Cancel Ride
         </button>
+
     </div>
+</div>
 }
 
-@else if(activeRide?.status === 'ACCEPTED') {
-    <div class="status-card">
-        <h1>Driver Found</h1>
+@else if(activeRide()?.status === 'ACCEPTED'){
+<div class="ride-page">
 
-        <p>{{activeRide.driver.name}}</p>
-        <p>{{activeRide.driver.vehicleNo}}</p>
-        <p>⭐ {{activeRide.driver.rating}}</p>
+    <h1 class="title">Driver Found</h1>
+    <p class="subtitle">
+        Your driver is on the way.
+    </p>
+
+    <div class="driver-card">
+
+        <div class="driver-top">
+            <div class="avatar">
+                {{activeRide()?.driver?.name?.substring(0,1)}}
+            </div>
+
+            <div class="driver-info">
+                <p class="name">
+                    {{activeRide()?.driver?.name}}
+                </p>
+
+                <p class="meta">
+                    {{activeRide()?.driver?.vehicle}}
+                    •
+                    {{activeRide()?.driver?.vehicleNo}}
+                </p>
+
+                <p class="rating">
+                    ⭐ {{activeRide()?.driver?.rating}}
+                </p>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="info-row">
+            <span class="label">PHONE</span>
+            <span class="value">
+                {{activeRide()?.driver?.phone}}
+            </span>
+        </div>
+
+        <div class="info-row">
+            <span class="label">ETA</span>
+            <span class="value">6 mins away</span>
+        </div>
+
+        <div class="info-row">
+            <span class="label">VEHICLE</span>
+            <span class="value">
+                {{activeRide()?.driver?.vehicle}}
+            </span>
+        </div>
+
+        <div class="actions">
+            <a
+                class="call-btn"
+                [href]="'tel:' + activeRide()?.driver?.phone">
+                Call Driver
+            </a>
+
+            <button
+                class="cancel-btn"
+                (click)="cancelRide()">
+                Cancel Ride
+            </button>
+        </div>
+
     </div>
+</div>
 }
 
-@else if(activeRide?.status === 'CANCELLED') {
+@else if(activeRide()?.status === 'STARTED'){
+<div class="ride-page">
+
+    <h1 class="title">Ride Started</h1>
+
+    <p class="subtitle">
+        Enjoy your trip. Driver is heading to destination.
+    </p>
+
     <div class="status-card">
-        <h1>No drivers available</h1>
-        <button routerLink="/ride-request">
-            Try Again
+
+        <p class="status-big">
+            On Trip
+        </p>
+
+        <div class="route-box">
+
+            <div class="route-row">
+                <span class="label">FROM</span>
+                <span class="value">
+                    {{activeRide()?.pickup}}
+                </span>
+            </div>
+
+            <div class="route-row">
+                <span class="label">TO</span>
+                <span class="value">
+                    {{activeRide()?.drop}}
+                </span>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+}
+
+@else if(activeRide()?.status === 'COMPLETED'){
+<div class="ride-page">
+
+    <h1 class="title">Ride Completed</h1>
+
+    <p class="subtitle">
+        Hope you had a comfortable ride.
+    </p>
+
+    <div class="status-card success-card">
+        <p class="status-big">
+            ✓ Trip Finished
+        </p>
+
+        <p class="fare">
+            ₹ {{activeRide()?.total | number}}
+        </p>
+    </div>
+
+    <div class="feedback-card">
+
+        <h2 class="feedback-title">
+            Rate your driver
+        </h2>
+
+        <p class="feedback-subtitle">
+            How was your ride experience?
+        </p>
+
+        <div class="stars">
+            @for(star of [1,2,3,4,5]; track star){
+                <button
+                    class="star"
+                    [class.active]="rating() >= star"
+                    (click)="setRating(star)">
+                    ★
+                </button>
+            }
+        </div>
+
+        <textarea
+            #msg
+            class="feedback-input"
+            placeholder="Write feedback (optional)"
+            (input)="feedback.set(msg.value)">
+        </textarea>
+
+        <div class="actions">
+
+            <button
+                class="primary-btn"
+                (click)="submitFeedback()">
+                Submit Feedback
+            </button>
+
+            <button
+                class="secondary-btn"
+                (click)="goHome()">
+                Go Home
+            </button>
+
+        </div>
+
+    </div>
+</div>
+}
+
+@else if(activeRide()?.status === 'CANCELLED'){
+<div class="ride-page">
+
+    <h1 class="title">Ride Cancelled</h1>
+
+    <p class="subtitle">
+        No drivers were available for this request.
+    </p>
+
+    <div class="status-card">
+        <button
+            class="primary-btn"
+            (click)="bookAgain()">
+            Book Again
         </button>
     </div>
+
+</div>
 }
