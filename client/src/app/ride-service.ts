@@ -7,6 +7,9 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class RideService {
 
+
+  mapLoading = signal(false);
+
   booking = signal<any>({
     pickup: '',
     drop: '',

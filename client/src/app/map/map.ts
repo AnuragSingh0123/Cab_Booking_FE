@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, effect, inject } from '@angular/core';
+import { Component, effect, inject, signal } from '@angular/core';
 import * as L from 'leaflet';
 import { RideService } from '../ride-service';
 import { Router } from '@angular/router';
@@ -13,6 +13,8 @@ export class Map {
 
   private rideService = inject(RideService);
   private http = inject(HttpClient);
+
+  loading = this.rideService.mapLoading;
 
   router=inject(Router);
 
@@ -59,6 +61,15 @@ export class Map {
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
       .addTo(this.map);
+
+    const ride = this.rideService.booking();
+
+  if (ride.pickup && ride.drop) {
+    this.getRouteFromNames(
+      ride.pickup,
+      ride.drop
+    );
+  }
   }
 
   //Convert place → coordinates
@@ -149,12 +160,14 @@ export class Map {
     .bindPopup('Drop');
 
   this.map.fitBounds(this.routeLine.getBounds());
+  this.rideService.mapLoading.set(false);
   this.router.navigate(["vehicle"]);
   this.rideService.setLoading(false);
 }
 
   //Convert names → route
   getRouteFromNames(pickup: string, drop: string) {
+    this.rideService.mapLoading.set(true);
   this.rideService.setLoading(true);
 
   this.getCoordinates(pickup).subscribe((startRes: any) => {

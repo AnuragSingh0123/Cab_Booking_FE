@@ -12,7 +12,9 @@ import { FormsModule } from '@angular/forms';
 })
 export class VehicleSelection {
 
+  
   rideService = inject(RideService);
+  loading = this.rideService.mapLoading;
   router = inject(Router);
 
   selectedValue = '';
@@ -20,17 +22,12 @@ export class VehicleSelection {
   ride = this.rideService.booking;
 
   constructor() {
-    const data = this.ride();
+  const ride = this.rideService.booking();
 
-    if (
-      !data.pickup ||
-      !data.drop ||
-      !data.distance ||
-      !data.duration 
-    ) {
-      this.router.navigate(['/']);
-    }
+  if (!ride.pickup || !ride.drop) {
+    this.router.navigate(['/']);
   }
+}
 
   checkoutDetails() {
 

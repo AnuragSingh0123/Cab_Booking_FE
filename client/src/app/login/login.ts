@@ -3,6 +3,7 @@ import { Component, inject } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth-service';
+import { RideService } from '../ride-service';
 
 @Component({
   selector: 'app-login',
@@ -11,24 +12,32 @@ import { AuthService } from '../auth-service';
   styleUrl: './login.css',
 })
 export class Login {
-  route=inject(Router);
+  router=inject(Router);
 
   authService=inject(AuthService);
+  rideService=inject(RideService);
 
-  login(loginForm: NgForm){
+  ride = this.rideService.booking;
 
-    let {email, password} = loginForm.control.value;
-    console.log(email);
-    console.log(password);
+  login(loginForm: NgForm) {
+  const { email, password } =
+    loginForm.control.value;
 
-    let userData = {
-      name:"Rahol",
-      email,
-      password,
-      isLoggedIn: true
-    }
-    
-    this.authService.login(userData);
-    this.route.navigate([""]);
+  const userData = {
+    name: 'Anurag',
+    email,
+    password,
+    isLoggedIn: true
+  };
+
+  this.authService.login(userData);
+
+  const ride = this.ride();
+
+  if (ride.pickup && ride.drop) {
+    this.router.navigate(['/vehicle']);
+  } else {
+    this.router.navigate(['/']);
   }
+}
 }

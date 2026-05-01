@@ -232,3 +232,41 @@
     margin-bottom:30px;
 }
 
+.vehicle-wrapper {
+  position: relative;
+}
+
+.vehicle-loader {
+  position: absolute;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(255,255,255,0.9);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  border-radius: 12px;
+}
+
+.spinner {
+  width: 46px;
+  height: 46px;
+  border: 4px solid #ddd;
+  border-top: 4px solid #2563eb;
+  border-radius: 50%;
+  animation: spin .8s linear infinite;
+}
+
+.vehicle-loader p {
+  margin-top: 12px;
+  font-weight: 500;
+  color: #444;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

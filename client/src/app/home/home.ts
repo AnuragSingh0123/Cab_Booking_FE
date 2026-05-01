@@ -5,7 +5,7 @@ import { RideRequest } from '../ride-request/ride-request';
 
 @Component({
   selector: 'app-home',
-  imports: [RouterModule,Map,RideRequest],
+  imports: [RouterModule,Map],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })

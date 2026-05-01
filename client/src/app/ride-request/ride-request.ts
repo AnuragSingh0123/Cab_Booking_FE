@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { RideService } from '../ride-service';
@@ -89,26 +89,42 @@ export class RideRequest {
 
   msgTimeout:any;
 
+rideRequest() {
+  const user = JSON.parse(
+    localStorage.getItem('user') || 'null'
+  );
 
-  rideRequest() {
+  const loginStatus = user?.isLoggedIn;
 
-    if(!this.pickup.trim() || !this.drop.trim()) {
-      this.rideService.setMsg('Please enter pickup and drop location');
+  if (!this.pickup.trim() || !this.drop.trim()) {
+    this.rideService.setMsg(
+      'Please enter pickup and drop location'
+    );
 
-      clearTimeout(this.msgTimeout);
+    clearTimeout(this.msgTimeout);
 
-      this.msgTimeout = setTimeout(()=>{
-        this.rideService.setMsg('');
-      },3000)
-      return;
-    }
+    this.msgTimeout = setTimeout(() => {
+      this.rideService.setMsg('');
+    }, 3000);
 
-    this.rideService.setMsg('');
-    this.rideService.updateRide({
-      pickup: this.pickup,
-      drop: this.drop
-    })
+    return;
   }
+
+  // save ride draft
+  this.rideService.updateRide({
+    pickup: this.pickup,
+    drop: this.drop
+  });
+
+  // not logged in
+  if (!loginStatus) {
+    this.route.navigate(['/login']);
+    return;
+  }
+
+  // logged in
+  this.route.navigate(['/vehicle']);
+}
 
 
 

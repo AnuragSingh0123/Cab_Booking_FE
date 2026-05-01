@@ -1,1 +1,15 @@
-<div id="map" style="height: 400px; border-radius: 10px; z-index: 90;"></div>
+<div class="map-wrapper">
+
+  @if(loading()) {
+    <div class="map-loader">
+      <div class="spinner"></div>
+      <p>Calculating route...</p>
+    </div>
+  }
+
+  <div
+    id="map"
+    style="height: 400px; border-radius: 10px; z-index: 90;"
+  ></div>
+
+</div>
