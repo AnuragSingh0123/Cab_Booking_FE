@@ -1,0 +1,65 @@
+<div>
+  <h1 class="title">Checkout</h1>
+
+  <div class="form-container">
+    <div class="summary-card">
+
+      <div class="row">
+        <span class="label">FROM</span>
+        <span class="value">{{ ride().pickup }}</span>
+      </div>
+
+      <div class="row">
+        <span class="label">TO</span>
+        <span class="value">{{ ride().drop }}</span>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="row">
+        <span class="label">DISTANCE</span>
+        <span class="value">
+          {{ ride().distance }} KM
+        </span>
+      </div>
+
+      <div class="row">
+        <span class="label">VEHICLE</span>
+        <span class="value">
+          {{ ride().vehicle | titlecase }}
+        </span>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="row">
+        <span class="label">Fare</span>
+        <span class="value">
+          ₹ {{ ride().fare }}
+        </span>
+      </div>
+
+      <div class="row">
+        <span class="label">GST</span>
+        <span class="value">
+          ₹ {{ ride().gst }}
+        </span>
+      </div>
+
+      <div class="total-row">
+        <span>Total</span>
+        <span>
+          ₹ {{ ride().total }}
+        </span>
+      </div>
+
+    </div>
+
+    <button
+      (click)="bookRide()"
+      class="book-btn"
+    >
+      Book Ride
+    </button>
+  </div>
+</div>

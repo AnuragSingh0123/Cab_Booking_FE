@@ -1,0 +1,139 @@
+<div class="vehicle-page">
+  <h1 class="title">Choose a ride</h1>
+
+  <p class="route">
+    {{ ride().pickup | titlecase }}
+    →
+    {{ ride().drop | titlecase }}
+  </p>
+
+  <p class="meta-info">
+    Distance: {{ ride().distance || '--' }} km •
+    Estimated time: {{ ride().duration || '--' }} min
+  </p>
+
+  <div class="vehicle-wrapper">
+
+    @if(loading()) {
+      <div class="vehicle-loader">
+        <div class="spinner"></div>
+        <p>Finding available rides...</p>
+      </div>
+    }
+
+    <div
+      class="form-container"
+      [style.opacity]="loading() ? 0.4 : 1"
+    >
+
+      <!-- Mini -->
+      <label class="vcard" [class.active]="selectedValue === 'mini'">
+        <input
+          type="radio"
+          name="vehicle"
+          value="mini"
+          [(ngModel)]="selectedValue"
+          [disabled]="loading()"
+        />
+
+        <div class="vcard-content">
+          <div class="left">
+            <img src="mini.png" />
+            <div class="vehicle-info">
+              <span class="name">Mini</span>
+              <span class="meta">Affordable • 4 seats</span>
+            </div>
+          </div>
+
+          <p class="price">
+            ₹ {{ 50 + (+ride().distance * 10) | number }}
+          </p>
+        </div>
+      </label>
+
+      <!-- Sedan -->
+      <label class="vcard" [class.active]="selectedValue === 'sedan'">
+        <input
+          type="radio"
+          name="vehicle"
+          value="sedan"
+          [(ngModel)]="selectedValue"
+          [disabled]="loading()"
+        />
+
+        <div class="vcard-content">
+          <div class="left">
+            <img src="sedan.png" />
+            <div class="vehicle-info">
+              <span class="name">Sedan</span>
+              <span class="meta">Comfort • 4 seats</span>
+            </div>
+          </div>
+
+          <p class="price">
+            ₹ {{ 70 + (+ride().distance * 14) | number }}
+          </p>
+        </div>
+      </label>
+
+      <!-- SUV -->
+      <label class="vcard" [class.active]="selectedValue === 'suv'">
+        <input
+          type="radio"
+          name="vehicle"
+          value="suv"
+          [(ngModel)]="selectedValue"
+          [disabled]="loading()"
+        />
+
+        <div class="vcard-content">
+          <div class="left">
+            <img src="suv.png" />
+            <div class="vehicle-info">
+              <span class="name">SUV XL</span>
+              <span class="meta">Spacious • 6 seats</span>
+            </div>
+          </div>
+
+          <p class="price">
+            ₹ {{ 100 + (+ride().distance * 18) | number }}
+          </p>
+        </div>
+      </label>
+
+      <!-- Premium -->
+      <label class="vcard" [class.active]="selectedValue === 'premium'">
+        <input
+          type="radio"
+          name="vehicle"
+          value="premium"
+          [(ngModel)]="selectedValue"
+          [disabled]="loading()"
+        />
+
+        <div class="vcard-content">
+          <div class="left">
+            <img src="premium.png" />
+            <div class="vehicle-info">
+              <span class="name">Premium</span>
+              <span class="meta">Luxury • 4 seats</span>
+            </div>
+          </div>
+
+          <p class="price">
+            ₹ {{ 150 + (+ride().distance * 25) | number }}
+          </p>
+        </div>
+      </label>
+
+      <button
+        (click)="checkoutDetails()"
+        class="checkout-btn"
+        [disabled]="loading()"
+      >
+        {{ loading() ? 'Calculating...' : 'Go to Checkout' }}
+      </button>
+
+    </div>
+  </div>
+</div>

@@ -1,9 +1,9 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { RideService } from '../ride-service';
 import { CommonModule } from '@angular/common';
-import { take, Subject, debounceTime, distinctUntilChanged, switchMap, of } from 'rxjs';
+import { Subject, debounceTime, distinctUntilChanged, switchMap, of } from 'rxjs';
 import { LocationService } from '../location-service';
 
 @Component({
@@ -15,18 +15,15 @@ import { LocationService } from '../location-service';
 })
 export class RideRequest {
 
+  router=inject(Router);
   pickup: string = '';
   drop: string = '';
-  selectedValue: string = '';
 
   route = inject(Router);
   rideService = inject(RideService);
   locationService = inject(LocationService);
 
-  rideCheckoutDetails: any = null;
-
   loading$ = this.rideService.loading$;
-  rideDetails$ = this.rideService.rideDetails$;
   msg$ = this.rideService.msg$;
 
   pickupSuggestions: any[] = [];
@@ -36,6 +33,13 @@ export class RideRequest {
   dropSubject = new Subject<string>();
 
   ngOnInit() {
+
+    const user = JSON.parse(localStorage.getItem('user') || 'null');
+
+  if (user?.role === 'driver') {
+    this.router.navigate(['/driver-dashboard']);
+    return;
+  }
 
     this.pickupSubject.pipe(
       debounceTime(300),
@@ -64,8 +68,6 @@ export class RideRequest {
     ).subscribe((res: any) => {
       this.dropSuggestions = res || [];
     });
-
-    // this.rideService.setRideDetails('40','10');
   }
 
   onPickupChange(value: string) {
@@ -94,94 +96,49 @@ export class RideRequest {
 
   msgTimeout:any;
 
+rideRequest() {
 
-  rideRequest() {
+  const user = JSON.parse(localStorage.getItem('user') || 'null');
+  const token = localStorage.getItem('token');
 
-    const loginData = localStorage.getItem("user");
-    let isLoggedIn = false;
+  const isLoggedIn = !!user && !!token;
 
-    if (loginData) {
-      try {
-        const parsedData = JSON.parse(loginData);
-        isLoggedIn = !!parsedData.isLoggedIn;
-      } catch (e) {
-        console.error("Error parsing login data", e);
-      }
-    }
+  if (!this.pickup.trim() || !this.drop.trim()) {
+    this.rideService.setMsg('Please enter pickup and drop location');
 
-    if (!isLoggedIn) {
-      this.route.navigate(["login"]);
-      return;
-    }
+    clearTimeout(this.msgTimeout);
 
-    if(!this.pickup.trim() || !this.drop.trim()) {
-      this.rideService.setMsg('Please enter pickup and drop location');
+    this.msgTimeout = setTimeout(() => {
+      this.rideService.setMsg('');
+    }, 3000);
 
-      clearTimeout(this.msgTimeout);
-
-      this.msgTimeout = setTimeout(()=>{
-        this.rideService.setMsg('');
-      },3000)
-      return;
-    }
-
-    this.rideService.setMsg('');
-    this.rideService.setRide(this.pickup, this.drop);
+    return;
   }
 
 
-  checkoutDetails() {
+  this.rideService.updateRide({
+    pickup: this.pickup,
+    drop: this.drop
+  });
 
-  if (!this.selectedValue) return;
 
-  this.rideService.rideDetails$
-    .pipe(take(1))
-    .subscribe(details => {
+  if (user?.role === 'driver') {
+    this.route.navigate(['/driver-dashboard']);
+    return;
+  }
 
-      if (!details) return;
+  if (!isLoggedIn) {
+    this.route.navigate(['/login']);
+    return;
+  }
 
-      const distance = Number(details.distance);
-
-      let fare = 0;
-
-      switch (this.selectedValue) {
-        case 'mini':
-          fare = 50 + distance * 10;
-          break;
-
-        case 'sedan':
-          fare = 70 + distance * 14;
-          break;
-
-        case 'suv':
-          fare = 100 + distance * 18;
-          break;
-
-        case 'premium':
-          fare = 150 + distance * 25;
-          break;
-
-        default:
-          return;
-      }
-
-      const gst = fare * 0.18;
-
-      this.rideCheckoutDetails = {
-        pickup: this.pickup,
-        drop: this.drop,
-        distance: details.distance,
-        vehicle: this.selectedValue,
-        fare: Number(fare.toFixed(2)),
-        gst: Number(gst.toFixed(2))
-      };
-
-      console.log('Checkout Details:', this.rideCheckoutDetails);
-    });
+  this.route.navigate(['/vehicle']);
 }
 
-  bookRide() {
-    this.rideService.bookRide(this.rideCheckoutDetails);
-    this.route.navigate(['ride-booked']);
-  }
+
+
+  // bookRide() {
+  //   this.rideService.bookRide(this.rideCheckoutDetails);
+  //   this.route.navigate(['ride-booked']);
+  // }
 }

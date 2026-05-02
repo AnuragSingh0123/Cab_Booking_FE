@@ -3,32 +3,55 @@ import { Component, inject } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth-service';
+import { RideService } from '../ride-service';
 
 @Component({
   selector: 'app-login',
+  standalone: true,
   imports: [FormsModule, CommonModule],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
 export class Login {
-  route=inject(Router);
 
-  authService=inject(AuthService);
+  router = inject(Router);
+  authService = inject(AuthService);
+  rideService = inject(RideService);
 
-  login(loginForm: NgForm){
+  ride = this.rideService.booking;
 
-    let {email, password} = loginForm.control.value;
-    console.log(email);
-    console.log(password);
+  loading = false;
+  errorMsg = '';
 
-    let userData = {
-      name:"Rahol",
-      email,
-      password,
-      isLoggedIn: true
-    }
-    
-    this.authService.login(userData);
-    this.route.navigate([""]);
+  login(loginForm: NgForm) {
+
+    if (loginForm.invalid) return;
+
+    this.loading = true;
+    this.errorMsg = '';
+
+    const { email, password } = loginForm.value;
+
+    this.authService.login({ email, password }).subscribe({
+      next: (res: any) => {
+
+        this.loading = false;
+
+        this.authService.setSession(res);
+
+        const ride = this.ride();
+
+        if (ride?.pickup && ride?.drop) {
+          this.router.navigate(['/vehicle']);
+        } else {
+          this.router.navigate(['/']);
+        }
+      },
+
+      error: (err) => {
+        this.loading = false;
+        this.errorMsg = err?.error?.message || 'Login failed';
+      }
+    });
   }
 }

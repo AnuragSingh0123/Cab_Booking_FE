@@ -1,37 +1,57 @@
+import { Injectable, signal, computed, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
-
 export class AuthService {
 
-  http=inject(HttpClient);
+  http = inject(HttpClient);
+  router=inject(Router);
 
-  userSubject = new BehaviorSubject<any>(this.getUser());
+  user = signal<any | null>(this.getUserFromStorage());
+  token = signal<string | null>(this.getTokenFromStorage());
 
-  user$ = this.userSubject;
+  isLoggedIn = computed(() => !!this.token());
+  role = computed(() => this.user()?.role);
 
-  getUser(){
-    const user = localStorage.getItem('user');
-    return user ? JSON.parse(user) : null;
+
+  login(data: any) {
+    return this.http.post('http://localhost:3000/auth/login', data);
   }
 
+  signUp(userData: any) {
+  return this.http.post("http://localhost:3000/auth/sign-up", userData);
+}
 
-  login(user: any){
-    localStorage.setItem('user', JSON.stringify(user));
-    this.userSubject.next(user);
+
+  setSession(res: any) {
+    localStorage.setItem('user', JSON.stringify(res.user));
+    localStorage.setItem('token', res.token);
+
+    this.user.set(res.user);
+    this.token.set(res.token);
   }
+
 
   logout() {
     localStorage.removeItem('user');
-    this.userSubject.next(null);
+    localStorage.removeItem('token');
+
+    this.user.set(null);
+    this.token.set(null);
+``
+    this.router.navigate(["/"]);
   }
 
-  signUp(data:any){
-    console.log(data);
-    return this.http.post("http://localhost:3000/auth/sign-up",data);
+
+  private getUserFromStorage() {
+    const u = localStorage.getItem('user');
+    return u ? JSON.parse(u) : null;
+  }
+
+  private getTokenFromStorage() {
+    return localStorage.getItem('token');
   }
 }

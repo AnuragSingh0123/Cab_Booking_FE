@@ -1,10 +1,36 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
+import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class RideService {
+
+
+  mapLoading = signal(false);
+  router=inject(Router);
+
+  booking = signal<any>({
+    pickup: '',
+    drop: '',
+    distance: 0,
+    duration: 0,
+    fare: 0,
+    gst: 0,
+    total: 0,
+    vehicle: ''
+  });
+
+  updateRide(data: any) {
+    this.booking.update(old => ({
+      ...old,
+      ...data
+    }));
+
+    console.log(this.booking());
+  }
+
 
   bookRide(rideData: any) {
   let { pickup, drop, fare, gst, vehicle, distance } = rideData;
@@ -51,34 +77,12 @@ export class RideService {
     this.loadingSubject.next(val);
   }
 
-  rideDetailsSubject = new BehaviorSubject<any>({
-    Distance: '',
-    Time: ''
-  })
-
   msgSubject = new BehaviorSubject<String>('')
 
   msg$=this.msgSubject;
 
-  rideDetails$ = this.rideDetailsSubject;
-
   setMsg(msg:string){
     this.msgSubject.next(msg);
   }
-
-  setRideDetails(distance:string, time:string) {
-    console.log("here.........")
-    console.log(distance, time);
-    if(Number(distance)>60){
-      this.msgSubject.next(
-      "We can't process rides beyond 60 km from pickup"
-    );
-      return;
-    }
-
-    this.msgSubject.next('');
-    this.rideDetailsSubject.next({distance, time});
-  }
-
 
 }

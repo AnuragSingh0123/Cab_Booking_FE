@@ -25,8 +25,7 @@ const userSchema = new mongoose.Schema({
         type:String
     },
     vehicleType:{
-        type:String,
-        enum: ["Bike", "Auto", "Sedan","SUV"]
+        type:String
     }
 })
 

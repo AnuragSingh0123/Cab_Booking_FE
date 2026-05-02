@@ -149,7 +149,7 @@ export class RideSuccess implements OnInit, OnDestroy {
 
   localStorage.removeItem('activeRide');
   this.rideService.setRide('','');
-  this.rideService.setRideDetails('','');
+  // this.rideService.setRideDetails('','');
   alert("Feedback Submitted");
   this.goHome();
 }

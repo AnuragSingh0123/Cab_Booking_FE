@@ -1,91 +1,89 @@
 <header style="width: 100%; position: fixed; background-color: white; z-index:100">
-  <nav
-    style="
-      display: flex;
-      justify-content: space-between;
-      padding: 20px 40px;
-      border-bottom: 1px solid black;
-      align-items: center;
-    "
-  >
-    <!-- Left -->
+
+  <nav style="display: flex; justify-content: space-between; padding: 20px 40px; border-bottom: 1px solid black; align-items: center;">
+
+
     <div style="display: flex; gap: 30px; align-items: center;">
-      <div routerLink="" style="cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; position: relative; top:3px;">
+
+      <div routerLink="" style="cursor: pointer; display: flex; gap: 10px; align-items: center;">
         <h1 style="font-weight: 800; font-size: 25px;">CogRide</h1>
-        <img src="logo.png" style="width: 45px; height: 40px; position: relative; bottom: 4px; right: 14px; object-fit: contain;" alt="Logo" />
+        <img src="logo.png" style="width: 45px; height: 40px; object-fit: contain;" />
       </div>
 
       <div style="display: flex; gap: 10px">
-        @if (!user?.isLoggedIn) {
-          <a
-            routerLink="sign-up"
-            [queryParams]="{ role: 'driver' }"
-            style="text-decoration: none; font-weight: 700; color: black"
-          >
+
+        @if (!auth.isLoggedIn()) {
+          <a routerLink="sign-up" [queryParams]="{ role: 'driver' }"
+             style="text-decoration: none; font-weight: 700; color: black">
             Earn
           </a>
         }
 
-        <a
-          routerLink="about"
-          style="text-decoration: none; font-weight: 700; color: black"
-        >
+        <a routerLink="about"
+           style="text-decoration: none; font-weight: 700; color: black">
           About
         </a>
+
       </div>
+
     </div>
 
-    <!-- Right -->
     <div style="position: relative">
-  @if (!user?.isLoggedIn) {
-    <div style="display: flex; gap: 20px">
-      <a
-        routerLink="login"
-        style="text-decoration: none; font-weight: 500; color: black"
-      >
-        Log in
-      </a>
 
-      <a
-        routerLink="sign-up"
-        [queryParams]="{ role: 'rider' }"
-        style="text-decoration: none; font-weight: 500; color: black"
-      >
-        Sign up
-      </a>
+      @if (!auth.isLoggedIn()) {
+
+        <div style="display: flex; gap: 20px;">
+
+          <a routerLink="login" style="text-decoration: none; font-weight: 500; color: black;">
+            Log in
+          </a>
+
+          <a routerLink="sign-up" [queryParams]="{ role: 'rider' }"
+             style="text-decoration: none; font-weight: 500; color: black;">
+            Sign up
+          </a>
+
+        </div>
+
+      } @else {
+
+        <div (click)="toggleMenu()"
+             style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+
+          <div style="width: 42px; height: 42px; border-radius: 50%; background: black; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold;">
+            {{ firstLetter }}
+          </div>
+
+          <span style="font-weight: 500">
+            {{ auth.user()?.name }}
+          </span>
+
+        </div>
+
+        @if (showMenu) {
+
+          <div style="position: absolute; top: 55px; right: 0; width: 180px; background: white; border: 1px solid #ddd; border-radius: 10px; box-shadow: 0 5px 20px rgba(0,0,0,0.1);">
+
+            <div id="tMenu" (click)="toggleMenu()" routerLink="profile">
+              Account Settings
+            </div>
+
+            <div id="tMenu" (click)="toggleMenu()" routerLink="my-trips">
+              My Trips
+            </div>
+
+            <div id="tMenu" (click)="logout()" style="color: red;">
+              Logout
+            </div>
+
+          </div>
+
+        }
+
+      }
+
     </div>
-  } @else {
-    
-    <div (click)="toggleMenu()" style="display: flex; align-items: center; gap: 12px; cursor: pointer; " >
-      
-      <div style="width: 42px; height: 42px; border-radius: 50%; background: black; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 18px;">
-        {{ firstLetter }}
-      </div>
 
-      <span style="font-weight: 500">{{ user.name }}</span>
-    </div>
-
-    @if (showMenu) {
-      <div style=" position: absolute;top: 55px;right: 0; width: 180px; background: white; border: 1px solid #ddd; border-radius: 10px;
-          box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-          overflow: hidden;
-          z-index: 100;
-        "
-      >
-        <div id="tMenu" (click)="toggleMenu()" routerLink="profile">
-          Account Settings
-        </div>
-
-        <div id="tMenu" (click)="toggleMenu()" routerLink="my-trips">
-          My Trips
-        </div>
-
-        <div id="tMenu" (click)="logout()" style="color: red;"  >
-          Logout
-        </div>
-      </div>
-    }
-  }
-</div>
   </nav>
+
 </header>
