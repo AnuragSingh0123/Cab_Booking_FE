@@ -1,3 +1,4 @@
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
@@ -7,6 +8,7 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class RideService {
 
+  http = inject(HttpClient);
 
   mapLoading = signal(false);
   router=inject(Router);
@@ -84,5 +86,49 @@ export class RideService {
   setMsg(msg:string){
     this.msgSubject.next(msg);
   }
+
+
+  bookingRide(data: any) {
+    console.log("inside bookingRide");
+    const token = localStorage.getItem('token');
+
+    return this.http.post(
+      'http://localhost:3000/book-ride',
+      data,
+      {
+        headers: new HttpHeaders({
+          Authorization: `Bearer ${token}`
+        })
+      }
+    );
+  }
+
+  updateBookingStatus(id: string, data: any) {
+  const token = localStorage.getItem('token');
+
+  return this.http.patch(
+    `http://localhost:3000/booking-status/${id}`,
+    data,
+    {
+      headers: new HttpHeaders({
+        Authorization: `Bearer ${token}`
+      })
+    }
+  );
+}
+
+
+  getMyBookings() {
+  const token = localStorage.getItem('token');
+
+  return this.http.get(
+    'http://localhost:3000/my-bookings',
+    {
+      headers: new HttpHeaders({
+        Authorization: `Bearer ${token}`
+      })
+    }
+  );
+}
 
 }

@@ -18,23 +18,28 @@ import { RideService } from '../ride-service';
   styleUrl: './ride-success.css',
 })
 export class RideSuccess implements OnInit, OnDestroy {
-  constructor(private router: Router) {}
-
-  rideService=inject(RideService);
+  router = inject(Router);
+  rideService = inject(RideService);
 
   activeRide = signal<any>(null);
   progress = signal(100);
-
   rating = signal(0);
   feedback = signal('');
 
   private sub?: Subscription;
 
   ngOnInit() {
-    this.refresh();
+    const booking = history.state.booking;
+
+    if (!booking) {
+      this.router.navigate(['/']);
+      return;
+    }
+
+    this.activeRide.set(booking);
 
     this.sub = interval(1000).subscribe(() => {
-      this.refresh();
+      this.updateProgress();
     });
   }
 
@@ -42,32 +47,26 @@ export class RideSuccess implements OnInit, OnDestroy {
     this.sub?.unsubscribe();
   }
 
-  refresh() {
-    const ride = JSON.parse(
-      localStorage.getItem('activeRide') || 'null'
-    );
-
-    this.activeRide.set(ride);
-
-    if (!ride) {
-      this.progress.set(100);
-      return;
-    }
-
-    this.updateProgress();
-    this.checkExpiry();
-  }
-
   updateProgress() {
     const ride = this.activeRide();
 
-    if (!ride?.expiresAt) return;
-    if (ride.status !== 'SEARCHING_DRIVER') return;
+    if (!ride) return;
+    if (ride.status !== 'requested') return;
+
+    // use createdAt from DB
+    const created = new Date(ride.createdAt).getTime();
+    const expiresAt = created + 60000;
 
     const total = 60000;
-    const remaining = ride.expiresAt - Date.now();
+    const remaining = expiresAt - Date.now();
 
     if (remaining <= 0) {
+      this.activeRide.update(r => ({
+        ...r,
+        status: 'cancelled',
+        cancelReason: 'No driver accepted'
+      }));
+
       this.progress.set(0);
       return;
     }
@@ -75,92 +74,38 @@ export class RideSuccess implements OnInit, OnDestroy {
     this.progress.set((remaining / total) * 100);
   }
 
-  checkExpiry() {
-    const ride = this.activeRide();
-
-    if (!ride) return;
-    if (ride.status !== 'SEARCHING_DRIVER') return;
-
-    if (Date.now() >= ride.expiresAt) {
-      const updatedRide = {
-        ...ride,
-        status: 'CANCELLED',
-        cancelReason: 'No driver accepted',
-      };
-
-      localStorage.setItem(
-        'activeRide',
-        JSON.stringify(updatedRide)
-      );
-
-      this.activeRide.set(updatedRide);
-    }
-  }
-
   cancelRide() {
-    const ride = this.activeRide();
-    if (!ride) return;
+  const ride = this.activeRide();
 
-    const updatedRide = {
-      ...ride,
-      status: 'CANCELLED',
-      cancelReason: 'Cancelled by user',
-    };
-
-    localStorage.setItem(
-      'activeRide',
-      JSON.stringify(updatedRide)
-    );
-
-    this.activeRide.set(updatedRide);
-  }
+  this.rideService.updateBookingStatus(ride._id, {
+    status: 'cancelled',
+    cancelReason: 'Cancelled by user'
+  }).subscribe((updated: any) => {
+    this.activeRide.set(updated);
+  });
+}
 
   setRating(stars: number) {
     this.rating.set(stars);
   }
 
   submitFeedback() {
-  const ride = this.activeRide();
-  if (!ride) return;
+    this.activeRide.update(r => ({
+      ...r,
+      rating: this.rating(),
+      feedback: this.feedback(),
+      reviewedAt: Date.now()
+    }));
 
-  const updatedRide = {
-    ...ride,
-    rating: this.rating(),
-    feedback: this.feedback(),
-    reviewedAt: Date.now(),
-  };
-
-  const history = JSON.parse(
-    localStorage.getItem('rideHistory') || '[]'
-  );
-
-  const index = history.findIndex(
-    (r: any) => r.completedAt === ride.completedAt
-  );
-
-  if (index !== -1) {
-    history[index] = updatedRide;
+    alert('Feedback submitted');
+    this.goHome();
   }
 
-  localStorage.setItem(
-    'rideHistory',
-    JSON.stringify(history)
-  );
-
-  localStorage.removeItem('activeRide');
-  this.rideService.setRide('','');
-  // this.rideService.setRideDetails('','');
-  alert("Feedback Submitted");
-  this.goHome();
-}
-
   goHome() {
-    localStorage.removeItem('activeRide');
     this.router.navigate(['/']);
   }
 
   bookAgain() {
-    localStorage.removeItem('activeRide');
     this.router.navigate(['/']);
   }
 }

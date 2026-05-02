@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
+import { RideService } from '../ride-service';
 
 @Component({
   selector: 'app-my-trips',
@@ -8,23 +9,28 @@ import { Component } from '@angular/core';
   styleUrl: './my-trips.css',
 })
 export class MyTrips {
+  rideService = inject(RideService);
 
-    user:any;
-  userRides:any;
-  
+  user = signal<any>(null);
+  userRides = signal<any[]>([]);
+  loading = signal(true);
+
   ngOnInit() {
-  const userData = localStorage.getItem("user");
-  const ridesData = localStorage.getItem("userRides");
+    const userData = localStorage.getItem('user');
 
-  if (userData) {
-    this.user = JSON.parse(userData);
-  }
-  
-  if (ridesData) {
-    this.userRides = JSON.parse(ridesData);
-  } else {
-    this.userRides = [];
-  }
-}
+    if (userData) {
+      this.user.set(JSON.parse(userData));
+    }
 
+    this.rideService.getMyBookings().subscribe({
+      next: (res: any) => {
+        this.userRides.set(res);
+        this.loading.set(false);
+      },
+      error: (err) => {
+        console.log(err);
+        this.loading.set(false);
+      }
+    });
+  }
 }

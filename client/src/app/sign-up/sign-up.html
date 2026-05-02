@@ -40,11 +40,11 @@
   <small style="color:red;">License number is required</small>
 }
              <select formControlName="vehicleType" style="padding: 10px 20px; border-radius: 5px; border: 0; background-color: whitesmoke;">
-                 <option style="padding: 10px 20px; border-radius: 5px; border: 0; background-color: whitesmoke;" value="" hidden>Select Vehicle Type</option>
-                 <option style="padding: 10px 20px; border-radius: 5px; border: 0; background-color: whitesmoke;" value="Auto">Auto</option>
-                 <option style="padding: 10px 20px; border-radius: 5px; border: 0; background-color: whitesmoke;" value="Bike">Bike</option>
-                 <option style="padding: 10px 20px; border-radius: 5px; border: 0; background-color: whitesmoke;" value="Sedan">Sedan</option>
-                 <option style="padding: 10px 20px; border-radius: 5px; border: 0; background-color: whitesmoke;" value="SUV">SUV</option>
+                 <option value="" hidden>Select Vehicle Type</option>
+<option value="Mini">Mini</option>
+<option value="Sedan">Sedan</option>
+<option value="SUV">SUV</option>
+<option value="Premium">Premium</option>
              </select>
              @if(signUpForm.get('vehicleType')?.touched && signUpForm.get('vehicleType')?.invalid){
   <small style="color:red;">Select vehicle type</small>

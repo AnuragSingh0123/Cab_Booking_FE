@@ -33,9 +33,22 @@ export class Checkout {
     }
   }
 
-  bookRide() {
-    console.log(this.ride());
-  }
+
+bookRide() {
+  this.rideService.bookingRide(this.ride()).subscribe({
+    next: (res: any) => {
+      this.router.navigate(
+        ['/ride-booked'],
+        {
+          state: {
+            booking: res.booking
+          }
+        }
+      );
+    },
+    error: err => console.log(err)
+  });
+}
 
 
 }

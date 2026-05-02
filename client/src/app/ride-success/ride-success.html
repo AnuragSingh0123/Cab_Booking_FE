@@ -1,33 +1,22 @@
-@if(activeRide()?.status === 'SEARCHING_DRIVER'){
+@if(activeRide()?.status === 'requested'){
 <div class="ride-page">
 
     <h1 class="title">Searching for Driver</h1>
-    <p class="subtitle">
-        We're finding the nearest available driver for your ride.
-    </p>
+    <p class="subtitle">We're finding the nearest available driver.</p>
 
     <div class="status-card searching-card">
 
         <div class="spinner"></div>
 
-        <p class="status-text">
-            Looking for nearby drivers...
-        </p>
+        <p>Looking for nearby drivers...</p>
 
         <div class="progress-wrapper">
-            <div
-                class="progress-bar"
-                [style.width.%]="progress()">
-            </div>
+            <div class="progress-bar"
+                 [style.width.%]="progress()"></div>
         </div>
 
-        <p class="progress-text">
-            Searching nearby drivers...
-        </p>
-
-        <button
-            class="cancel-btn"
-            (click)="cancelRide()">
+        <button class="cancel-btn"
+                (click)="cancelRide()">
             Cancel Ride
         </button>
 
@@ -35,197 +24,95 @@
 </div>
 }
 
-@else if(activeRide()?.status === 'ACCEPTED'){
+@else if(activeRide()?.status === 'accepted'){
 <div class="ride-page">
 
     <h1 class="title">Driver Found</h1>
-    <p class="subtitle">
-        Your driver is on the way.
-    </p>
 
     <div class="driver-card">
 
-        <div class="driver-top">
-            <div class="avatar">
-                {{activeRide()?.driver?.name?.substring(0,1)}}
-            </div>
-
-            <div class="driver-info">
-                <p class="name">
-                    {{activeRide()?.driver?.name}}
-                </p>
-
-                <p class="meta">
-                    {{activeRide()?.driver?.vehicle}}
-                    •
-                    {{activeRide()?.driver?.vehicleNo}}
-                </p>
-
-                <p class="rating">
-                    ⭐ {{activeRide()?.driver?.rating}}
-                </p>
-            </div>
+        <div class="avatar">
+            {{ activeRide()?.driver?.name?.charAt(0) || 'd' }}
         </div>
 
-        <div class="divider"></div>
+        <p>{{activeRide()?.driver?.name}}</p>
 
-        <div class="info-row">
-            <span class="label">PHONE</span>
-            <span class="value">
-                {{activeRide()?.driver?.phone}}
-            </span>
-        </div>
+        <p>
+            {{activeRide()?.driver?.vehicle}} •
+            {{activeRide()?.driver?.vehicleNo}}
+        </p>
 
-        <div class="info-row">
-            <span class="label">ETA</span>
-            <span class="value">6 mins away</span>
-        </div>
-
-        <div class="info-row">
-            <span class="label">VEHICLE</span>
-            <span class="value">
-                {{activeRide()?.driver?.vehicle}}
-            </span>
-        </div>
-
-        <div class="actions">
-            <a
-                class="call-btn"
-                [href]="'tel:' + activeRide()?.driver?.phone">
-                Call Driver
-            </a>
-
-            <button
-                class="cancel-btn"
+        <button class="cancel-btn"
                 (click)="cancelRide()">
-                Cancel Ride
-            </button>
-        </div>
+            Cancel Ride
+        </button>
 
     </div>
 </div>
 }
 
-@else if(activeRide()?.status === 'STARTED'){
+@else if(activeRide()?.status === 'started'){
 <div class="ride-page">
 
     <h1 class="title">Ride Started</h1>
 
-    <p class="subtitle">
-        Enjoy your trip. Driver is heading to destination.
-    </p>
+    <p>Enjoy your trip</p>
 
     <div class="status-card">
 
-        <p class="status-big">
-            On Trip
-        </p>
+        <p>on trip</p>
 
-        <div class="route-box">
-
-            <div class="route-row">
-                <span class="label">FROM</span>
-                <span class="value">
-                    {{activeRide()?.pickup}}
-                </span>
-            </div>
-
-            <div class="route-row">
-                <span class="label">TO</span>
-                <span class="value">
-                    {{activeRide()?.drop}}
-                </span>
-            </div>
-
-        </div>
+        <p>{{activeRide()?.pickup}} → {{activeRide()?.drop}}</p>
 
     </div>
 </div>
 }
 
-@else if(activeRide()?.status === 'COMPLETED'){
+@else if(activeRide()?.status === 'completed'){
 <div class="ride-page">
 
     <h1 class="title">Ride Completed</h1>
 
-    <p class="subtitle">
-        Hope you had a comfortable ride.
-    </p>
+    <p>Trip finished</p>
 
-    <div class="status-card success-card">
-        <p class="status-big">
-            ✓ Trip Finished
-        </p>
+    <div class="status-card">
 
-        <p class="fare">
-            ₹ {{activeRide()?.total | number}}
-        </p>
+        <p>₹ {{activeRide()?.total | number}}</p>
+
     </div>
 
     <div class="feedback-card">
 
-        <h2 class="feedback-title">
-            Rate your driver
-        </h2>
-
-        <p class="feedback-subtitle">
-            How was your ride experience?
-        </p>
-
         <div class="stars">
             @for(star of [1,2,3,4,5]; track star){
                 <button
-                    class="star"
-                    [class.active]="rating() >= star"
-                    (click)="setRating(star)">
+                    (click)="setRating(star)"
+                    [class.active]="rating() >= star">
                     ★
                 </button>
             }
         </div>
 
         <textarea
-            #msg
-            class="feedback-input"
-            placeholder="Write feedback (optional)"
-            (input)="feedback.set(msg.value)">
+            (input)="feedback.set($any($event.target).value)">
         </textarea>
 
-        <div class="actions">
-
-            <button
-                class="primary-btn"
-                (click)="submitFeedback()">
-                Submit Feedback
-            </button>
-
-            <button
-                class="secondary-btn"
-                (click)="goHome()">
-                Go Home
-            </button>
-
-        </div>
+        <button (click)="submitFeedback()">
+            Submit
+        </button>
 
     </div>
 </div>
 }
 
-@else if(activeRide()?.status === 'CANCELLED'){
+@else if(activeRide()?.status === 'cancelled'){
 <div class="ride-page">
 
     <h1 class="title">Ride Cancelled</h1>
 
-    <p class="subtitle">
-        No drivers were available for this request.
-    </p>
-
-    <div class="status-card">
-        <button
-            class="primary-btn"
-            (click)="bookAgain()">
-            Book Again
-        </button>
-    </div>
+    <button (click)="bookAgain()">
+        Book Again
+    </button>
 
 </div>
 }

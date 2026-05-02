@@ -2,10 +2,12 @@ import {
   Component,
   OnInit,
   OnDestroy,
-  signal
+  signal,
+  inject
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { interval, Subscription } from 'rxjs';
+import { DriverService } from '../driver-service';
 
 @Component({
   selector: 'app-driver-dashboard',
@@ -15,35 +17,44 @@ import { interval, Subscription } from 'rxjs';
   styleUrl: './driver-dashboard.css',
 })
 export class DriverDashboard implements OnInit, OnDestroy {
+  driverService = inject(DriverService);
 
   reviews = signal<any[]>([]);
+  activeRide = signal<any | null>(null);
+  availableRide = signal<any | null>(null);
 
   driver = signal({
-    id: 'd1',
-    name: 'Ramesh Kumar',
-    email: 'ramesh@email.com',
-    vehicle: 'Sedan',
-    vehicleNo: 'KA01AB1234',
+    id: '',
+    name: '',
+    email: '',
+    vehicle: '',
+    vehicleNo: '',
     rating: 0,
     online: true,
   });
 
-  activeRide = signal<any>(null);
-  availableRide = signal<any>(null);
-
   stats = signal({
-    trips: 12,
-    earnings: 2450,
-    distance: 134,
-    hours: 8.5,
+    trips: 0,
+    earnings: 0,
+    distance: 0,
+    hours: 0,
   });
 
   private sub?: Subscription;
 
   ngOnInit() {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+
+    this.driver.update(d => ({
+      ...d,
+      id: user.id || '',
+      name: user.name || '',
+      email: user.email || ''
+    }));
+
     this.refresh();
 
-    this.sub = interval(1000).subscribe(() => {
+    this.sub = interval(3000).subscribe(() => {
       this.refresh();
     });
   }
@@ -53,152 +64,72 @@ export class DriverDashboard implements OnInit, OnDestroy {
   }
 
   refresh() {
-    const history = JSON.parse(
-      localStorage.getItem('rideHistory') || '[]'
-    );
+    this.driverService.getDriverDashboard().subscribe({
+      next: (data: any) => {
 
-    const driverId = this.driver().id;
+        this.reviews.set(data?.reviews ?? []);
+        this.availableRide.set(data?.availableRide ?? null);
+        this.activeRide.set(data?.activeRide ?? null);
 
+        this.driver.update(d => ({
+          ...d,
+          vehicle: data?.driver?.vehicleType ?? '',
+          vehicleNo: data?.driver?.vehicleNumber ?? '',
+          rating: data?.driver?.rating ?? 0,
+          online: data?.driver?.online ?? true
+        }));
 
-    const ratedRides = history.filter(
-      (ride: any) =>
-        ride.driverId === driverId &&
-        ride.rating
-    );
-
-    this.reviews.set(
-      [...ratedRides]
-        .reverse()
-        .slice(0, 5)
-    );
-
-
-    const avgRating =
-      ratedRides.length > 0
-        ? ratedRides.reduce(
-            (sum: number, ride: any) =>
-              sum + ride.rating,
-            0
-          ) / ratedRides.length
-        : 0;
-
-    this.driver.update(driver => ({
-      ...driver,
-      rating: Number(avgRating.toFixed(1))
-    }));
-
-    const ride = JSON.parse(
-      localStorage.getItem('activeRide') || 'null'
-    );
-
-    this.activeRide.set(null);
-    this.availableRide.set(null);
-
-    if (!ride) return;
-
-    const driver = this.driver();
-
-    if (
-      ride.status === 'SEARCHING_DRIVER' &&
-      ride.expiresAt > Date.now() &&
-      driver.online
-    ) {
-      this.availableRide.set(ride);
-    }
-
-    if (
-      ride.driverId === driver.id &&
-      ['ACCEPTED', 'STARTED'].includes(ride.status)
-    ) {
-      this.activeRide.set(ride);
-    }
+        this.stats.set({
+          trips: data?.stats?.trips ?? 0,
+          earnings: data?.stats?.earnings ?? 0,
+          distance: data?.stats?.distance ?? 0,
+          hours: data?.stats?.hours ?? 0
+        });
+      },
+      error: (err) => {
+        console.log('dashboard error', err);
+      }
+    });
   }
 
   toggleStatus() {
-    this.driver.update(driver => ({
-      ...driver,
-      online: !driver.online
-    }));
-
-    this.refresh();
+    this.driverService.toggleDriverStatus().subscribe({
+      next: () => this.refresh(),
+      error: err => console.log(err)
+    });
   }
 
   acceptRide() {
     const ride = this.availableRide();
-    const driver = this.driver();
+    if (!ride?._id) return;
 
-    if (!ride) return;
-
-    const updatedRide = {
-      ...ride,
-      status: 'ACCEPTED',
-      driverId: driver.id,
-      driver: {
-        name: driver.name,
-        vehicle: driver.vehicle,
-        vehicleNo: driver.vehicleNo,
-        rating: driver.rating,
-        phone: '+91 9876543210',
-      }
-    };
-
-    localStorage.setItem(
-      'activeRide',
-      JSON.stringify(updatedRide)
-    );
-
-    this.refresh();
-  }
-
-  rejectRide() {
-    this.availableRide.set(null);
+    this.driverService.acceptRide(ride._id).subscribe({
+      next: () => this.refresh(),
+      error: err => console.log(err)
+    });
   }
 
   startRide() {
     const ride = this.activeRide();
+    if (!ride?._id) return;
 
-    if (!ride) return;
-
-    const updatedRide = {
-      ...ride,
-      status: 'STARTED'
-    };
-
-    localStorage.setItem(
-      'activeRide',
-      JSON.stringify(updatedRide)
-    );
-
-    this.refresh();
+    this.driverService.startRide(ride._id).subscribe({
+      next: () => this.refresh(),
+      error: err => console.log(err)
+    });
   }
 
   completeRide() {
     const ride = this.activeRide();
+    if (!ride?._id) return;
 
-    if (!ride) return;
+    this.driverService.completeRide(ride._id).subscribe({
+      next: () => this.refresh(),
+      error: err => console.log(err)
+    });
+  }
 
-    const completedRide = {
-      ...ride,
-      status: 'COMPLETED',
-      completedAt: Date.now(),
-    };
-
-    const history = JSON.parse(
-      localStorage.getItem('rideHistory') || '[]'
-    );
-
-    history.push(completedRide);
-
-    localStorage.setItem(
-      'rideHistory',
-      JSON.stringify(history)
-    );
-
-    localStorage.setItem(
-      'activeRide',
-      JSON.stringify(completedRide)
-    );
-
-    this.refresh();
+  rejectRide() {
+    this.availableRide.set(null);
   }
 }
