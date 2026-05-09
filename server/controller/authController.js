@@ -1,4 +1,5 @@
 const User = require("../models/user");
+const Driver = require("../models/driver");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const JWT_SECRET = "super_secret_key";
@@ -44,6 +45,7 @@ exports.signUp = async (req, res) => {
     res.status(201).json({
       message: `${role || "rider"} created successfully`
     });
+
 
   } catch (err) {
     console.log(err);
