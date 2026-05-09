@@ -4,11 +4,12 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-
+const connectDB = require("./config/connectDB");
 const User = require("./models/user");
 const Driver = require("./models/driver");
 const Booking = require("./models/booking");
 const Review = require("./models/review");
+const authRoutes = require("./routes/authRoutes");
 
 app.use(cors());
 app.use(express.json());
@@ -16,107 +17,9 @@ app.use(express.json());
 const JWT_SECRET = "super_secret_key";
 
 
-const connectDB = async () => {
-  try {
-    await mongoose.connect("mongodb://127.0.0.1:27017/cab_db");
-    console.log("Connected to Database");
-  } catch (err) {
-    console.log("DB Error:", err);
-  }
-};
 
 
-app.post("/auth/sign-up", async (req, res) => {
-  try {
-    const {
-      name,
-      email,
-      password,
-      role,
-      licenseNumber,
-      vehicleType,
-      vehicleNumber
-    } = req.body;
-
-    const existingUser = await User.findOne({ email });
-
-    if (existingUser) {
-      return res.status(400).json({
-        message: "User already exists"
-      });
-    }
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const user = await User.create({
-      name,
-      email,
-      password: hashedPassword,
-      role: role || "rider"
-    });
-
-    if (role === "driver") {
-      await Driver.create({
-        userId: user._id,
-        licenseNumber,
-        vehicleType,
-        vehicleNumber
-      });
-    }
-
-    res.status(201).json({
-      message: `${role || "rider"} created successfully`
-    });
-
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({
-      message: "Signup error"
-    });
-  }
-});
-
-app.post("/auth/login", async (req, res) => {
-  try {
-    const { email, password } = req.body;
-
-    const user = await User.findOne({ email });
-
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    const isMatch = await bcrypt.compare(password, user.password);
-
-    if (!isMatch) {
-      return res.status(401).json({ message: "Invalid credentials" });
-    }
-
-    const token = jwt.sign(
-      {
-        id: user._id,
-        role: user.role
-      },
-      JWT_SECRET,
-      { expiresIn: "7d" }
-    );
-
-    return res.status(200).json({
-      message: "Login successful",
-      token,
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role
-      }
-    });
-
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ message: "Server error" });
-  }
-});
+app.use("/auth", authRoutes);
 
 
 const authMiddleware = (req, res, next) => {
