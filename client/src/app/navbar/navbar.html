@@ -1,26 +1,24 @@
-<header style="width: 100%; position: fixed; background-color: white; z-index:100">
+<header class="header">
 
-  <nav style="display: flex; justify-content: space-between; padding: 20px 40px; border-bottom: 1px solid black; align-items: center;">
+  <nav class="navbar">
 
+    <div class="nav-left">
 
-    <div style="display: flex; gap: 30px; align-items: center;">
-
-      <div routerLink="" style="cursor: pointer; display: flex; gap: 10px; align-items: center;">
-        <h1 style="font-weight: 800; font-size: 25px;">CogRide</h1>
-        <img src="logo.png" style="width: 45px; height: 40px; object-fit: contain;" />
+      <div routerLink="" class="logo">
+        <h1>CogRide</h1>
       </div>
 
-      <div style="display: flex; gap: 10px">
+      <div class="nav-links">
 
         @if (!auth.isLoggedIn()) {
-          <a routerLink="sign-up" [queryParams]="{ role: 'driver' }"
-             style="text-decoration: none; font-weight: 700; color: black">
+          <a
+            routerLink="sign-up"
+            [queryParams]="{ role: 'driver' }">
             Earn
           </a>
         }
 
-        <a routerLink="about"
-           style="text-decoration: none; font-weight: 700; color: black">
+        <a routerLink="about">
           About
         </a>
 
@@ -28,18 +26,20 @@
 
     </div>
 
-    <div style="position: relative">
+    <div class="nav-right">
 
       @if (!auth.isLoggedIn()) {
 
-        <div style="display: flex; gap: 20px;">
+        <div class="auth-links">
 
-          <a routerLink="login" style="text-decoration: none; font-weight: 500; color: black;">
+          <a routerLink="login">
             Log in
           </a>
 
-          <a routerLink="sign-up" [queryParams]="{ role: 'rider' }"
-             style="text-decoration: none; font-weight: 500; color: black;">
+          <a
+            routerLink="sign-up"
+            [queryParams]="{ role: 'rider' }"
+            class="signup-btn">
             Sign up
           </a>
 
@@ -47,14 +47,15 @@
 
       } @else {
 
-        <div (click)="toggleMenu()"
-             style="display: flex; align-items: center; gap: 12px; cursor: pointer;">
+        <div
+          (click)="toggleMenu()"
+          class="profile-btn">
 
-          <div style="width: 42px; height: 42px; border-radius: 50%; background: black; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold;">
+          <div class="avatar">
             {{ firstLetter }}
           </div>
 
-          <span style="font-weight: 500">
+          <span class="username">
             {{ auth.user()?.name }}
           </span>
 
@@ -62,7 +63,7 @@
 
         @if (showMenu) {
 
-          <div style="position: absolute; top: 55px; right: 0; width: 180px; background: white; border: 1px solid #ddd; border-radius: 10px; box-shadow: 0 5px 20px rgba(0,0,0,0.1);">
+          <div class="dropdown">
 
             <div id="tMenu" (click)="toggleMenu()" routerLink="profile">
               Account Settings
@@ -72,7 +73,7 @@
               My Trips
             </div>
 
-            <div id="tMenu" (click)="logout()" style="color: red;">
+            <div id="tMenu" (click)="logout()" class="logout">
               Logout
             </div>
 
