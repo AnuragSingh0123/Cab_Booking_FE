@@ -322,6 +322,51 @@ app.patch("/booking/:id", authMiddleware, async (req, res) => {
   }
 });
 
+app.get("/user/booking/:id", async (req, res) => {
+  try {
+    const booking = await Booking.findById(req.params.id);
+
+    if (!booking) {
+      return res.status(404).json({
+        message: "Booking not found"
+      });
+    }
+
+    let driver = null;
+
+    if (booking.driverId) {
+      const driverDetails = await Driver.findOne({
+        userId: booking.driverId
+      });
+
+      const userDetails = await User.findById(
+        booking.driverId
+      ).select("-password");
+
+      driver = {
+        id: userDetails._id,
+        name: userDetails.name,
+        email: userDetails.email,
+        vehicle: driverDetails.vehicleType,
+        vehicleNo: driverDetails.vehicleNumber,
+        license: driverDetails.licenseNumber,
+        available: driverDetails.isAvailable
+      };
+    }
+
+    res.json({
+      booking,
+      driver
+    });
+
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: "Error"
+    });
+  }
+});
+
 
 app.get("/auth/profile", authMiddleware, async (req, res) => {
   const user = await User.findById(req.user.id).select("-password");

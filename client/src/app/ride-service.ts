@@ -117,7 +117,10 @@ export class RideService {
 }
 
   bookingProgress(rideID: string){
-    return this.http.get(rideID);
+    console.log(rideID);
+    const token = localStorage.getItem('token');
+    
+    return this.http.get(`http://localhost:3000/user/booking/${rideID}`);
   }
 
 
