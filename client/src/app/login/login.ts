@@ -63,6 +63,7 @@ export class Login{
       error: (err) => {
         this.loading = false;
         this.errorMsg = err?.error?.message || 'Login failed';
+        this.notify.show("Error occured while login. Please try again later");
       }
     });
   }
