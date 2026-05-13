@@ -41,7 +41,7 @@ export class RideSuccess implements OnInit, OnDestroy {
 
     this.activeRide.set(booking);
 
-    this.sub = interval(1000).subscribe(() => {
+    this.sub = interval(500).subscribe(() => {
       this.updateProgress();
     });
   }

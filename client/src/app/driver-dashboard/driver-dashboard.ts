@@ -63,7 +63,7 @@ export class DriverDashboard implements OnInit, OnDestroy {
 
     this.refresh();
 
-    this.sub = interval(3000).subscribe(() => {
+    this.sub = interval(500).subscribe(() => {
       this.refresh();
     });
   }
