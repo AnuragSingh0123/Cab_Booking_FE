@@ -26,6 +26,7 @@ export class SignUp {
   name: ['', [Validators.required, Validators.minLength(3)]],
   email: ['', [Validators.required, Validators.email]],
   password: ['', [Validators.required, Validators.minLength(6)]],
+  confirmPassword: ['', [Validators.required]],
   licenseNumber: [''],
   vehicleType: [''],
   vehicleNumber: ['']
@@ -67,8 +68,15 @@ export class SignUp {
     return;
   }
 
+  if (this.signUpForm.value.password !== this.signUpForm.value.confirmPassword) {
+    this.notify.show("Passwords do not match");
+    return;
+  }
+
+  const { confirmPassword, ...formValues } = this.signUpForm.value;
+
   const formData = {
-    ...this.signUpForm.value,
+    ...formValues,
     role: this.role
   };
 
@@ -80,8 +88,8 @@ export class SignUp {
     },
     error: err => {
       console.log(err),
-    this.notify.show("Error while registration. Please try again later")
-  }
+      this.notify.show("Error while registration. Please try again later")
+    }
   });
 }
 }

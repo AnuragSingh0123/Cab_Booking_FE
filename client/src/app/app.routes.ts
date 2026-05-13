@@ -12,6 +12,7 @@ import { VehicleSelection } from './vehicle-selection/vehicle-selection';
 import { Checkout } from './checkout/checkout';
 import { authGuard } from './auth-guard';
 import { NotFound } from './not-found/not-found';
+import { About } from './about/about';
 
 export const routes: Routes = [
   { path: "", component: Home, children:[
@@ -22,6 +23,7 @@ export const routes: Routes = [
   { path: "login", component: Login },
   { path: "sign-up", component: SignUp },
   {path: "profile", component: Profile},
+  {path: "about", component:About},
   {path: "my-trips", component: MyTrips, canActivate: [authGuard], data: {roles: ['rider']}},
   {path: "driver-dashboard", component: DriverDashboard, canActivate: [authGuard], data: {roles: ['driver']}},
   { path: "map", component: Map },

@@ -1,18 +1,204 @@
-
 <form #loginForm="ngForm" (ngSubmit)="login(loginForm)">
-    <div style="width: 100%; height: 40vh; display: flex; justify-content: center; align-items: center;">
-        <div style="display: flex; flex-direction: column; gap: 20px; width: 300px;">
-            <input name="email" #email="ngModel" email required ngModel style="padding: 10px 20px; border-radius: 5px; border: 0; background-color: whitesmoke;" type="text" placeholder="Enter your email">
-            <div *ngIf="email.invalid && email.touched" style="color:red; font-size: 12px;">
-                <div *ngIf="email.errors?.['required']">Email is required</div>
-                <div *ngIf="email.errors?.['email']">Enter a valid email</div>
+
+    <!-- Center Wrapper -->
+    <div style="
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        box-sizing: border-box;
+    ">
+
+        <!-- Login Card -->
+        <div style="
+            width: 400px;
+            background: white;
+            border-radius: 22px;
+            padding: 35px 32px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        ">
+
+            <!-- Heading -->
+            <div style="text-align: center;">
+
+                <h1 style="
+                    margin: 0;
+                    font-size: 36px;
+                    font-weight: 800;
+                    color: #111;
+                    letter-spacing: 1px;
+                ">
+                    Login
+                </h1>
+
+                <p style="
+                    margin-top: 8px;
+                    color: #666;
+                    font-size: 14px;
+                ">
+                    Welcome back! Please login to continue
+                </p>
+
             </div>
-            <input name="password" #password="ngModel" required ngModel minlength="6" style="padding: 10px 20px; border-radius: 5px; border: 0; background-color: whitesmoke;" type="password" placeholder="Enter your password">
-            <div *ngIf="password.invalid && password.touched" style="color:red; font-size: 12px;">
-                <div *ngIf="password.errors?.['required']">Password is required</div>
-                <div *ngIf="password.errors?.['minlength']">Password must be at least 6 characters</div>
+
+            <!-- Email -->
+            <div style="
+                display: flex;
+                flex-direction: column;
+                gap: 7px;
+            ">
+
+                <label style="
+                    font-size: 14px;
+                    font-weight: 600;
+                    color: #222;
+                ">
+                    Email Address
+                </label>
+
+                <input
+                    name="email"
+                    #email="ngModel"
+                    email
+                    required
+                    ngModel
+                    type="text"
+                    placeholder="Enter your email"
+                    style="
+                        width: 100%;
+                        padding: 15px 16px;
+                        border-radius: 12px;
+                        border: 1px solid #d9d9d9;
+                        background-color: #f7f7f7;
+                        outline: none;
+                        font-size: 15px;
+                        box-sizing: border-box;
+                        transition: 0.3s ease;
+                    "
+                >
+
+                <div *ngIf="email.invalid && email.touched"
+                    style="
+                        color: #e53935;
+                        font-size: 12px;
+                    "
+                >
+                    <div *ngIf="email.errors?.['required']">
+                        Email is required
+                    </div>
+
+                    <div *ngIf="email.errors?.['email']">
+                        Enter a valid email
+                    </div>
+                </div>
+
             </div>
-            <button type="submit" [disabled]="loginForm.invalid" style="background-color: black; padding: 10px 20px; border-radius: 5px; color: white; font-size: 20px; font-weight: bold; margin-top: 10px;">Continue</button>
+
+            <!-- Password -->
+            <div style="
+                display: flex;
+                flex-direction: column;
+                gap: 7px;
+            ">
+
+                <label style="
+                    font-size: 14px;
+                    font-weight: 600;
+                    color: #222;
+                ">
+                    Password
+                </label>
+
+                <input
+                    name="password"
+                    #password="ngModel"
+                    required
+                    ngModel
+                    minlength="6"
+                    type="password"
+                    placeholder="Enter your password"
+                    style="
+                        width: 100%;
+                        padding: 15px 16px;
+                        border-radius: 12px;
+                        border: 1px solid #d9d9d9;
+                        background-color: #f7f7f7;
+                        outline: none;
+                        font-size: 15px;
+                        box-sizing: border-box;
+                        transition: 0.3s ease;
+                    "
+                >
+
+                <div *ngIf="password.invalid && password.touched"
+                    style="
+                        color: #e53935;
+                        font-size: 12px;
+                    "
+                >
+                    <div *ngIf="password.errors?.['required']">
+                        Password is required
+                    </div>
+
+                    <div *ngIf="password.errors?.['minlength']">
+                        Password must be at least 6 characters
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Login Button -->
+            <button
+                type="submit"
+                [disabled]="loginForm.invalid"
+                style="
+                    width: 100%;
+                    padding: 15px;
+                    border: none;
+                    border-radius: 12px;
+                    background: linear-gradient(135deg, #000, #2e2e2e);
+                    color: white;
+                    font-size: 17px;
+                    font-weight: 700;
+                    cursor: pointer;
+                    transition: 0.3s ease;
+                    box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+                    margin-top: 5px;
+                "
+            >
+                Login
+            </button>
+
+            <!-- Bottom Text -->
+            <div style="
+                text-align: center;
+                margin-top: 6px;
+                font-size: 14px;
+                color: #666;
+            ">
+                Don’t have an account?
+
+                <a
+                    routerLink="/sign-up"
+                    style="
+                        color: black;
+                        font-weight: 700;
+                        text-decoration: none;
+                        margin-left: 4px;
+                        cursor: pointer;
+                    "
+                >
+                    Sign Up
+                </a>
+            </div>
+
         </div>
+
     </div>
+
 </form>

@@ -1,60 +1,415 @@
-<div [ngStyle]="{'height': role === 'driver' ? '75vh' : '60vh'}"  style="width: 100%; display: flex; justify-content: center; align-items: center;">
-    <form [formGroup]="signUpForm" (ngSubmit)="signup()">
-        <div style="display: flex; flex-direction: column; gap: 20px; width: 300px;">
-        <input formControlName="name" style="padding: 10px 20px; border-radius: 5px; border: 0; background-color: whitesmoke;" type="text" placeholder="Enter your Name" required>
-        @if(signUpForm.get('name')?.touched && signUpForm.get('name')?.invalid){
-  <small style="color:red;">
-    @if(signUpForm.get('name')?.errors?.['required']){
-      Name is required
-    }
-    @if(signUpForm.get('name')?.errors?.['minlength']){
-      Minimum 3 characters required
-    }
-  </small>
-}
-        <input formControlName="email" style="padding: 10px 20px; border-radius: 5px; border: 0; background-color: whitesmoke;" type="email" placeholder="Enter your email" required>
-        @if(signUpForm.get('email')?.touched && signUpForm.get('email')?.invalid){
-  <small style="color:red;">
-    @if(signUpForm.get('email')?.errors?.['required']){
-      Email is required
-    }
-    @if(signUpForm.get('email')?.errors?.['email']){
-      Enter valid email
-    }
-  </small>
-}
-        <input formControlName="password" style="padding: 10px 20px; border-radius: 5px; border: 0; background-color: whitesmoke;" type="password" placeholder="Enter your password" required>
-        @if(signUpForm.get('password')?.touched && signUpForm.get('password')?.invalid){
-  <small style="color:red;">
-    @if(signUpForm.get('password')?.errors?.['required']){
-      Password is required
-    }
-    @if(signUpForm.get('password')?.errors?.['minlength']){
-      Minimum 6 characters required
-    }
-  </small>
-}
-        @if(role==="driver") {
-             <input formControlName="licenseNumber" style="padding: 10px 20px; border-radius: 5px; border: 0; background-color: whitesmoke;" type="text" placeholder="Enter your License number" required>
-             @if(signUpForm.get('licenseNumber')?.touched && signUpForm.get('licenseNumber')?.invalid){
-  <small style="color:red;">License number is required</small>
-}
-             <select formControlName="vehicleType" style="padding: 10px 20px; border-radius: 5px; border: 0; background-color: whitesmoke;">
-                 <option value="" hidden>Select Vehicle Type</option>
-<option value="Mini">Mini</option>
-<option value="Sedan">Sedan</option>
-<option value="SUV">SUV</option>
-<option value="Premium">Premium</option>
-             </select>
-             @if(signUpForm.get('vehicleType')?.touched && signUpForm.get('vehicleType')?.invalid){
-  <small style="color:red;">Select vehicle type</small>
-}
-            <input formControlName="vehicleNumber" style="padding: 10px 20px; border-radius: 5px; border: 0; background-color: whitesmoke;" type="text" placeholder="Enter your Vehicle Number" required>
-            @if(signUpForm.get('vehicleNumber')?.touched && signUpForm.get('vehicleNumber')?.invalid){
-  <small style="color:red;">Enter valid vehicle number (ex: KA01AB1234)</small>
-}
-        }
-        <button style="background-color: black; padding: 10px 20px; border-radius: 5px; color: white; font-size: 20px; font-weight: bold; margin-top: 10px;">Continue</button>
-    </div>
+<div
+    style="
+        width: 100%;
+        min-height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 85px 16px 20px 16px;
+        box-sizing: border-box;
+    "
+>
+
+    <form
+        [formGroup]="signUpForm"
+        (ngSubmit)="signup()"
+        style="
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        "
+    >
+
+        <!-- Signup Card -->
+        <div
+    [ngStyle]="{
+        'top': role === 'driver' ? '-100px' : '-40px'
+    }"
+    style="
+        position: relative;
+        width: 100%;
+        max-width: 760px;
+        background: white;
+        border-radius: 18px;
+        padding: 24px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    "
+>
+
+            <!-- Heading -->
+            <div style="
+                text-align: center;
+                margin-bottom: 2px;
+            ">
+
+                <h1 style="
+                    margin: 0;
+                    font-size: 28px;
+                    font-weight: 800;
+                    color: #111;
+                    letter-spacing: 0.5px;
+                    line-height: 1.1;
+                ">
+                    Sign Up
+                </h1>
+
+                <p style="
+                    margin-top: 4px;
+                    color: #666;
+                    font-size: 13px;
+                ">
+                    Create your account to continue
+                </p>
+
+            </div>
+
+            <!-- Two Column Layout -->
+            <div style="
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                gap: 14px;
+            ">
+
+                <!-- Name -->
+                <div style="
+                    display: flex;
+                    flex-direction: column;
+                    gap: 6px;
+                ">
+
+                    <label style="
+                        font-size: 14px;
+                        font-weight: 600;
+                        color: #222;
+                    ">
+                        Full Name
+                    </label>
+
+                    <input
+                        formControlName="name"
+                        type="text"
+                        placeholder="Enter your Name"
+                        required
+                        style="
+                            width: 100%;
+                            padding: 13px 14px;
+                            border-radius: 12px;
+                            border: 1px solid #d9d9d9;
+                            background-color: #f7f7f7;
+                            outline: none;
+                            font-size: 14px;
+                            box-sizing: border-box;
+                        "
+                    >
+
+                    @if(signUpForm.get('name')?.touched && signUpForm.get('name')?.invalid){
+                        <small style="color:red; font-size: 12px;">
+                            @if(signUpForm.get('name')?.errors?.['required']){
+                                Name is required
+                            }
+                            @if(signUpForm.get('name')?.errors?.['minlength']){
+                                Minimum 3 characters required
+                            }
+                        </small>
+                    }
+
+                </div>
+
+                <!-- Email -->
+                <div style="
+                    display: flex;
+                    flex-direction: column;
+                    gap: 6px;
+                ">
+
+                    <label style="
+                        font-size: 14px;
+                        font-weight: 600;
+                        color: #222;
+                    ">
+                        Email Address
+                    </label>
+
+                    <input
+                        formControlName="email"
+                        type="email"
+                        placeholder="Enter your email"
+                        required
+                        style="
+                            width: 100%;
+                            padding: 13px 14px;
+                            border-radius: 12px;
+                            border: 1px solid #d9d9d9;
+                            background-color: #f7f7f7;
+                            outline: none;
+                            font-size: 14px;
+                            box-sizing: border-box;
+                        "
+                    >
+
+                    @if(signUpForm.get('email')?.touched && signUpForm.get('email')?.invalid){
+                        <small style="color:red; font-size: 12px;">
+                            @if(signUpForm.get('email')?.errors?.['required']){
+                                Email is required
+                            }
+                            @if(signUpForm.get('email')?.errors?.['email']){
+                                Enter valid email
+                            }
+                        </small>
+                    }
+
+                </div>
+
+                <!-- Password -->
+                <div style="
+                    display: flex;
+                    flex-direction: column;
+                    gap: 6px;
+                ">
+
+                    <label style="
+                        font-size: 14px;
+                        font-weight: 600;
+                        color: #222;
+                    ">
+                        Password
+                    </label>
+
+                    <input
+                        formControlName="password"
+                        type="password"
+                        placeholder="Enter your password"
+                        required
+                        style="
+                            width: 100%;
+                            padding: 13px 14px;
+                            border-radius: 12px;
+                            border: 1px solid #d9d9d9;
+                            background-color: #f7f7f7;
+                            outline: none;
+                            font-size: 14px;
+                            box-sizing: border-box;
+                        "
+                    >
+
+                    @if(signUpForm.get('password')?.touched && signUpForm.get('password')?.invalid){
+                        <small style="color:red; font-size: 12px;">
+                            @if(signUpForm.get('password')?.errors?.['required']){
+                                Password is required
+                            }
+                            @if(signUpForm.get('password')?.errors?.['minlength']){
+                                Minimum 6 characters required
+                            }
+                        </small>
+                    }
+
+                </div>
+
+                <!-- Confirm Password -->
+                <div style="
+                    display: flex;
+                    flex-direction: column;
+                    gap: 6px;
+                ">
+
+                    <label style="
+                        font-size: 14px;
+                        font-weight: 600;
+                        color: #222;
+                    ">
+                        Confirm Password
+                    </label>
+
+                    <input
+                        formControlName="confirmPassword"
+                        type="password"
+                        placeholder="Confirm your password"
+                        required
+                        style="
+                            width: 100%;
+                            padding: 13px 14px;
+                            border-radius: 12px;
+                            border: 1px solid #d9d9d9;
+                            background-color: #f7f7f7;
+                            outline: none;
+                            font-size: 14px;
+                            box-sizing: border-box;
+                        "
+                    >
+
+                    @if(signUpForm.get('confirmPassword')?.touched && signUpForm.get('confirmPassword')?.invalid){
+                        <small style="color:red; font-size: 12px;">
+                            Confirm password is required
+                        </small>
+                    }
+
+                    @if(
+                        signUpForm.get('confirmPassword')?.touched &&
+                        signUpForm.get('password')?.value !== signUpForm.get('confirmPassword')?.value
+                    ){
+                        <small style="color:red; font-size: 12px;">
+                            Passwords do not match
+                        </small>
+                    }
+
+                </div>
+
+                <!-- Driver Fields -->
+                @if(role==="driver") {
+
+                    <!-- License -->
+                    <div style="
+                        display: flex;
+                        flex-direction: column;
+                        gap: 6px;
+                    ">
+
+                        <label style="
+                            font-size: 14px;
+                            font-weight: 600;
+                            color: #222;
+                        ">
+                            License Number
+                        </label>
+
+                        <input
+                            formControlName="licenseNumber"
+                            type="text"
+                            placeholder="Enter your License number"
+                            required
+                            style="
+                                width: 100%;
+                                padding: 13px 14px;
+                                border-radius: 12px;
+                                border: 1px solid #d9d9d9;
+                                background-color: #f7f7f7;
+                                outline: none;
+                                font-size: 14px;
+                                box-sizing: border-box;
+                            "
+                        >
+
+                        @if(signUpForm.get('licenseNumber')?.touched && signUpForm.get('licenseNumber')?.invalid){
+                            <small style="color:red; font-size: 12px;">
+                                License number is required
+                            </small>
+                        }
+
+                    </div>
+
+                    <!-- Vehicle Type -->
+                    <div style="
+                        display: flex;
+                        flex-direction: column;
+                        gap: 6px;
+                    ">
+
+                        <label style="
+                            font-size: 14px;
+                            font-weight: 600;
+                            color: #222;
+                        ">
+                            Vehicle Type
+                        </label>
+
+                        <select
+                            formControlName="vehicleType"
+                            style="
+                                width: 100%;
+                                padding: 13px 14px;
+                                border-radius: 12px;
+                                border: 1px solid #d9d9d9;
+                                background-color: #f7f7f7;
+                                outline: none;
+                                font-size: 14px;
+                                box-sizing: border-box;
+                            "
+                        >
+                            <option value="" hidden>Select Vehicle Type</option>
+                            <option value="Mini">Mini</option>
+                            <option value="Sedan">Sedan</option>
+                            <option value="SUV">SUV</option>
+                            <option value="Premium">Premium</option>
+                        </select>
+
+                        @if(signUpForm.get('vehicleType')?.touched && signUpForm.get('vehicleType')?.invalid){
+                            <small style="color:red; font-size: 12px;">
+                                Select vehicle type
+                            </small>
+                        }
+
+                    </div>
+
+                    <!-- Vehicle Number -->
+                    <div style="
+                        display: flex;
+                        flex-direction: column;
+                        gap: 6px;
+                        grid-column: span 2;
+                    ">
+
+                        <label style="
+                            font-size: 14px;
+                            font-weight: 600;
+                            color: #222;
+                        ">
+                            Vehicle Number
+                        </label>
+
+                        <input
+                            formControlName="vehicleNumber"
+                            type="text"
+                            placeholder="Enter your Vehicle Number"
+                            required
+                            style="
+                                width: 100%;
+                                padding: 13px 14px;
+                                border-radius: 12px;
+                                border: 1px solid #d9d9d9;
+                                background-color: #f7f7f7;
+                                outline: none;
+                                font-size: 14px;
+                                box-sizing: border-box;
+                            "
+                        >
+
+                        @if(signUpForm.get('vehicleNumber')?.touched && signUpForm.get('vehicleNumber')?.invalid){
+                            <small style="color:red; font-size: 12px;">
+                                Enter valid vehicle number (ex: KA01AB1234)
+                            </small>
+                        }
+
+                    </div>
+
+                }
+
+            </div>
+
+            <!-- Button -->
+            <button
+                style="
+                    width: 100%;
+                    padding: 14px;
+                    border: none;
+                    border-radius: 12px;
+                    background: linear-gradient(135deg, #000, #2e2e2e);
+                    color: white;
+                    font-size: 16px;
+                    font-weight: 700;
+                    cursor: pointer;
+                    transition: 0.3s ease;
+                    box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+                    margin-top: 4px;
+                "
+            >
+                Continue
+            </button>
+
+        </div>
+
     </form>
+
 </div>
