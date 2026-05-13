@@ -1,12 +1,14 @@
 import {
   Component,
-  OnInit,
   OnDestroy,
+  OnInit,
+  inject,
   signal,
-  inject
 } from '@angular/core';
+
 import { CommonModule } from '@angular/common';
 import { interval, Subscription } from 'rxjs';
+
 import { DriverService } from '../driver-service';
 
 @Component({
@@ -17,20 +19,11 @@ import { DriverService } from '../driver-service';
   styleUrl: './driver-dashboard.css',
 })
 export class DriverDashboard implements OnInit, OnDestroy {
-  driverService = inject(DriverService);
+  private driverService = inject(DriverService);
 
   reviews = signal<any[]>([]);
   activeRide = signal<any | null>(null);
   availableRide = signal<any | null>(null);
-
-  getAverageRating(): number {
-  const list = this.reviews();
-
-  if (!list.length) return 0;
-
-  const total = list.reduce((sum, r) => sum + r.rating, 0);
-  return total / list.length;
-}
 
   driver = signal({
     id: '',
@@ -52,15 +45,7 @@ export class DriverDashboard implements OnInit, OnDestroy {
   private sub?: Subscription;
 
   ngOnInit() {
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-
-    this.driver.update(d => ({
-      ...d,
-      id: user.id || '',
-      name: user.name || '',
-      email: user.email || ''
-    }));
-
+    this.loadUser();
     this.refresh();
 
     this.sub = interval(500).subscribe(() => {
@@ -72,85 +57,113 @@ export class DriverDashboard implements OnInit, OnDestroy {
     this.sub?.unsubscribe();
   }
 
+  loadUser() {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+
+    this.driver.update(driver => ({
+      ...driver,
+      id: user.id || '',
+      name: user.name || '',
+      email: user.email || '',
+    }));
+  }
+
   refresh() {
     this.driverService.getDriverDashboard().subscribe({
       next: (data: any) => {
+        this.reviews.set(data.reviews ?? []);
 
-        this.reviews.set(data?.reviews ?? []);
-        const availableRide = data?.availableRide ?? null;
+        this.activeRide.set(data.activeRide ?? null);
 
-if (
-  availableRide &&
-  this.driver().vehicle &&
-  availableRide.vehicle &&
-  this.driver().vehicle.toLowerCase() === availableRide.vehicle.toLowerCase()
-) {
-  this.availableRide.set(availableRide);
-} else {
-  this.availableRide.set(null);
-}
-        this.activeRide.set(data?.activeRide ?? null);
+        this.setAvailableRide(data.availableRide);
 
-        this.driver.update(d => ({
-          ...d,
-          vehicle: data?.driver?.vehicleType ?? '',
-          vehicleNo: data?.driver?.vehicleNumber ?? '',
-          rating: data?.driver?.rating ?? 0,
-          online: data?.driver?.online ?? true
+        this.driver.update(driver => ({
+          ...driver,
+          vehicle: data.driver?.vehicleType ?? '',
+          vehicleNo: data.driver?.vehicleNumber ?? '',
+          rating: data.driver?.rating ?? 0,
+          online: data.driver?.online ?? true,
         }));
 
         this.stats.set({
-          trips: data?.stats?.trips ?? 0,
-          earnings: data?.stats?.earnings ?? 0,
-          distance: data?.stats?.distance ?? 0,
-          hours: data?.stats?.hours ?? 0
+          trips: data.stats?.trips ?? 0,
+          earnings: data.stats?.earnings ?? 0,
+          distance: data.stats?.distance ?? 0,
+          hours: data.stats?.hours ?? 0,
         });
-        console.log(this.reviews());
       },
-      error: (err) => {
-        console.log('dashboard error', err);
-      }
+
+      error: err => {
+        console.log('Dashboard Error', err);
+      },
     });
+  }
+
+  setAvailableRide(ride: any) {
+    const driverVehicle = this.driver().vehicle?.toLowerCase();
+    const rideVehicle = ride?.vehicle?.toLowerCase();
+
+    const matched =
+      ride &&
+      driverVehicle &&
+      rideVehicle &&
+      driverVehicle === rideVehicle;
+
+    this.availableRide.set(matched ? ride : null);
+  }
+
+  getAverageRating(): number {
+    const list = this.reviews();
+
+    if (!list.length) return 0;
+
+    const total = list.reduce((sum, review) => {
+      return sum + review.rating;
+    }, 0);
+
+    return total / list.length;
   }
 
   toggleStatus() {
     this.driverService.toggleDriverStatus().subscribe({
       next: () => this.refresh(),
-      error: err => console.log(err)
     });
   }
 
   acceptRide() {
-    const ride = this.availableRide();
-    if (!ride?._id) return;
-
-    this.driverService.acceptRide(ride._id).subscribe({
-      next: () => this.refresh(),
-      error: err => console.log(err)
-    });
+    this.updateRideStatus(
+      this.availableRide()?._id,
+      (id) => this.driverService.acceptRide(id)
+    );
   }
 
   startRide() {
-    const ride = this.activeRide();
-    if (!ride?._id) return;
-
-    this.driverService.startRide(ride._id).subscribe({
-      next: () => this.refresh(),
-      error: err => console.log(err)
-    });
+    this.updateRideStatus(
+      this.activeRide()?._id,
+      (id) => this.driverService.startRide(id)
+    );
   }
 
   completeRide() {
-    const ride = this.activeRide();
-    if (!ride?._id) return;
-
-    this.driverService.completeRide(ride._id).subscribe({
-      next: () => this.refresh(),
-      error: err => console.log(err)
-    });
+    this.updateRideStatus(
+      this.activeRide()?._id,
+      (id) => this.driverService.completeRide(id)
+    );
   }
 
   rejectRide() {
     this.availableRide.set(null);
   }
+
+  updateRideStatus(
+  rideId: string,
+  action: (id: string) => any
+) {
+  if (!rideId) return;
+
+  action(rideId).subscribe({
+    error: (err: any) => console.log(err),
+  });
+}
+
 }

@@ -1,65 +1,30 @@
 <form #loginForm="ngForm" (ngSubmit)="login(loginForm)">
 
-    <!-- Center Wrapper -->
-    <div style="
-        width: 100%;
-        /* background-color: red; */
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        box-sizing: border-box;
-    ">
+    <div class="login-wrapper">
 
-        <!-- Login Card -->
-        <div style="
-            width: 400px;
-            background: white;
-            border-radius: 22px;
-            padding: 0px 28px;
-            display: flex;
-            flex-direction: column;
-            gap: 18px;
-        ">
+        <div class="login-card">
 
-            <!-- Heading -->
-            <div style="text-align: center;">
+            <div class="login-header">
 
-                <h1 style="
-                    margin: 0;
-                    font-size: 36px;
-                    font-weight: 800;
-                    color: #111;
-                    letter-spacing: 1px;
-                ">
+                <h1 class="login-title">
                     Login
                 </h1>
 
-                <p style="
-                    margin-top: 8px;
-                    color: #666;
-                    font-size: 14px;
-                ">
+                <p class="login-subtitle">
                     Welcome back! Please login to continue
                 </p>
 
             </div>
 
             <!-- Email -->
-            <div style="
-                display: flex;
-                flex-direction: column;
-                gap: 7px;
-            ">
+            <div class="form-group">
 
-                <label style="
-                    font-size: 14px;
-                    font-weight: 600;
-                    color: #222;
-                ">
+                <label class="form-label">
                     Email Address
                 </label>
 
                 <input
+                    class="form-input"
                     name="email"
                     #email="ngModel"
                     email
@@ -67,24 +32,11 @@
                     ngModel
                     type="text"
                     placeholder="Enter your email"
-                    style="
-                        width: 100%;
-                        padding: 15px 16px;
-                        border-radius: 12px;
-                        border: 1px solid #d9d9d9;
-                        background-color: #f7f7f7;
-                        outline: none;
-                        font-size: 15px;
-                        box-sizing: border-box;
-                        transition: 0.3s ease;
-                    "
                 >
 
-                <div *ngIf="email.invalid && email.touched"
-                    style="
-                        color: #e53935;
-                        font-size: 12px;
-                    "
+                <div
+                    *ngIf="email.invalid && (email.touched || loginForm.submitted)"
+                    class="error-text"
                 >
                     <div *ngIf="email.errors?.['required']">
                         Email is required
@@ -98,21 +50,14 @@
             </div>
 
             <!-- Password -->
-            <div style="
-                display: flex;
-                flex-direction: column;
-                gap: 7px;
-            ">
+            <div class="form-group">
 
-                <label style="
-                    font-size: 14px;
-                    font-weight: 600;
-                    color: #222;
-                ">
+                <label class="form-label">
                     Password
                 </label>
 
                 <input
+                    class="form-input"
                     name="password"
                     #password="ngModel"
                     required
@@ -120,24 +65,11 @@
                     minlength="6"
                     type="password"
                     placeholder="Enter your password"
-                    style="
-                        width: 100%;
-                        padding: 15px 16px;
-                        border-radius: 12px;
-                        border: 1px solid #d9d9d9;
-                        background-color: #f7f7f7;
-                        outline: none;
-                        font-size: 15px;
-                        box-sizing: border-box;
-                        transition: 0.3s ease;
-                    "
                 >
 
-                <div *ngIf="password.invalid && password.touched"
-                    style="
-                        color: #e53935;
-                        font-size: 12px;
-                    "
+                <div
+                    *ngIf="password.invalid && (password.touched || loginForm.submitted)"
+                    class="error-text"
                 >
                     <div *ngIf="password.errors?.['required']">
                         Password is required
@@ -150,49 +82,26 @@
 
             </div>
 
-            <!-- Login Button -->
+            <!-- Button -->
             <button
                 type="submit"
-                [disabled]="loginForm.invalid"
-                style="
-                    width: 100%;
-                    padding: 15px;
-                    border: none;
-                    border-radius: 12px;
-                    background: linear-gradient(135deg, #000, #2e2e2e);
-                    color: white;
-                    font-size: 17px;
-                    font-weight: 700;
-                    cursor: pointer;
-                    transition: 0.3s ease;
-                    box-shadow: 0 6px 16px rgba(0,0,0,0.15);
-                    margin-top: 5px;
-                "
+                class="login-btn"
             >
                 Login
             </button>
 
-            <!-- Bottom Text -->
-            <div style="
-                text-align: center;
-                margin-top: 6px;
-                font-size: 14px;
-                color: #666;
-            ">
+            <!-- Bottom -->
+            <div class="bottom-text">
+
                 Don’t have an account?
 
                 <a
                     routerLink="/sign-up"
-                    style="
-                        color: black;
-                        font-weight: 700;
-                        text-decoration: none;
-                        margin-left: 4px;
-                        cursor: pointer;
-                    "
+                    class="signup-link"
                 >
                     Sign Up
                 </a>
+
             </div>
 
         </div>
