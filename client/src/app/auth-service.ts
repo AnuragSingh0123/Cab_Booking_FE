@@ -19,11 +19,11 @@ export class AuthService {
 
   login(data: any) {
     console.log(data);
-    return this.http.post('http://localhost:3000/auth/login', data);
+    return this.http.post('http://localhost:7000/auth/login', data);
   }
 
   signUp(userData: any) {
-  return this.http.post("http://localhost:3000/auth/sign-up", userData);
+  return this.http.post("http://localhost:7000/auth/sign-up", userData);
 }
 
 

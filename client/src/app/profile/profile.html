@@ -39,6 +39,43 @@
       </p>
     </div>
 
+    <!-- <div style="display: block;">
+
+      Enter Live Location
+      @if (user?.role === 'driver') {
+        <input type="text">
+
+        <button>Update Location</button>
+      }
+
+    </div> -->
+
+    
+
   </div>
+
+  <!--By Aditya  -->
+    @if (user?.role === 'driver') {
+        <div class="location-card">
+          <h3 class="title">Live Location</h3>
+        <div class="input-group">
+          <input type="text" [(ngModel)]="pickup" (input)="onPickupChange(pickup)" class="location-input"
+            placeholder="Enter current city or coordinates..."> 
+
+           <div *ngIf="pickupSuggestions.length" class="dropdown">
+                <div
+                    *ngFor="let place of pickupSuggestions"
+                    (click)="selectPickup(place)"
+                    class="dropdown-item">
+                    {{ place.display_name }}
+                </div>
+            </div>
+
+          <button class="update-btn">
+            Update Location
+          </button>
+        </div>
+      </div>
+      }
 
 </div>

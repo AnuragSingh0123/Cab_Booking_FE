@@ -92,7 +92,7 @@ export class RideService {
     const token = localStorage.getItem('token');
 
     return this.http.post(
-      'http://localhost:3000/book-ride',
+      'http://localhost:7000/book-ride',
       data,
       {
         headers: new HttpHeaders({
@@ -106,7 +106,7 @@ export class RideService {
   const token = localStorage.getItem('token');
 
   return this.http.patch(
-    `http://localhost:3000/booking/${id}`,
+    `http://localhost:7000/booking/${id}`,
     data,
     {
       headers: new HttpHeaders({
@@ -120,11 +120,11 @@ export class RideService {
     console.log(rideID);
     const token = localStorage.getItem('token');
     
-    return this.http.get(`http://localhost:3000/user/booking/${rideID}`);
+    return this.http.get(`http://localhost:7000/user/booking/${rideID}`);
   }
 
   submitFeedback(data: any){
-    return this.http.post("http://localhost:3000/user/feedback",data);
+    return this.http.post("http://localhost:7000/user/feedback",data);
   }
 
 
@@ -132,7 +132,7 @@ export class RideService {
   const token = localStorage.getItem('token');
 
   return this.http.get(
-    'http://localhost:3000/my-bookings',
+    'http://localhost:7000/my-bookings',
     {
       headers: new HttpHeaders({
         Authorization: `Bearer ${token}`
@@ -145,7 +145,7 @@ export class RideService {
   const token = localStorage.getItem('token');
 
   return this.http.get(
-    'http://localhost:3000/profile',
+    'http://localhost:7000/profile',
     {
       headers: new HttpHeaders({
         Authorization: `Bearer ${token}`

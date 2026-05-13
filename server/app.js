@@ -331,7 +331,28 @@ app.get("/", (req, res) => {
 });
 
 
-app.listen(3000, async () => {
+//----------------------------By Aditya-----------------------------
+
+app.patch("/driverLocation/:place", async (req, res) => {
+
+  const driverLocation = req.params.place;
+
+  let {userId} =  req.body;
+  
+  if(driverLocation){
+    const updateLocation = await Driver.findOneAndUpdate(
+      {userId:userId},
+      {$set:{driverLocation:driverLocation}},
+      {new:true}
+    )
+
+    return res.status(200).json(updateLocation);
+  }
+  // return res.status(203).json({messageee: req.params.place});
+})
+
+
+app.listen(7000, async () => {
   await connectDB();
-  console.log("Server running on http://localhost:3000");
+  console.log("Server running on http://localhost:7000");
 });
