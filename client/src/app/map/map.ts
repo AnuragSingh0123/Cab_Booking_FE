@@ -64,6 +64,9 @@ export class Map {
           if (Number(distanceKm) > 60) {
   this.rideService.msg.set("Sorry, we can’t process rides over 60 km");
   this.rideService.mapLoading.set(false);
+  setTimeout(() => {
+      this.rideService.msg.set('');
+    }, 3000);
   return;
 }
 
