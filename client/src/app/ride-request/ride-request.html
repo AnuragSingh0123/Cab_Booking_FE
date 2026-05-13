@@ -49,11 +49,11 @@
                 Search
         </button>
 
-        <!-- @if(msg$ | async; as msg) {
+        @if(msg()) {
             <div class="message error">
                 <span class="icon">⚠</span>
-                <span>{{ msg }}</span>
+                <span>{{ msg() }}</span>
             </div>
-        } -->
+        }
     </div>
 </div>
