@@ -44,7 +44,7 @@ export class SignUp {
   currentAddressSuggestions: any[] = [];
 
   
-  driverCoordinates: { lat:number; lon: number } | null = null;
+  driverCoordinates: number[] | null = null;
 
 
   ngOnInit(){
@@ -96,10 +96,10 @@ export class SignUp {
 
   this.geoService.getCoordinates(place).subscribe({
     next: (coordinates: any) => {
-      this.driverCoordinates = {
-        lat: +coordinates[0].lat,
-        lon: +coordinates[0].lon,
-      }
+      this.driverCoordinates = [
+        +coordinates[0].lat,
+        +coordinates[0].lon,
+      ]
 
       console.log('Coordinates set:', this.driverCoordinates);
     },
