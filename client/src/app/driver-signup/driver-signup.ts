@@ -78,9 +78,14 @@ export class DriverSignup {
 
   selectAddress(place: any) {
 
-    this.signUpForm.patchValue({
-      driverLocation: place.display_name,
-    });
+    this.signUpForm.patchValue(
+  {
+    driverLocation: place.display_name,
+  },
+  {
+    emitEvent: false,
+  }
+);
 
     this.geoService.getCoordinates(place).subscribe({
       next: (coordinates: any) => {
