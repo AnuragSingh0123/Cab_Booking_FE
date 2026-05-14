@@ -33,7 +33,8 @@ export class Profile {
   pickupSubject = new Subject<string>();
   locationService = inject(LocationService);
   driverService = inject(DriverService);
-  
+  locationUpdated = '';
+
   ngOnInit() {
     const userData = localStorage.getItem('user');
     
@@ -84,6 +85,7 @@ export class Profile {
           userId = value.driver.userId;
           this.driverService.addDirverLocation(this.pickup, userId).subscribe(res=>{
             console.log("location updated successfully", res);
+            
           })
     }
   }

@@ -343,7 +343,7 @@ app.patch("/driverLocation/:place", async (req, res) => {
     const updateLocation = await Driver.findOneAndUpdate(
       {userId:userId},
       {$set:{driverLocation:driverLocation}},
-      {new:true}
+      { returnDocument: 'after' }
     )
 
     return res.status(200).json(updateLocation);

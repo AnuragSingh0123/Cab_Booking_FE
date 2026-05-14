@@ -77,12 +77,51 @@ export class DriverDashboard implements OnInit, OnDestroy {
     }));
   }
 
-  refresh() {
+  // refresh() {
+  //   this.driverService.getDriverDashboard().subscribe({
+  //     next: (data: any) => {
+  //       this.reviews.set(data.reviews ?? []);
+
+  //       this.activeRide.set(data.activeRide ?? null);
+
+  //       if (availableRide && this.driver().vehicle && availableRide.vehicle && this.driver().vehicle.toLowerCase() === availableRide.vehicle.toLowerCase()
+  //       ) {
+  //         this.availableRide.set(availableRide);
+  //       } 
+  //       else {
+  //         this.availableRide.set(null);
+  //       }
+
+  //       this.activeRide.set(data?.activeRide ?? null);
+
+  //       this.driver.update(d => ({
+  //         ...d,
+  //         vehicle: data?.driver?.vehicleType ?? '',
+  //         vehicleNo: data?.driver?.vehicleNumber ?? '',
+  //         rating: data?.driver?.rating ?? 0,
+  //         online: data?.driver?.online ?? true
+  //       }));
+
+  //       this.stats.set({
+  //         trips: data.stats?.trips ?? 0,
+  //         earnings: data.stats?.earnings ?? 0,
+  //         distance: data.stats?.distance ?? 0,
+  //         hours: data.stats?.hours ?? 0,
+  //       });
+  //     },
+
+  //     error: err => {
+  //       console.log('Dashboard Error', err);
+  //     },
+  //   });
+  // }
+
+    refresh() {
     this.driverService.getDriverDashboard().subscribe({
       next: (data: any) => {
-        this.reviews.set(data.reviews ?? []);
 
-        this.activeRide.set(data.activeRide ?? null);
+        this.reviews.set(data?.reviews ?? []);
+        const availableRide = data?.availableRide ?? null;
 
         if (availableRide && this.driver().vehicle && availableRide.vehicle && this.driver().vehicle.toLowerCase() === availableRide.vehicle.toLowerCase()
         ) {
@@ -103,16 +142,16 @@ export class DriverDashboard implements OnInit, OnDestroy {
         }));
 
         this.stats.set({
-          trips: data.stats?.trips ?? 0,
-          earnings: data.stats?.earnings ?? 0,
-          distance: data.stats?.distance ?? 0,
-          hours: data.stats?.hours ?? 0,
+          trips: data?.stats?.trips ?? 0,
+          earnings: data?.stats?.earnings ?? 0,
+          distance: data?.stats?.distance ?? 0,
+          hours: data?.stats?.hours ?? 0
         });
+        console.log(this.reviews());
       },
-
-      error: err => {
-        console.log('Dashboard Error', err);
-      },
+      error: (err) => {
+        console.log('dashboard error', err);
+      }
     });
   }
 
@@ -129,17 +168,17 @@ export class DriverDashboard implements OnInit, OnDestroy {
     this.availableRide.set(matched ? ride : null);
   }
 
-  getAverageRating(): number {
-    const list = this.reviews();
+  // getAverageRating(): number {
+  //   const list = this.reviews();
 
-    if (!list.length) return 0;
+  //   if (!list.length) return 0;
 
-    const total = list.reduce((sum, review) => {
-      return sum + review.rating;
-    }, 0);
+  //   const total = list.reduce((sum, review) => {
+  //     return sum + review.rating;
+  //   }, 0);
 
-    return total / list.length;
-  }
+  //   return total / list.length;
+  // }
 
   toggleStatus() {
     this.driverService.toggleDriverStatus().subscribe({
