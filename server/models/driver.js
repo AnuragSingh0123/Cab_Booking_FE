@@ -25,7 +25,12 @@ const driverSchema = new mongoose.Schema({
   isAvailable: {
     type: Boolean,
     default: false
-  }
+  },
+  driverLocation:{
+    type:String,
+    required:false
+  } 
+    
 }, {
   timestamps: true
 });
