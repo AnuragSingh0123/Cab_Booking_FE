@@ -64,12 +64,9 @@ export class DriverService {
   }
 
 
-  addDirverLocation(place:string, userId:string){
-    return this.http.patch(`http://localhost:7000/driverLocation/${place}`,{
-      userId:userId,
-      status:'Location Updated',
-      updatedAt: Date.now()
-    }, this.getHeaders()
+  addDirverLocation(place:string){
+    return this.http.patch(`http://localhost:7000/driverLocation/${place}`,{},
+      this.getHeaders()
   );
   }
 }

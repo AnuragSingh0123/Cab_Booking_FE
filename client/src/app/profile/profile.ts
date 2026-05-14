@@ -74,16 +74,12 @@ export class Profile {
   async selectPickup(place: any) {
     this.pickup = place.display_name;
     this.pickupSuggestions = [];
-    var userId = ''
     if(this.pickup){
         
       this.rideService.updateRide({
           pickup: this.pickup,
       });
-
-      const value: any = await lastValueFrom(this.driverService.getDriverDashboard());
-          userId = value.driver.userId;
-          this.driverService.addDirverLocation(this.pickup, userId).subscribe(res=>{
+          this.driverService.addDirverLocation(this.pickup).subscribe(res=>{
             console.log("location updated successfully", res);
             
           })
