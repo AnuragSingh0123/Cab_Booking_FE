@@ -53,38 +53,57 @@
                 </div>
             }
 
-            @case ('accepted') {
+           @case ('accepted') {
 
-                <h1 class="title">
-                    Driver Found
-                </h1>
+    <h1 class="title">
+        Driver Found
+    </h1>
 
-                <div class="driver-card">
+    <div class="driver-card">
 
-                    <div class="avatar">
-                        {{ ride.driver?.name?.charAt(0) || 'D' }}
-                    </div>
+        <div class="avatar">
+            {{ ride.driver?.name?.charAt(0) || 'D' }}
+        </div>
 
-                    <p>
-                        {{ ride.driver?.name }}
-                    </p>
+        <p>
+            {{ ride.driver?.name }}
+        </p>
 
-                    <p>
-                        {{ ride.driver?.vehicle }}
-                        •
-                        {{ ride.driver?.vehicleNo }}
-                    </p>
+        <p>
+            {{ ride.driver?.vehicle }}
+            •
+            {{ ride.driver?.vehicleNo }}
+        </p>
 
-                    <button
-                        class="cancel-btn"
-                        (click)="cancelRide()">
+        @if (ETA() !== null && ED() !== null) {
+            <div class="eta-card">
 
-                        Cancel Ride
+                <p class="eta-title">
+                    Driver arriving in
+                    <b>{{ ETA() }} min</b>
+                </p>
 
-                    </button>
+                <p class="eta-subtitle">
+                    Distance: <b>{{ ED() }} km</b> to pickup
+                </p>
 
-                </div>
-            }
+            </div>
+        } @else {
+            <p class="eta-loading">
+                Calculating arrival time...
+            </p>
+        }
+
+        <button
+            class="cancel-btn"
+            (click)="cancelRide()">
+
+            Cancel Ride
+
+        </button>
+
+    </div>
+}
 
             @case ('started') {
 

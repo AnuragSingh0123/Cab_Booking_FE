@@ -68,6 +68,7 @@ const getBookingById = async (req, res) => {
         vehicleNo: driverDetails.vehicleNumber,
         license: driverDetails.licenseNumber,
         available: driverDetails.isAvailable,
+        driverCoordinates: driverDetails.driverCoordinates
       };
     }
 
