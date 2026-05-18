@@ -46,7 +46,11 @@
         </div>
 
         <button (click)="rideRequest()" class="search-btn">
+            @if(rideService.mapLoading() === true) {
+                Searching....
+            }@else{
                 Search
+            }
         </button>
 
         

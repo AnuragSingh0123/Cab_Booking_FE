@@ -76,46 +76,31 @@ export class DriverSignup {
       });
   }
 
+  
   selectAddress(place: any) {
 
-    this.signUpForm.patchValue(
-  {
-    driverLocation: place.display_name,
-  },
-  {
-    emitEvent: false,
-  }
-);
+  console.log("data=", place);
 
-    this.geoService.getCoordinates(place).subscribe({
-      next: (coordinates: any) => {
+  this.signUpForm.patchValue(
+    {
+      driverLocation: place.display_name,
+    },
+    {
+      emitEvent: false,
+    }
+  );
 
-        this.driverCoordinates = [
-          +coordinates[0].lat,
-          +coordinates[0].lon,
-        ];
+  this.driverCoordinates = [
+    +place.lat,
+    +place.lon,
+  ];
 
-        console.log(
-          'Coordinates set:',
-          this.driverCoordinates
-        );
-      },
+  console.log('Coordinates set:', this.driverCoordinates);
 
-      error: err => {
+  this.currentAddressSuggestions = [];
+}
 
-        console.error(
-          'Error fetching coordinates:',
-          err
-        );
 
-        this.notify.show(
-          'Failed to get location details.'
-        );
-      },
-    });
-
-    this.currentAddressSuggestions = [];
-  }
 
   hideSuggestions() {
 

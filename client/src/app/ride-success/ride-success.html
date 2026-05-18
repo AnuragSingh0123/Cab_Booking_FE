@@ -8,63 +8,114 @@
 
             @case ('requested') {
 
-                <h1 class="title">Searching for Driver</h1>
+                <h1 class="title">
+                    Searching for Driver
+                </h1>
 
-                <div class="status-card searching-card">
+                <div class="searching-card">
 
-                    <div class="spinner"></div>
+                    <div class="searching-top">
 
-                    <p>Looking for nearby drivers...</p>
+                        <div class="spinner"></div>
+
+                        <div class="searching-content">
+
+                            <p class="searching-title">
+                                Finding your driver
+                            </p>
+
+                            <p class="searching-subtitle">
+                                Searching nearby drivers and sending ride requests.
+                            </p>
+
+                        </div>
+
+                    </div>
 
                     <div class="progress-wrapper">
-                        <div class="progress-bar"
-                             [style.width.%]="progress()">
+
+                        <div
+                            class="progress-bar"
+                            [style.width.%]="progress()">
+
                         </div>
+
                     </div>
 
                     <button
                         class="cancel-btn"
                         (click)="cancelRide()">
+
                         Cancel Ride
+
                     </button>
 
                 </div>
             }
 
-            @case ('accepted') {
+           @case ('accepted') {
 
-                <h1 class="title">Driver Found</h1>
+    <h1 class="title">
+        Driver Found
+    </h1>
 
-                <div class="driver-card">
+    <div class="driver-card">
 
-                    <div class="avatar">
-                        {{ ride.driver?.name?.charAt(0) || 'D' }}
-                    </div>
+        <div class="avatar">
+            {{ ride.driver?.name?.charAt(0) || 'D' }}
+        </div>
 
-                    <p>{{ ride.driver?.name }}</p>
+        <p>
+            {{ ride.driver?.name }}
+        </p>
 
-                    <p>
-                        {{ ride.driver?.vehicle }}
-                        •
-                        {{ ride.driver?.vehicleNo }}
-                    </p>
+        <p>
+            {{ ride.driver?.vehicle }}
+            •
+            {{ ride.driver?.vehicleNo }}
+        </p>
 
-                    <button
-                        class="cancel-btn"
-                        (click)="cancelRide()">
-                        Cancel Ride
-                    </button>
+        @if (ETA() !== null && ED() !== null) {
+            <div class="eta-card">
 
-                </div>
-            }
+                <p class="eta-title">
+                    Driver arriving in
+                    <b>{{ ETA() }} min</b>
+                </p>
+
+                <p class="eta-subtitle">
+                    Distance: <b>{{ ED() }} km</b> to pickup
+                </p>
+
+            </div>
+        } @else {
+            <p class="eta-loading">
+                Calculating arrival time...
+            </p>
+        }
+
+        <button
+            class="cancel-btn"
+            (click)="cancelRide()">
+
+            Cancel Ride
+
+        </button>
+
+    </div>
+}
 
             @case ('started') {
 
-                <h1 class="title">Ride Started</h1>
+                <h1 class="title">
+                    Ride Started
+                </h1>
 
                 <div class="status-card">
 
-                    <p>On Trip</p>
+                    <p>
+                        On Trip
+                    </p>
 
                     <p>
                         {{ ride.pickup }}
@@ -77,10 +128,16 @@
 
             @case ('completed') {
 
-                <h1 class="title">Ride Completed</h1>
+                <h1 class="title">
+                    Ride Completed
+                </h1>
 
                 <div class="status-card">
-                    <p>₹ {{ ride.total | number }}</p>
+
+                    <p>
+                        ₹ {{ ride.total | number }}
+                    </p>
+
                 </div>
 
                 <div class="feedback-card">
@@ -103,10 +160,13 @@
                     <textarea
                         [(ngModel)]="feedbackText"
                         placeholder="Write your feedback...">
+
                     </textarea>
 
                     <button (click)="submitFeedback()">
+
                         Submit
+
                     </button>
 
                 </div>
@@ -114,10 +174,14 @@
 
             @case ('cancelled') {
 
-                <h1 class="title">Ride Cancelled</h1>
+                <h1 class="title">
+                    Ride Cancelled
+                </h1>
 
                 <button (click)="goHome()">
+
                     Book Again
+
                 </button>
             }
         }

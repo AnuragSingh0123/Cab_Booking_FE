@@ -7,6 +7,7 @@ import { Subject, debounceTime, switchMap, of } from 'rxjs';
 
 import { RideService } from '../ride-service';
 import { LocationService } from '../location-service';
+import { BuildRouteService } from '../build-route-service';
 
 @Component({
   selector: 'app-ride-request',
@@ -20,6 +21,7 @@ export class RideRequest {
   router = inject(Router);
   rideService = inject(RideService);
   locationService = inject(LocationService);
+  buildRouteService=inject(BuildRouteService);
 
   pickup = '';
   drop = '';
@@ -107,6 +109,9 @@ export class RideRequest {
       pickup: this.pickup,
       drop: this.drop
     });
+
+    this.buildRouteService.buildRoute(this.pickup, this.drop);
+    
 
     const token = localStorage.getItem('token');
 

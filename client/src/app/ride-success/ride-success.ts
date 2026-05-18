@@ -12,6 +12,7 @@ import { interval, Subscription } from 'rxjs';
 
 import { PopupService } from '../popup-service';
 import { RideService } from '../ride-service';
+import { RouteService } from '../route-service';
 
 @Component({
   selector: 'app-ride-success',
@@ -24,6 +25,7 @@ export class RideSuccess implements OnInit, OnDestroy {
   private router = inject(Router);
   private rideService = inject(RideService);
   private notify = inject(PopupService);
+  private routeService = inject(RouteService);
 
   activeRide = signal<any>(null);
   progress = signal(100);
@@ -43,7 +45,7 @@ export class RideSuccess implements OnInit, OnDestroy {
 
     this.activeRide.set(booking);
 
-    this.sub = interval(500).subscribe(() => {
+    this.sub = interval(3000).subscribe(() => {
       this.updateRide();
     });
   }
@@ -58,14 +60,16 @@ export class RideSuccess implements OnInit, OnDestroy {
     if (!ride) return;
 
     const createdTime = new Date(ride.createdAt).getTime();
-    const expiryTime = createdTime + 10 * 60 * 1000;
+    const expiryTime = createdTime + 60 * 1000;
 
     const remaining = expiryTime - Date.now();
 
-    if (remaining <= 0) {
-      this.progress.set(0);
-      this.cancelRide();
-      return;
+    if(ride.status==="requested"){
+      if (remaining <= 0) {
+        this.progress.set(0);
+        this.cancelRide();
+        return;
+      }
     }
 
     const totalDuration = 10 * 60 * 1000;
@@ -79,9 +83,78 @@ export class RideSuccess implements OnInit, OnDestroy {
           ...res.booking,
           driver: res.driver,
         }));
+
+        if(this.generatingETA() === false && this.ETA() === null && this.ETA() === null){
+          this.generateETA();
+        }
+
+        console.log(this.activeRide());
       },
     });
   }
+
+ generateETA() {
+  if (this.generatingETA()) return;
+
+  this.generatingETA.set(true);
+
+  const ride = this.activeRide();
+
+  if (!ride) {
+    this.generatingETA.set(false);
+    return;
+  }
+
+  const driverCoordinates = ride?.driver?.driverCoordinates;
+  const pickUpCoordinates = ride?.pickUpCoordinates;
+
+  if (!driverCoordinates || !pickUpCoordinates) {
+    this.generatingETA.set(false);
+    return;
+  }
+
+  // ✅ SAME FORMAT STYLE AS BuildRouteService (lat, lng)
+  const start = {
+    lat: +driverCoordinates[0],
+    lng: +driverCoordinates[1],
+  };
+
+  const end = {
+    lat: +pickUpCoordinates[0],
+    lng: +pickUpCoordinates[1],
+  };
+
+  console.log("ETA start =", start);
+  console.log("ETA end =", end);
+
+  this.routeService.getRoute(start, end).subscribe({
+    next: (res: any) => {
+      const route = res.routes?.[0];
+
+      if (!route) {
+        this.generatingETA.set(false);
+        return;
+      }
+
+      const distanceKm = Number((route.distance / 1000).toFixed(2));
+      const durationMin = Number((route.duration / 60).toFixed(0));
+
+      this.ETA.set(durationMin);
+      this.ED.set(distanceKm);
+
+      this.generatingETA.set(false);
+    },
+
+    error: (err) => {
+      console.log("ETA error:", err);
+      this.generatingETA.set(false);
+    },
+  });
+}
+
+  generatingETA=signal(false);
+  ETA = signal<number | null>(null);
+  ED = signal<number | null>(null);
 
   cancelRide() {
     const rideId = this.activeRide()?._id;

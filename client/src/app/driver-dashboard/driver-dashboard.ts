@@ -99,6 +99,8 @@ export class DriverDashboard implements OnInit, OnDestroy {
 
         this.activeRide.set(data?.activeRide ?? null);
 
+        console.log(this.activeRide());
+
         this.driver.update(d => ({
           ...d,
           vehicle: data?.driver?.vehicleType ?? '',
@@ -166,6 +168,20 @@ export class DriverDashboard implements OnInit, OnDestroy {
     if (!rideId) return;
 
     this.driverService.completeRide(rideId).subscribe({
+      next: ()=>{
+        const ride = this.activeRide();
+        if(ride?.drop) {
+          this.driverService.addDirverLocation(ride?.drop).subscribe({
+            next: res=> {
+              console.log("location Updated", res);
+            },
+            error: err=> {
+              console.log("location update failed", err);
+            }
+          })
+
+        }
+      },
       error: err => console.log(err),
     });
   }

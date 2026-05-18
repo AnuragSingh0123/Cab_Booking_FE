@@ -4,12 +4,25 @@ const bookingSchema = new mongoose.Schema(
   {
     pickup: String,
     drop: String,
+
     distance: Number,
     duration: Number,
+
     fare: Number,
     gst: Number,
     total: Number,
+
     vehicle: String,
+
+    pickUpCoordinates: {
+      type: [Number],
+      required: true,
+    },
+
+    dropCoordinates: {
+      type: [Number],
+      required: true,
+    },
 
     riderId: {
       type: mongoose.Schema.Types.ObjectId,

@@ -19,14 +19,14 @@ export class DriverService {
 
   getDriverDashboard() {
     return this.http.get(
-      'http://localhost:7000/driver/dashboard',
+      'http://localhost:7000/api/driver/dashboard',
       this.getHeaders()
     );
   }
 
   toggleDriverStatus() {
     return this.http.patch(
-      'http://localhost:7000/driver/toggle-status',
+      'http://localhost:7000/api/driver/status',
       {},
       this.getHeaders()
     );
@@ -34,27 +34,23 @@ export class DriverService {
 
   acceptRide(bookingId: string) {
     return this.http.patch(
-      `http://localhost:7000/booking/${bookingId}`,
-      {
-        status: 'accepted',
-      },
+      `http://localhost:7000/api/rides/${bookingId}`,
+      { status: 'accepted' },
       this.getHeaders()
     );
   }
 
   startRide(bookingId: string) {
     return this.http.patch(
-      `http://localhost:7000/booking/${bookingId}`,
-      {
-        status: 'started',
-      },
+      `http://localhost:7000/api/rides/${bookingId}`,
+      { status: 'started' },
       this.getHeaders()
     );
   }
 
   completeRide(bookingId: string) {
     return this.http.patch(
-      `http://localhost:7000/booking/${bookingId}`,
+      `http://localhost:7000/api/rides/${bookingId}`,
       {
         status: 'completed',
         completedAt: Date.now(),
@@ -63,10 +59,11 @@ export class DriverService {
     );
   }
 
-
-  addDirverLocation(place:string){
-    return this.http.patch(`http://localhost:7000/driverLocation/${place}`,{},
+  addDirverLocation(place: string) {
+    return this.http.patch(
+      `http://localhost:7000/api/driver/location/${place}`,
+      {},
       this.getHeaders()
-  );
+    );
   }
 }
