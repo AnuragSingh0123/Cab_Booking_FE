@@ -16,7 +16,6 @@ import { PopupService } from '../popup-service';
 export class Login{
 
   notify = inject(PopupService);
-  
   router = inject(Router);
   authService = inject(AuthService);
   rideService = inject(RideService);
@@ -29,17 +28,13 @@ export class Login{
   }
 }
   ride = this.rideService.booking;
-
   loading = false;
-  errorMsg = '';
 
   login(loginForm: NgForm) {
 
     if (loginForm.invalid) return;
-
     this.loading = true;
-    this.errorMsg = '';
-
+    
     const { email, password } = loginForm.value;
 
     this.authService.login({ email, password }).subscribe({
@@ -51,7 +46,7 @@ export class Login{
 
         const ride = this.ride();
 
-        this.notify.show("Login Successfully");
+        this.notify.show(res.message);
 
         if (ride?.pickup && ride?.drop) {
           this.router.navigate(['/vehicle']);
@@ -62,8 +57,7 @@ export class Login{
 
       error: (err) => {
         this.loading = false;
-        this.errorMsg = err?.error?.message || 'Login failed';
-        this.notify.show("Error occured while login. Please try again later");
+        this.notify.show(err.error.message);
       }
     });
   }

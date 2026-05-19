@@ -85,12 +85,12 @@
 
                 <p class="eta-title">
                     Arriving in
-                    <b>{{ liveETA() }} min</b>
+                    <b>{{ liveETA() | number:'1.0-1' }} min</b>
                 </p>
 
                 <p class="eta-subtitle">
                     Driver is
-                    <b>{{ liveED() }} km</b>
+                    <b>{{ liveED() | number:'1.0-2' }} km</b>
                     away
                 </p>
 

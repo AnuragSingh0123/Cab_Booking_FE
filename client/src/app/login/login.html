@@ -34,18 +34,29 @@
                     placeholder="Enter your email"
                 >
 
-                <div
-                    *ngIf="email.invalid && (email.touched || loginForm.submitted)"
-                    class="error-text"
-                >
-                    <div *ngIf="email.errors?.['required']">
-                        Email is required
+                @if (email.invalid && (email.touched || loginForm.submitted)) {
+
+                    <div class="error-text">
+
+                        @if (email.errors?.['required']) {
+
+                            <div>
+                                Email is required
+                            </div>
+
+                        }
+
+                        @if (email.errors?.['email']) {
+
+                            <div>
+                                Enter a valid email
+                            </div>
+
+                        }
+
                     </div>
 
-                    <div *ngIf="email.errors?.['email']">
-                        Enter a valid email
-                    </div>
-                </div>
+                }
 
             </div>
 
@@ -66,18 +77,29 @@
                     placeholder="Enter your password"
                 >
 
-                <div
-                    *ngIf="password.invalid && (password.touched || loginForm.submitted)"
-                    class="error-text"
-                >
-                    <div *ngIf="password.errors?.['required']">
-                        Password is required
+                @if (password.invalid && (password.touched || loginForm.submitted)) {
+
+                    <div class="error-text">
+
+                        @if (password.errors?.['required']) {
+
+                            <div>
+                                Password is required
+                            </div>
+
+                        }
+
+                        @if (password.errors?.['minlength']) {
+
+                            <div>
+                                Password must be at least 6 characters
+                            </div>
+
+                        }
+
                     </div>
 
-                    <div *ngIf="password.errors?.['minlength']">
-                        Password must be at least 6 characters
-                    </div>
-                </div>
+                }
 
             </div>
 

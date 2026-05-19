@@ -17,8 +17,7 @@ export class LocationService {
           q: query,
           countrycodes: 'IN',
           limit: 5,
-          dedupe: 1,
-          addressdetails: 1
+          dedupe: 1, // remove duplicate/similar results
         }
       }
     );

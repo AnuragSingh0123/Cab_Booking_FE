@@ -29,6 +29,6 @@ export const routes: Routes = [
   {path: "my-trips", component: MyTrips, canActivate: [authGuard], data: {roles: ['rider']}},
   {path: "driver-dashboard", component: DriverDashboard, canActivate: [authGuard], data: {roles: ['driver']}},
   { path: "map", component: Map },
-  { path: "ride-booked", component:RideSuccess },
+  { path: "ride-booked/:id", component:RideSuccess },
   { path: "**", component: NotFound }
 ];

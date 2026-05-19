@@ -37,18 +37,14 @@ export class Checkout {
 bookRide() {
   this.rideService.bookRide(this.ride()).subscribe({
     next: (res: any) => {
-      this.router.navigate(
-        ['/ride-booked'],
-        {
-          state: {
-            booking: res.booking
-          }
-        }
-      );
+
+      this.router.navigate([
+        '/ride-booked',
+        res.booking._id
+      ]);
+
     },
     error: err => console.log(err)
   });
 }
-
-
 }

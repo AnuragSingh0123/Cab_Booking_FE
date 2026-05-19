@@ -26,14 +26,12 @@ export class BuildRouteService {
         lng: +startRes[0].lon,
       };
 
-      console.log("Start  ", start); 
       
       this.locationService.searchLocation(drop).subscribe((endRes: any) => {
         const end = {
           lat: +endRes[0].lat,
           lng: +endRes[0].lon,
         };
-        console.log("end  ", end); 
 
         this.routeService.getRoute(start, end).subscribe((res: any) => {
           const route = res.routes[0];

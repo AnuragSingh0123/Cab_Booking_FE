@@ -59,19 +59,12 @@ export class UserSignup {
 
     this.authService.signUp(formData).subscribe({
       next: res => {
-        console.log(res);
-
-        this.notify.show('Registration Successful');
-
+        this.notify.show(res.message);
         this.router.navigate(['/login']);
       },
 
       error: err => {
-        console.log(err);
-
-        this.notify.show(
-          'Error while registration. Please try again later'
-        );
+        this.notify.show(err.error.message);
       },
     });
   }

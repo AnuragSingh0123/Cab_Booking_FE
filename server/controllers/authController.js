@@ -18,8 +18,6 @@ exports.signUp = async (req, res) => {
       driverCoordinates
     } = req.body;
 
-    console.log(req.body);
-
     const existingUser = await User.findOne({ email });
 
     if (existingUser) {
@@ -49,14 +47,13 @@ exports.signUp = async (req, res) => {
     }
 
     res.status(201).json({
-      message: `${role || "rider"} created successfully`
+      message: "Registration Successful"
     });
 
 
   } catch (err) {
-    console.log(err);
     res.status(500).json({
-      message: "Signup error"
+      message: "Internal Server Error"
     });
   }
 };

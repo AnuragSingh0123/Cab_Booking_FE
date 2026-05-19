@@ -24,7 +24,7 @@ export class DriverDashboard implements OnInit, OnDestroy {
   reviews = signal<any[]>([]);
   activeRide = signal<any | null>(null);
   availableRide = signal<any | null>(null);
-  driverToggleStatus: 'Online' | 'Offline' = 'Offline';
+  driverToggleStatus: 'Online' | 'Offline' = 'Online';
   driver = signal({
     id: '',
     name: '',
@@ -48,7 +48,7 @@ export class DriverDashboard implements OnInit, OnDestroy {
     this.loadUser();
     this.refresh();
 
-    this.sub = interval(500).subscribe(() => {
+    this.sub = interval(1000).subscribe(() => {
       this.refresh();
     });
   }
@@ -100,8 +100,6 @@ export class DriverDashboard implements OnInit, OnDestroy {
         }
 
         this.activeRide.set(data?.activeRide ?? null);
-
-        console.log(this.activeRide());
 
         this.driver.update(d => ({
           ...d,

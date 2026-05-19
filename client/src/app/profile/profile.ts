@@ -40,7 +40,6 @@ export class Profile {
       this.user = JSON.parse(userData);
 
       this.rideService.getProfile().subscribe((res: any) => {
-        console.log(res);
         this.rideDetails.set(res);
       });
     }
@@ -73,7 +72,6 @@ export class Profile {
   driverCoordinates: Number[]= [];
 
   async selectPickup(place: any) {
-    console.log("Place is ", place);
 
     this.driverCoordinates.push(place.lat,place.lon);
     this.pickup = place.display_name;
@@ -91,7 +89,6 @@ export class Profile {
     if (this.pickup) {
       this.driverService.addDirverLocation(this.pickup, this.driverCoordinates).subscribe((res: any) => {
         
-        console.log("Location updated successfully", res?.driverLocation);
 
         const currentData = this.rideDetails();
         currentData.driverLocation = res.driverLocation;

@@ -7,7 +7,7 @@ import {
   signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { interval, Subscription } from 'rxjs';
 
 import { PopupService } from '../popup-service';
@@ -26,6 +26,7 @@ export class RideSuccess implements OnInit, OnDestroy {
   private rideService = inject(RideService);
   private notify = inject(PopupService);
   private routeService = inject(RouteService);
+  private route = inject(ActivatedRoute);
 
   activeRide = signal<any>(null);
   progress = signal(100);
@@ -43,19 +44,39 @@ export class RideSuccess implements OnInit, OnDestroy {
   private sub?: Subscription;
 
   ngOnInit() {
-    const booking = history.state.booking;
 
-    if (!booking) {
-      this.goHome();
-      return;
-    }
+  const bookingId =
+    this.route.snapshot.paramMap.get('id');
 
-    this.activeRide.set(booking);
-
-    this.sub = interval(3000).subscribe(() => {
-      this.updateRide();
-    });
+  if (!bookingId) {
+    this.goHome();
+    return;
   }
+
+  this.rideService
+    .bookingProgress(bookingId)
+    .subscribe({
+
+      next: (res: any) => {
+
+        this.activeRide.set({
+          ...res.booking,
+          driver: res.driver,
+        });
+
+        this.sub = interval(1000).subscribe(() => {
+          this.updateRide();
+        });
+
+      },
+
+      error: () => {
+        this.goHome();
+      }
+
+    });
+
+}
 
   ngOnDestroy() {
     this.sub?.unsubscribe();
@@ -72,7 +93,7 @@ export class RideSuccess implements OnInit, OnDestroy {
     if (!ride) return;
 
     const createdTime = new Date(ride.createdAt).getTime();
-    const expiryTime = createdTime + 60 * 1000;
+    const expiryTime = createdTime + 3 * 60 * 1000;
 
     const remaining = expiryTime - Date.now();
 
@@ -84,7 +105,7 @@ export class RideSuccess implements OnInit, OnDestroy {
       }
     }
 
-    const totalDuration = 10 * 60 * 1000;
+    const totalDuration = 3 * 60 * 1000;
 
     this.progress.set((remaining / totalDuration) * 100);
 
@@ -96,11 +117,9 @@ export class RideSuccess implements OnInit, OnDestroy {
           driver: res.driver,
         }));
 
-        if(this.generatingETA() === false && this.ETA() === null && this.ETA() === null){
+        if(this.generatingETA() === false && this.ETA() === null && this.ED() === null){
           this.generateETA();
         }
-
-        console.log(this.activeRide());
       },
     });
   }
@@ -136,9 +155,6 @@ export class RideSuccess implements OnInit, OnDestroy {
     lng: +pickUpCoordinates[1],
   };
 
-  console.log("ETA start =", start);
-  console.log("ETA end =", end);
-
   this.routeService.getRoute(start, end).subscribe({
     next: (res: any) => {
       const route = res.routes?.[0];
@@ -168,36 +184,54 @@ export class RideSuccess implements OnInit, OnDestroy {
   });
 }
 
-  startETA(){
-    if(this.etaInterval) {
-      clearInterval(this.etaInterval);
+  startETA() {
+
+  if (this.etaInterval) {
+    clearInterval(this.etaInterval);
+  }
+
+  this.etaInterval = setInterval(() => {
+
+    const currentETA = this.liveETA();
+    const currentED = this.liveED();
+
+    if (currentETA === null || currentED === null) {
+      return;
     }
 
-    this.etaInterval = setInterval(()=>{
-      let currentETA = this.liveETA();
-      let currentED = this.liveED();
+    // stop when almost finished
+    if (currentETA <= (1 / 12)) {
 
-      if(currentETA === null || currentED === null) {
-        return;
-      }
+      this.liveETA.set(0);
+      this.liveED.set(0);
 
-      if(currentETA <=0) {
-        this.liveETA.set(0);
-        this.liveED.set(0);
-        clearInterval(this.etaInterval);
-        return;
-      }
+      clearInterval(this.etaInterval);
 
-      this.liveETA.set(Number((currentETA - 1).toFixed(0)));
+      return;
+    }
 
-      const decreasePerMinute = (this.ED() || 0)/(this.ETA() || 1);
+    const etaDecreasePerTick = 1 / 12;
 
-      const newDistance = currentED - decreasePerMinute;
+    this.liveETA.set(
+      currentETA - etaDecreasePerTick
+    );
 
-      this.liveED.set(Number((newDistance).toFixed(2)));
+    const decreasePerMinute =
+      (this.ED() || 0) / (this.ETA() || 1);
 
-    }, 60000)
-  }
+    const decreasePer5Sec =
+      decreasePerMinute / 12;
+
+    const newDistance = Math.max(
+      0,
+      currentED - decreasePer5Sec
+    );
+
+    this.liveED.set(newDistance);
+
+  }, 5000);
+
+}
 
 
   cancelRide() {

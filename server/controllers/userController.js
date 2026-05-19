@@ -5,7 +5,6 @@ const User = require("../models/user");
 
 const getProfile = async (req, res) => {
   try {
-    console.log("heello");
 
     const user = await User.findById(req.user.id);
     const id = user._id;

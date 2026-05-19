@@ -4,13 +4,12 @@ import { Injectable, signal } from '@angular/core';
   providedIn: 'root',
 })
 export class PopupService {
-  messageSignal = signal<string>("");
-  message = this.messageSignal;
+  message = signal<string>("");
 
-  show(text: string, duration: number = 4000) {
-    this.messageSignal.set(text);
+  show(text: string, duration: number = 5000) {
+    this.message.set(text);
     setTimeout(() => {
-      this.messageSignal.set("");
+      this.message.set("");
     }, duration);
   }
 }

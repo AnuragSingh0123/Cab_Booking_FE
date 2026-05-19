@@ -43,7 +43,6 @@ export class RideService {
   }
 
   bookingProgress(rideID: string) {
-    console.log(rideID);
     return this.http.get(`http://localhost:7000/api/rides/${rideID}`);
   }
 

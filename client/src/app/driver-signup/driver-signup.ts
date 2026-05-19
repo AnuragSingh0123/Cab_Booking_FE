@@ -77,8 +77,6 @@ export class DriverSignup {
   
   selectAddress(place: any) {
 
-  console.log("data=", place);
-
   this.signUpForm.patchValue(
     {
       driverLocation: place.display_name,
@@ -93,7 +91,6 @@ export class DriverSignup {
     +place.lon,
   ];
 
-  console.log('Coordinates set:', this.driverCoordinates);
 
   this.currentAddressSuggestions = [];
 }
@@ -137,7 +134,6 @@ export class DriverSignup {
     this.authService.signUp(formData).subscribe({
       next: res => {
 
-        console.log(res);
 
         this.notify.show(
           'Registration Successful'
@@ -147,8 +143,6 @@ export class DriverSignup {
       },
 
       error: err => {
-
-        console.log(err);
 
         this.notify.show(
           'Error while registration. Please try again later'
