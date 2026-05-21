@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const connectDB = require("./config/connectDB");
@@ -26,5 +27,5 @@ app.get("/", (req, res) => {
 
 app.listen(7000, async () => {
   await connectDB();
-  console.log("Server running on http://localhost:7000");
+  console.log(`Server running on http://localhost:${process.env.PORT}`);
 });

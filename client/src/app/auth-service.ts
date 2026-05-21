@@ -1,6 +1,7 @@
 import { Injectable, signal, computed, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { environment } from '../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -18,11 +19,11 @@ export class AuthService {
 
 
   login(data: any) {
-    return this.http.post<{message: string}>('http://localhost:7000/auth/login', data);
+    return this.http.post<{message: string}>(`${environment.baseUrl}/auth/login`, data);
   }
 
   signUp(userData: any) {
-  return this.http.post<{ message: string }>("http://localhost:7000/auth/sign-up", userData);
+  return this.http.post<{ message: string }>(`${environment.baseUrl}/auth/sign-up`, userData);
 }
 
 

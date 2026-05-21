@@ -94,16 +94,12 @@ const updateBooking = async (req, res) => {
       });
     }
 
-    const { status, completedAt } = req.body;
+    const { status } = req.body;
 
     booking.status = status;
 
     if (status === "accepted") {
       booking.driverId = req.user.id;
-    }
-
-    if (completedAt) {
-      booking.completedAt = completedAt;
     }
 
     await booking.save();

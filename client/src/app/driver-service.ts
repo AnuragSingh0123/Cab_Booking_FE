@@ -1,5 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
+import { environment } from '../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -19,34 +20,34 @@ export class DriverService {
 
   getDriverDashboard() {
     return this.http.get(
-      'http://localhost:7000/api/driver/dashboard'
+      `${environment.baseUrl}/api/driver/dashboard`
     );
   }
 
   toggleDriverStatus() {
     return this.http.patch(
-      'http://localhost:7000/api/driver/status',
+      `${environment.baseUrl}/api/driver/status`,
       {}
     );
   }
 
   acceptRide(bookingId: string) {
     return this.http.patch(
-      `http://localhost:7000/api/rides/${bookingId}`,
+      `${environment.baseUrl}/api/rides/${bookingId}`,
       { status: 'accepted' }
     );
   }
 
   startRide(bookingId: string) {
     return this.http.patch(
-      `http://localhost:7000/api/rides/${bookingId}`,
+      `${environment.baseUrl}/api/rides/${bookingId}`,
       { status: 'started' }
     );
   }
 
   completeRide(bookingId: string) {
     return this.http.patch(
-      `http://localhost:7000/api/rides/${bookingId}`,
+      `${environment.baseUrl}/api/rides/${bookingId}`,
       {
         status: 'completed',
         completedAt: Date.now(),
@@ -60,7 +61,7 @@ export class DriverService {
       driverCoordinates: driverCoordinates
     }
     return this.http.patch(
-      `http://localhost:7000/api/driver/location`,
+      `${environment.baseUrl}/api/driver/location`,
       {
         data
       }

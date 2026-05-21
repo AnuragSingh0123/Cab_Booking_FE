@@ -32,7 +32,6 @@ export class DriverDashboard implements OnInit, OnDestroy {
     vehicle: '',
     vehicleNo: '',
     rating: 0,
-    online: true,
   });
 
   stats = signal({
@@ -46,8 +45,6 @@ export class DriverDashboard implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.loadUser();
-    this.refresh();
-
     this.sub = interval(1000).subscribe(() => {
       this.refresh();
     });
@@ -81,6 +78,8 @@ export class DriverDashboard implements OnInit, OnDestroy {
   refresh() {
     this.driverService.getDriverDashboard().subscribe({
       next: (data: any) => {
+
+        console.log(data);
         this.reviews.set(data?.reviews ?? []);
 
         const availableRide = data?.availableRide ?? null;
@@ -122,33 +121,14 @@ export class DriverDashboard implements OnInit, OnDestroy {
     });
   }
 
-  setAvailableRide(ride: any) {
-    const driverVehicle = this.driver().vehicle?.toLowerCase();
-    const rideVehicle = ride?.vehicle?.toLowerCase();
-
-    const matched =
-      ride &&
-      driverVehicle &&
-      rideVehicle &&
-      driverVehicle === rideVehicle;
-
-    this.availableRide.set(matched ? ride : null);
-  }
 
   toggleStatus() {
-  if (this.driverToggleStatus === 'Offline') {
-    this.driverService.toggleDriverStatus().subscribe({
-      next: () => {
-        this.driverToggleStatus = 'Online';
-        this.refresh();
-      },
-      error: (err) => console.error('Failed to go online:', err)
-    });
-  } else {
-    this.driverToggleStatus = 'Offline';
-    this.driver.update(state => ({ ...state, online: false })); 
-    console.log('Went offline locally. API skipped.');
-  }
+    if(this.driverToggleStatus === 'Online') {
+
+      this.driverToggleStatus = 'Offline'
+    } else {
+      this.driverToggleStatus = 'Online'
+    }
 }
 
   acceptRide() {

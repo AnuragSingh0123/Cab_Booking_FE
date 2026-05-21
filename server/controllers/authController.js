@@ -80,7 +80,7 @@ exports.login =  async (req, res) => {
         role: user.role
       },
       JWT_SECRET,
-      { expiresIn: "7d" }
+      { expiresIn: "1h" }
     );
 
     return res.status(200).json({

@@ -1,5 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -13,7 +14,7 @@ export class LocationService {
       'https://api.locationiq.com/v1/autocomplete',
       {
         params: {
-          key: 'pk.2291756e6d48580b693a0848389717a5',
+          key: environment.mapApiKey,
           q: query,
           countrycodes: 'IN',
           limit: 5,

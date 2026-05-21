@@ -1,0 +1,5 @@
+// server/src/.env
+
+PORT=7000
+MONGO_URL=mongodb://127.0.0.1:27017/cab_db
+JWT_SECRET=super_secret_key

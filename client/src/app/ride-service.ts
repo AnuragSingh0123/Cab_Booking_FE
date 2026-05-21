@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
+import { environment } from '../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -35,29 +36,29 @@ export class RideService {
 
 
   bookRide(data: any) {
-    return this.http.post('http://localhost:7000/api/rides', data);
+    return this.http.post(`${environment.baseUrl}/api/rides`, data);
   }
 
   cancelBooking(id: string, data: any) {
-    return this.http.patch(`http://localhost:7000/api/rides/${id}`, data);
+    return this.http.patch(`${environment.baseUrl}/api/rides/${id}`, data);
   }
 
   bookingProgress(rideID: string) {
-    return this.http.get(`http://localhost:7000/api/rides/${rideID}`);
+    return this.http.get(`${environment.baseUrl}/api/rides/${rideID}`);
   }
 
 
   submitFeedback(data: any) {
-    return this.http.post('http://localhost:7000/api/reviews', data);
+    return this.http.post(`${environment.baseUrl}/api/reviews`, data);
   }
 
 
   getMyBookings() {
-    return this.http.get('http://localhost:7000/api/rides');
+    return this.http.get(`${environment.baseUrl}/api/rides`);
   }
 
 
   getProfile() {
-    return this.http.get('http://localhost:7000/api/users/profile');
+    return this.http.get(`${environment.baseUrl}/api/users/profile`);
   }
 }
