@@ -117,9 +117,35 @@ const updateDriverLocation = async (req, res) => {
     });
   }
 };
+const rejectBooking = async (req, res) => {
+  try {
+    const { bookingId, driverId } = req.body;
+
+    const updatedBooking = await Booking.findByIdAndUpdate(
+      bookingId,
+      { 
+        $addToSet: { rejectedDrivers: driverId },
+      },
+      { new: true }
+    );
+
+    if (!updatedBooking) {
+      return res.status(404).json({ message: "Booking not found" });
+    }
+    return res.status(200).json({ 
+      success: true, 
+      message: "Ride rejected successfully. Searching for next driver.",
+      booking: updatedBooking 
+    });
+
+  } catch (error) {
+    return res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
 
 module.exports = {
   getDriverDashboard,
   toggleDriverStatus,
   updateDriverLocation,
+  rejectBooking
 };

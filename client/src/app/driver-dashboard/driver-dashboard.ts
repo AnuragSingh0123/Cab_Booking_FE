@@ -178,6 +178,17 @@ export class DriverDashboard implements OnInit, OnDestroy {
   }
 
   rejectRide() {
-    this.availableRide.set(null);
-  }
+  const rideId = this.availableRide()?._id;
+  const driverId = this.driver()?.id;
+  if (!rideId || !driverId) return;
+  this.driverService.rejectRide(rideId, driverId).subscribe({
+    next: (res) => {
+      console.log('Ride rejection registered on server:', res);
+      this.availableRide.set(null);
+    },
+    error: (err) => {
+      console.error('Failed to reject ride on backend:', err);
+    }
+  });
+}
 }
