@@ -16,14 +16,11 @@ const getDriverDashboard = async (req, res) => {
       });
     }
 
-    let availableRide = null;
-
-if (driver.isAvailable) {
-  availableRide = await Booking.findOne({
-    status: "requested",
-    driverId: null,
-  }).sort({ createdAt: 1 });
-}
+    const availableRide = await Booking.findOne({
+      status: "requested",
+      driverId: null,
+      rejectedDrivers: { $nin: [driver._id] },
+    }).sort({ createdAt: 1 });
 
     const activeRide = await Booking.findOne({
       driverId: req.user.id,
@@ -129,8 +126,44 @@ const updateDriverLocation = async (req, res) => {
   }
 };
 
+
+const rejectBooking = async (req, res) => {
+  try {
+    const { bookingId } = req.body;
+    const driver = await Driver.findOne({ userId: req.user.id });
+
+    if (!driver) {
+      return res.status(404).json({ message: "Driver not found" });
+    }
+
+    console.log(`Driver ${driver._id} is rejecting booking ${bookingId}`);
+    const updatedBooking = await Booking.findByIdAndUpdate(
+      bookingId,
+      { 
+        $addToSet: { rejectedDrivers: driver._id },
+        $set: { driverId: null } 
+      },
+      { new: true }
+    );
+
+    if (!updatedBooking) {
+      return res.status(404).json({ message: "Booking not found" });
+    }
+
+    return res.status(200).json({ 
+      success: true, 
+      message: "Ride rejected successfully." 
+    });
+
+  } catch (error) {
+    console.error("Rejection error:", error);
+    return res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
 module.exports = {
   getDriverDashboard,
   toggleDriverStatus,
   updateDriverLocation,
+  rejectBooking
 };
