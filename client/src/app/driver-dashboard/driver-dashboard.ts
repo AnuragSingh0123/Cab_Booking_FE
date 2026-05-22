@@ -32,7 +32,7 @@ export class DriverDashboard implements OnInit, OnDestroy {
     vehicle: '',
     vehicleNo: '',
     rating: 0,
-    isAvailable: false
+    isAvailable: null
   });
 
   stats = signal({
@@ -84,23 +84,23 @@ export class DriverDashboard implements OnInit, OnDestroy {
         this.reviews.set(data?.reviews ?? []);
 
         this.driverToggleStatus =
-  data?.driver?.isAvailable ?? false;
+          data?.driver?.isAvailable ?? false;
 
-const availableRide = data?.availableRide ?? null;
+        const availableRide = data?.availableRide ?? null;
 
-if (
-  this.driverToggleStatus &&
-  availableRide &&
-  this.driver().vehicle &&
-  availableRide.vehicle &&
-  this.driver().vehicle.toLowerCase() ===
-    availableRide.vehicle.toLowerCase()
-) {
-  this.availableRide.set(availableRide);
-} else {
-  this.availableRide.set(null);
-}
-        
+        if (
+          this.driverToggleStatus &&
+          availableRide &&
+          this.driver().vehicle &&
+          availableRide.vehicle &&
+          this.driver().vehicle.toLowerCase() ===
+          availableRide.vehicle.toLowerCase()
+        ) {
+          this.availableRide.set(availableRide);
+        } else {
+          this.availableRide.set(null);
+        }
+
 
         this.activeRide.set(data?.activeRide ?? null);
 
@@ -127,19 +127,19 @@ if (
 
 
   toggleStatus() {
-  this.driverToggleStatus = !this.driverToggleStatus;
+    this.driverToggleStatus = !this.driverToggleStatus;
 
-  this.driverService
-    .toggleDriverStatus(this.driverToggleStatus)
-    .subscribe({
-      next: res => {
-        console.log('status updated', res);
-      },
-      error: err => {
-        console.log('status update failed', err);
-      },
-    });
-}
+    this.driverService
+      .toggleDriverStatus(this.driverToggleStatus)
+      .subscribe({
+        next: res => {
+          console.log('status updated', res);
+        },
+        error: err => {
+          console.log('status update failed', err);
+        },
+      });
+  }
 
   acceptRide() {
     const rideId = this.availableRide()?._id;
@@ -167,16 +167,16 @@ if (
     if (!rideId) return;
 
     this.driverService.completeRide(rideId).subscribe({
-      next: ()=>{
+      next: () => {
         const ride = this.activeRide();
-        if(ride?.drop && ride?.dropCoordinates
-) {
+        if (ride?.drop && ride?.dropCoordinates
+        ) {
           this.driverService.addDirverLocation(ride?.drop, ride?.dropCoordinates
-).subscribe({
-            next: res=> {
+          ).subscribe({
+            next: res => {
               console.log("location Updated", res);
             },
-            error: err=> {
+            error: err => {
               console.log("location update failed", err);
             }
           })

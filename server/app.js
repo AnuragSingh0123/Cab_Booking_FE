@@ -10,7 +10,14 @@ const reviewRoutes = require("./routes/reviewRoutes");
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:4200',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+}));
+
+
 app.use(express.json());
 
 

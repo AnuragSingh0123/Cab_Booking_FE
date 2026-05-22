@@ -14,7 +14,8 @@ import { DriverService } from '../driver-service';
   styleUrl: './profile.css',
 })
 export class Profile {
-  user: any;
+  user = signal<any>(null);
+  
 
   rideDetails = signal({
     totalRides: 0,
@@ -27,6 +28,7 @@ export class Profile {
   router = inject(Router);
 
   //----------------By Aditya--------------------------
+  
   pickup: string = '';
   pickupSuggestions: any[] = [];
   pickupSubject = new Subject<string>();
@@ -37,8 +39,7 @@ export class Profile {
     const userData = localStorage.getItem('user');
 
     if (userData) {
-      this.user = JSON.parse(userData);
-
+      this.user.set(JSON.parse(userData));
       this.rideService.getProfile().subscribe((res: any) => {
         this.rideDetails.set(res);
       });
@@ -98,6 +99,49 @@ export class Profile {
 
       });
     }
+  }
+
+
+  editP = false;
+  editName = ''
+  editEmail = ''
+  updatedData :any
+
+  startEditing() {
+    this.editP = true;
+    this.editName = this.user()?.name || '';
+    this.editEmail = this.user()?.email || '';
+  }
+
+  editProfile(){
+if (!this.editName.trim() || !this.editEmail.trim()) {
+      alert("Name and Email cannot be empty.");
+      return;
+    }
+
+    this.driverService.editProfile(this.editName, this.editEmail).subscribe({
+      next: (res: any) => {
+        console.log("Name is ", res.user.name);
+        console.log("Email is ", res.user.email);
+
+        const updatedData = {
+          ...this.user(),
+          name: res.user.name,
+          email: res.user.email
+        };
+
+        this.user.set(updatedData);
+        localStorage.setItem('user', JSON.stringify(this.user));
+
+        this.editP = false;
+      },
+
+      error: (err) => {
+   
+        alert(err.error?.message || "An error occurred while updating profile.");
+      }
+    });
+    
   }
 
 

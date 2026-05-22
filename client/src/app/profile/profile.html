@@ -4,13 +4,32 @@
 
   <div class="profile-card">
     <div class="avatar">
-      {{ user?.name?.substring(0,1) }}
+      {{ user()?.name?.substring(0,1) }}
     </div>
 
     <div class="user-info">
-      <p class="name">{{ user?.name || 'Anurag Singh' }}</p>
-      <p class="email">{{ user?.email || 'anurag@email.com' }}</p>
+      <p class="name">{{ user()?.name}}</p>
+      <p class="email">{{ user()?.email}}</p>
       <p class="joined">Member since Apr 2026</p>
+
+    </div>
+
+    <div class="edit-profile">
+      @if(editP){
+        <input type="text" class="form-input" [(ngModel)]="editName" placeholder="Enter Name">
+        <input type="email" class="form-input" [(ngModel)]="editEmail" placeholder="Enter Email">
+      }
+    </div>
+
+    <div style="margin-left: auto; padding-right: 40px;">
+      @if(!editP){
+        
+        <button class="edit-btn" (click)="startEditing()">Edit Profile</button>
+      }@else{
+        <button class="edit-btn" (click)="editProfile()">Update Profile</button>
+        <button class="edit-btn" style="margin-left: 10px;" (click)="editP = false">Cancel</button>
+        
+      }
     </div>
   </div>
 
@@ -31,7 +50,7 @@
 
     <div class="stat-card">
       <span class="stat-label">
-        {{ user?.role === 'driver' ? 'Total Earnings' : 'Total Spent' }}
+        {{ user()?.role === 'driver' ? 'Total Earnings' : 'Total Spent' }}
       </span>
 
       <p class="stat-value">
@@ -44,7 +63,7 @@
   <!--By Aditya  -->
 
 
-  @if(user?.role === 'driver'){
+  @if(user()?.role === 'driver'){
 
   <div class="stat-card">
     <span class="stat-label">

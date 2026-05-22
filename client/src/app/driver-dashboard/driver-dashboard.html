@@ -24,9 +24,13 @@
   <div>
     <span class="label">STATUS</span>
 
-    <p [ngClass]="driverToggleStatus ? 'green' : 'red'">
-      ● {{ driverToggleStatus ? 'Online' : 'Offline' }}
-    </p>
+    @if(driver().isAvailable === null) {
+        ...
+    }@else {
+        <p [ngClass]="driverToggleStatus ? 'green' : 'red'">
+          ● {{ driverToggleStatus ? 'Online' : 'Offline' }}
+        </p>
+    }
   </div>
 
   <button

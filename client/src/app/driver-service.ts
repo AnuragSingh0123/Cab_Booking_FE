@@ -69,4 +69,22 @@ export class DriverService {
       }
     );
   }
+
+
+  editProfile(name:string, email:string){
+
+    let editUser = {
+      name:name,
+      email:email
+    }
+
+    console.log("Edit profile data ", editUser);
+    
+    return this.http.patch(
+      `${environment.baseUrl}/api/users/editProfile`,
+      {
+        editUser
+      }
+    )
+  }
 }
