@@ -1,199 +1,110 @@
 <div class="ride-page">
+  @let ride = activeRide();
 
-    @let ride = activeRide();
+  @if (ride) {
+    @switch (ride.status) {
+      @case ('requested') {
+        <h1 class="title">Searching for Driver</h1>
 
-    @if(ride){
+        <div class="searching-card">
+          <div class="searching-top">
+            <div class="spinner"></div>
 
-        @switch (ride.status) {
+            <div class="searching-content">
+              <p class="searching-title">Finding your driver</p>
 
-            @case ('requested') {
+              <p class="searching-subtitle">Searching nearby drivers and sending ride requests.</p>
+            </div>
+          </div>
 
-                <h1 class="title">
-                    Searching for Driver
-                </h1>
+          <div class="progress-wrapper">
+            <div class="progress-bar" [style.width.%]="progress()"></div>
+          </div>
 
-                <div class="searching-card">
-
-                    <div class="searching-top">
-
-                        <div class="spinner"></div>
-
-                        <div class="searching-content">
-
-                            <p class="searching-title">
-                                Finding your driver
-                            </p>
-
-                            <p class="searching-subtitle">
-                                Searching nearby drivers and sending ride requests.
-                            </p>
-
-                        </div>
-
-                    </div>
-
-                    <div class="progress-wrapper">
-
-                        <div
-                            class="progress-bar"
-                            [style.width.%]="progress()">
-
-                        </div>
-
-                    </div>
-
-                    <button
-                        class="cancel-btn"
-                        (click)="cancelRide()">
-
-                        Cancel Ride
-
-                    </button>
-
-                </div>
-            }
-
-           @case ('accepted') {
-
-    <h1 class="title">
-        Your Driver is on the Way
-    </h1>
-
-    <div class="driver-card">
-
-        <div class="avatar">
-            {{ ride.driver?.name?.charAt(0) || 'D' }}
+          <button class="cancel-btn" (click)="cancelRide()">Cancel Ride</button>
         </div>
+      }
 
-        <p class="driver-name">
+      @case ('accepted') {
+        <h1 class="title">Your Driver is on the Way</h1>
+
+        <div class="driver-card">
+          <div class="avatar">
+            {{ ride.driver?.name?.charAt(0) || 'D' }}
+          </div>
+
+          <p class="driver-name">
             {{ ride.driver?.name }}
-        </p>
+          </p>
 
-        <p class="vehicle-details">
+          <p class="vehicle-details">
             {{ ride.driver?.vehicle }}
             •
             {{ ride.driver?.vehicleNo }}
-        </p>
+          </p>
 
-        <p class="helper-text">
-            Please be ready at your pickup location.
-        </p>
+          <p class="helper-text">Please be ready at your pickup location.</p>
 
-        @if (ETA() !== null && ED() !== null) {
-
+          @if (ETA() !== null && ED() !== null) {
             <div class="eta-card">
+              <p class="eta-title">
+                Arriving in
+                <b>{{ liveETA() | number: '1.0-1' }} min</b>
+              </p>
 
-                <p class="eta-title">
-                    Arriving in
-                    <b>{{ liveETA() | number:'1.0-1' }} min</b>
-                </p>
-
-                <p class="eta-subtitle">
-                    Driver is
-                    <b>{{ liveED() | number:'1.0-2' }} km</b>
-                    away
-                </p>
-
+              <p class="eta-subtitle">
+                Driver is
+                <b>{{ liveED() | number: '1.0-2' }} km</b>
+                away
+              </p>
             </div>
+          } @else {
+            <p class="eta-loading">Estimating driver's arrival...</p>
+          }
 
-        } @else {
+          <button class="cancel-btn" (click)="cancelRide()">Cancel Ride</button>
+        </div>
+      }
 
-            <p class="eta-loading">
-                Estimating driver's arrival...
-            </p>
+      @case ('started') {
+        <h1 class="title">Ride Started</h1>
 
-        }
+        <div class="status-card">
+          <p>On Trip</p>
 
-        <button
-            class="cancel-btn"
-            (click)="cancelRide()">
+          <p>
+            {{ ride.pickup }}
+            →
+            {{ ride.drop }}
+          </p>
+        </div>
+      }
 
-            Cancel Ride
+      @case ('completed') {
+        <h1 class="title">Ride Completed</h1>
 
-        </button>
+        <div class="status-card">
+          <p>₹ {{ ride.total | number }}</p>
+        </div>
 
-    </div>
-}
-
-            @case ('started') {
-
-                <h1 class="title">
-                    Ride Started
-                </h1>
-
-                <div class="status-card">
-
-                    <p>
-                        On Trip
-                    </p>
-
-                    <p>
-                        {{ ride.pickup }}
-                        →
-                        {{ ride.drop }}
-                    </p>
-
-                </div>
+        <div class="feedback-card">
+          <div class="stars">
+            @for (star of [1, 2, 3, 4, 5]; track star) {
+              <button (click)="setRating(star)" [class.active]="rating() >= star">★</button>
             }
+          </div>
 
-            @case ('completed') {
+          <textarea [(ngModel)]="feedbackText" placeholder="Write your feedback..."> </textarea>
 
-                <h1 class="title">
-                    Ride Completed
-                </h1>
+          <button (click)="submitFeedback()">Submit</button>
+        </div>
+      }
 
-                <div class="status-card">
+      @case ('cancelled') {
+        <h1 class="title">Ride Cancelled</h1>
 
-                    <p>
-                        ₹ {{ ride.total | number }}
-                    </p>
-
-                </div>
-
-                <div class="feedback-card">
-
-                    <div class="stars">
-
-                        @for(star of [1,2,3,4,5]; track star){
-
-                            <button
-                                (click)="setRating(star)"
-                                [class.active]="rating() >= star">
-
-                                ★
-
-                            </button>
-                        }
-
-                    </div>
-
-                    <textarea
-                        [(ngModel)]="feedbackText"
-                        placeholder="Write your feedback...">
-
-                    </textarea>
-
-                    <button (click)="submitFeedback()">
-
-                        Submit
-
-                    </button>
-
-                </div>
-            }
-
-            @case ('cancelled') {
-
-                <h1 class="title">
-                    Ride Cancelled
-                </h1>
-
-                <button (click)="goHome()">
-
-                    Book Again
-
-                </button>
-            }
-        }
+        <button (click)="goHome()">Book Again</button>
+      }
     }
+  }
 </div>
