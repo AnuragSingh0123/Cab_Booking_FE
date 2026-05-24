@@ -2,7 +2,7 @@ const User = require("../models/user");
 const Driver = require("../models/driver");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const JWT_SECRET = "super_secret_key";
+const dotenv=require('dotenv').config();
 
 exports.signUp = async (req, res) => {
   try {
@@ -79,7 +79,7 @@ exports.login =  async (req, res) => {
         id: user._id,
         role: user.role
       },
-      JWT_SECRET,
+      process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
 
