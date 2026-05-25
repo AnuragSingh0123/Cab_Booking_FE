@@ -11,48 +11,45 @@ export class AuthService {
   http = inject(HttpClient);
   router=inject(Router);
 
-  user = signal<any | null>(this.getUserFromStorage());
-  token = signal<string | null>(this.getTokenFromStorage());
+  user = signal<any | null>(null);
 
-  isLoggedIn = computed(() => this.token() ? true : false);
+  isLoggedIn = computed(() => this.user() !== null);
   role = computed(() => this.user()?.role);
 
+  constructor() {
+    this.checkAuthStatus();
+  }
 
   login(data: any) {
-    return this.http.post<{message: string}>(`${environment.baseUrl}/auth/login`, data);
+    return this.http.post<{ message: string }>(`${environment.baseUrl}/auth/login`, data);
   }
 
   signUp(userData: any) {
-  return this.http.post<{ message: string }>(`${environment.baseUrl}/auth/sign-up`, userData);
-}
-
-
-  setSession(res: any) {
-    localStorage.setItem('user', JSON.stringify(res.user));
-    localStorage.setItem('token', res.token);
-
-    this.user.set(res.user);
-    this.token.set(res.token);
+    return this.http.post<{ message: string }>(`${environment.baseUrl}/auth/sign-up`, userData);
   }
-
 
   logout() {
-    localStorage.removeItem('user');
-    localStorage.removeItem('token');
+    this.http.post(`${environment.baseUrl}/auth/logout`, {}).subscribe({
+      next: () => this.clearSession(),
+      error: () => this.clearSession()
+    });
+  }
 
+  private clearSession() {
     this.user.set(null);
-    this.token.set(null);
-    
-    this.router.navigate(["/"]);
+    this.router.navigate(['/']);
   }
 
 
-  private getUserFromStorage() {
-    const u = localStorage.getItem('user');
-    return u ? JSON.parse(u) : null;
+  checkAuthStatus(){
+    this.http.get<any>(`${environment.baseUrl}/auth/me`).subscribe({
+      next: (userData) => {
+        this.user.set(userData);
+      },
+      error: () => {
+        this.user.set(null);
+      }
+    })
   }
 
-  private getTokenFromStorage() {
-    return localStorage.getItem('token');
-  }
 }

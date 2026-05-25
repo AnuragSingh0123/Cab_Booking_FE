@@ -20,13 +20,6 @@ export class Login{
   authService = inject(AuthService);
   rideService = inject(RideService);
   
-  ngOnInit() {
-  const user = localStorage.getItem('user');
-
-  if (user) {
-    this.router.navigate(['/']);
-  }
-}
   ride = this.rideService.booking;
   loading = false;
 
@@ -42,7 +35,7 @@ export class Login{
 
         this.loading = false;
 
-        this.authService.setSession(res);
+        this.authService.checkAuthStatus();
 
         const ride = this.ride();
 

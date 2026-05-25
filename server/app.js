@@ -7,8 +7,12 @@ const rideRoutes = require("./routes/rideRoutes");
 const driverRoutes = require("./routes/driverRoutes");
 const userRoutes = require("./routes/userRoutes");
 const reviewRoutes = require("./routes/reviewRoutes");
+const cookieParser = require("cookie-parser");
 
 const app = express();
+app.use(express.json());
+app.use(cookieParser());
+
 
 app.use(cors({
   origin: 'http://localhost:4200',
@@ -16,9 +20,6 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
 }));
-
-
-app.use(express.json());
 
 
 app.use("/auth", authRoutes);
