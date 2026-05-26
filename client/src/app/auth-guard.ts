@@ -1,32 +1,35 @@
 import { CanActivateFn, Router } from '@angular/router';
 import { inject } from '@angular/core';
 import { AuthService } from './auth-service';
+import { toObservable } from '@angular/core/rxjs-interop';
+import { filter, map, take } from 'rxjs';
 
 export const authGuard: CanActivateFn = (route, state) => {
 
   const auth = inject(AuthService);
   const router = inject(Router);
 
-  const user = auth.user();
+  return toObservable(auth.authChecked).pipe(
 
-  const url = state.url;
+    filter(checked => checked),
 
-  if (!user) {
-    router.navigate(['/login']);
-    return false;
-  }
+    take(1),
 
+    map(() => {
 
-  const allowedRoles = route.data?.['roles'] as string[] | undefined;
+      const user = auth.user();
 
-  if (!allowedRoles || allowedRoles.length === 0) {
-    return true;
-  }
+      if (!user) {
+        return router.createUrlTree(['/login']);
+      }
 
-  if (allowedRoles.includes(user.role)) {
-    return true;
-  }
+      const allowedRoles = route.data?.['roles'] as string[] | undefined;
 
-  router.navigate(['/']);
-  return false;
+      if (!allowedRoles || allowedRoles.includes(user.role)) {
+        return true;
+      }
+
+      return router.createUrlTree(['/']);
+    })
+  );
 };

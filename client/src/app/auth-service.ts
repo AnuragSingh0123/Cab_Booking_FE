@@ -10,7 +10,7 @@ export class AuthService {
 
   http = inject(HttpClient);
   router=inject(Router);
-
+  authChecked = signal(false);
   user = signal<any | null>(null);
 
   isLoggedIn = computed(() => this.user() !== null);
@@ -42,15 +42,17 @@ export class AuthService {
   }
 
 
-  checkAuthStatus(){
-    this.http.get<any>(`${environment.baseUrl}/auth/me`).subscribe({
-      next: (userData) => {
-        this.user.set(userData);
-      },
-      error: () => {
-        this.user.set(null);
-      }
-    })
-  }
+  checkAuthStatus() {
+  this.http.get<any>(`${environment.baseUrl}/auth/me`).subscribe({
+    next: (userData) => {
+      this.user.set(userData);
+      this.authChecked.set(true);
+    },
+    error: () => {
+      this.user.set(null);
+      this.authChecked.set(true);
+    }
+  });
+}
 
 }

@@ -9,6 +9,7 @@ import { RideService } from '../ride-service';
 import { LocationService } from '../location-service';
 import { BuildRouteService } from '../build-route-service';
 import { AuthService } from '../auth-service';
+import { MapRenderService } from '../map-render-service';
 
 @Component({
   selector: 'app-ride-request',
@@ -24,6 +25,7 @@ export class RideRequest {
   locationService = inject(LocationService);
   buildRouteService=inject(BuildRouteService);
   authService=inject(AuthService);
+  mapRender=inject(MapRenderService);
 
   pickup = '';
   drop = '';
@@ -102,26 +104,45 @@ export class RideRequest {
 
   rideRequest() {
 
-    if (!this.pickup.trim() || !this.drop.trim()) {
-      this.rideService.msg.set('Enter pickup and drop location');
+  this.rideService.mapLoading.set(true);
 
-    setTimeout(() => {
-      this.rideService.msg.set('');
-    }, 3000);
-      return;
-    }
+  this.buildRouteService
+    .buildRoute(this.pickup, this.drop)
+    .subscribe(data => {
 
-    if (!this.authService.isLoggedIn()) {
-      this.router.navigate(['/login']);
-      return;
-    }
+      if (data.distanceKm > 60) {
+        this.rideService.msg.set(
+          "Sorry, we can’t process rides over 60 km"
+        );
 
-    this.rideService.updateRide({
-      pickup: this.pickup,
-      drop: this.drop
+        this.rideService.mapLoading.set(false);
+
+        return;
+      }
+
+      this.rideService.updateRide({
+        pickup: this.pickup,
+        drop: this.drop,
+        pickUpCoordinates: [data.start.lat, data.start.lng],
+        dropCoordinates: [data.end.lat, data.end.lng],
+        distance: data.distanceKm,
+        duration: data.durationMin
+      });
+
+      const latlngs =
+        data.route.geometry.coordinates.map(
+          (c: any) => [c[1], c[0]]
+        );
+
+      this.mapRender.drawRoute(
+        latlngs,
+        data.start,
+        data.end
+      );
+
+      this.rideService.mapLoading.set(false);
+
+      this.router.navigate(['vehicle']);
     });
-
-    this.buildRouteService.buildRoute(this.pickup, this.drop);
-    
-  }
+}
 }

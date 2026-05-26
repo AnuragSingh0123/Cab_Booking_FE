@@ -1,75 +1,54 @@
 import { inject, Injectable } from '@angular/core';
 import { RouteService } from './route-service';
-import { MapRenderService } from './map-render-service';
-import { Router } from '@angular/router';
-import { RideService } from './ride-service';
 import { LocationService } from './location-service';
+import { map, switchMap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class BuildRouteService {
 
-  rideService = inject(RideService);
-  routeService = inject(RouteService);
-  mapRender = inject(MapRenderService);
-  router = inject(Router);
   locationService = inject(LocationService);
+  routeService = inject(RouteService);
 
   buildRoute(pickup: string, drop: string) {
-    this.rideService.mapLoading.set(true);
 
+    return this.locationService.searchLocation(pickup).pipe(
 
-    this.locationService.searchLocation(pickup).subscribe((startRes: any) => {
-      const start = {
-        lat: +startRes[0].lat,
-        lng: +startRes[0].lon,
-      };
+      switchMap((startRes: any) => {
 
-      
-      this.locationService.searchLocation(drop).subscribe((endRes: any) => {
-        const end = {
-          lat: +endRes[0].lat,
-          lng: +endRes[0].lon,
+        const start = {
+          lat: +startRes[0].lat,
+          lng: +startRes[0].lon
         };
 
-        this.routeService.getRoute(start, end).subscribe((res: any) => {
-          const route = res.routes[0];
+        return this.locationService.searchLocation(drop).pipe(
 
-          const pickUpCoordinates = [start.lat, start.lng];
-          const dropCoordinates = [end.lat, end.lng];
-          const distanceKm = (route.distance / 1000).toFixed(2);
-          const durationMin = (route.duration / 60).toFixed(0);
+          switchMap((endRes: any) => {
 
+            const end = {
+              lat: +endRes[0].lat,
+              lng: +endRes[0].lon
+            };
 
-          if (Number(distanceKm) > 60) {
-            this.rideService.msg.set("Sorry, we can’t process rides over 60 km");
-            this.rideService.mapLoading.set(false);
-            setTimeout(() => {
-              this.rideService.msg.set('');
-            }, 3000);
-            return;
-          }
+            return this.routeService.getRoute(start, end).pipe(
 
-          this.rideService.updateRide({
-            pickUpCoordinates: pickUpCoordinates,
-            dropCoordinates: dropCoordinates,
-            distance: distanceKm,
-            duration: durationMin,
-          });
+              map((routeRes: any) => {
 
+                const route = routeRes.routes[0];
 
-          const latlngs = route.geometry.coordinates.map(
-            (c: any) => [c[1], c[0]]
-          );
-
-          this.mapRender.drawRoute(latlngs, start, end);
-
-          this.rideService.mapLoading.set(false);
-          this.router.navigate(['vehicle']);
-        });
-      });
-    });
+                return {
+                  start,
+                  end,
+                  route,
+                  distanceKm: +(route.distance / 1000).toFixed(2),
+                  durationMin: +(route.duration / 60).toFixed(0)
+                };
+              })
+            );
+          })
+        );
+      })
+    );
   }
-
 }
