@@ -13,8 +13,6 @@ export const authGuard: CanActivateFn = (route, state) => {
 
     filter(checked => checked),
 
-    take(1),
-
     map(() => {
 
       const user = auth.user();

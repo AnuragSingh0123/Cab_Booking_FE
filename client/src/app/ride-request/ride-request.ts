@@ -10,6 +10,7 @@ import { LocationService } from '../location-service';
 import { BuildRouteService } from '../build-route-service';
 import { AuthService } from '../auth-service';
 import { MapRenderService } from '../map-render-service';
+import { PopupService } from '../popup-service';
 
 @Component({
   selector: 'app-ride-request',
@@ -26,6 +27,7 @@ export class RideRequest {
   buildRouteService=inject(BuildRouteService);
   authService=inject(AuthService);
   mapRender=inject(MapRenderService);
+  notify=inject(PopupService);
 
   pickup = '';
   drop = '';
@@ -50,37 +52,48 @@ export class RideRequest {
   }
 
   ngOnInit() {
-
     this.pickupSubject.pipe(
-      debounceTime(300),
-      switchMap(value => {
+  debounceTime(300),
+  switchMap(value => {
 
-        if (value.trim().length < 3) {
-          return of([]);
-        }
+    if (value.trim().length < 3) {
+      return of([]);
+    }
 
-        return this.locationService.searchLocation(value);
-      })
-    )
-    .subscribe((res: any) => {
-      this.pickupSuggestions = res || [];
-    });
+    return this.locationService.searchLocation(value);
+  })
+)
+.subscribe({
+  next: (res: any) => {
+    this.pickupSuggestions = res || [];
+  },
+  error: () => {
+    this.notify.show('Failed to search pickup location');
+    this.pickupSuggestions = [];
+  }
+});
 
 
     this.dropSubject.pipe(
-      debounceTime(300),
-      switchMap(value => {
+  debounceTime(300),
+  switchMap(value => {
+    if (value.trim().length < 3) {
+      return of([]);
+    }
+    return this.locationService.searchLocation(value);
+  })
 
-        if (value.trim().length < 3) {
-          return of([]);
-        }
+)
+.subscribe({
+  next: (res: any) => {
+    this.dropSuggestions = res || [];
+  },
 
-        return this.locationService.searchLocation(value);
-      })
-    )
-    .subscribe((res: any) => {
-      this.dropSuggestions = res || [];
-    });
+  error: () => {
+    this.notify.show('Failed to search drop location');
+    this.dropSuggestions = [];
+  }
+});
   }
 
   onPickupChange(value: string) {
@@ -105,11 +118,15 @@ export class RideRequest {
 
   this.rideService.mapLoading.set(true);
 
-  this.buildRouteService
-    .buildRoute(this.pickup, this.drop)
-    .subscribe(data => {
+  this.buildRouteService.buildRoute(
+
+    this.pickup,
+    this.drop,
+
+    (data: any) => {
 
       if (data.distanceKm > 60) {
+
         this.rideService.msg.set(
           "Sorry, we can’t process rides over 60 km"
         );
@@ -120,10 +137,20 @@ export class RideRequest {
       }
 
       this.rideService.updateRide({
+
         pickup: this.pickup,
         drop: this.drop,
-        pickUpCoordinates: [data.start.lat, data.start.lng],
-        dropCoordinates: [data.end.lat, data.end.lng],
+
+        pickUpCoordinates: [
+          data.start.lat,
+          data.start.lng
+        ],
+
+        dropCoordinates: [
+          data.end.lat,
+          data.end.lng
+        ],
+
         distance: data.distanceKm,
         duration: data.durationMin
       });
@@ -142,6 +169,8 @@ export class RideRequest {
       this.rideService.mapLoading.set(false);
 
       this.router.navigate(['vehicle']);
-    });
+    }
+  );
 }
+  
 }

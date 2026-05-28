@@ -97,14 +97,6 @@ export class DriverSignup {
 }
 
 
-
-  hideSuggestions() {
-
-    setTimeout(() => {
-      this.currentAddressSuggestions = [];
-    }, 200);
-  }
-
   signup() {
 
     if (this.signUpForm.invalid) {

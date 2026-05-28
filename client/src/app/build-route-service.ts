@@ -11,44 +11,44 @@ export class BuildRouteService {
   locationService = inject(LocationService);
   routeService = inject(RouteService);
 
-  buildRoute(pickup: string, drop: string) {
+  buildRoute(
+  pickup: string,
+  drop: string,
+  callback: (data: any) => void
+) {
 
-    return this.locationService.searchLocation(pickup).pipe(
+  this.locationService.searchLocation(pickup)
+    .subscribe((startRes: any) => {
 
-      switchMap((startRes: any) => {
+      const start = {
+        lat: +startRes[0].lat,
+        lng: +startRes[0].lon
+      };
 
-        const start = {
-          lat: +startRes[0].lat,
-          lng: +startRes[0].lon
-        };
+      this.locationService.searchLocation(drop)
+        .subscribe((endRes: any) => {
 
-        return this.locationService.searchLocation(drop).pipe(
+          const end = {
+            lat: +endRes[0].lat,
+            lng: +endRes[0].lon
+          };
 
-          switchMap((endRes: any) => {
+          this.routeService.getRoute(start, end)
+            .subscribe((routeRes: any) => {
 
-            const end = {
-              lat: +endRes[0].lat,
-              lng: +endRes[0].lon
-            };
+              const route = routeRes.routes[0];
 
-            return this.routeService.getRoute(start, end).pipe(
+              const result = {
+                start,
+                end,
+                route,
+                distanceKm: +(route.distance / 1000).toFixed(2),
+                durationMin: +(route.duration / 60).toFixed(0)
+              };
 
-              map((routeRes: any) => {
-
-                const route = routeRes.routes[0];
-
-                return {
-                  start,
-                  end,
-                  route,
-                  distanceKm: +(route.distance / 1000).toFixed(2),
-                  durationMin: +(route.duration / 60).toFixed(0)
-                };
-              })
-            );
-          })
-        );
-      })
-    );
-  }
+              callback(result);
+            });
+        });
+    });
+}
 }
