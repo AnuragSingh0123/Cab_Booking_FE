@@ -1,4 +1,5 @@
 <div class="vehicle-page">
+
   <h1 class="title">Choose a ride</h1>
 
   <p class="route">
@@ -15,87 +16,61 @@
   <div class="vehicle-wrapper">
 
     @if(loading()) {
-    <div class="vehicle-loader">
-      <div class="spinner"></div>
-      <p>Finding available rides...</p>
-    </div>
+      <div class="vehicle-loader">
+        <div class="spinner"></div>
+        <p>Finding available rides...</p>
+      </div>
     }
 
     <div class="form-container" [style.opacity]="loading() ? 0.4 : 1">
 
-      <label class="vcard" [class.active]="selectedValue === 'Mini'">
-        <input type="radio" name="vehicle" value="Mini" [(ngModel)]="selectedValue" [disabled]="loading()" />
+      @for(vehicle of vehicles; track vehicle.name) {
 
-        <div class="vcard-content">
-          <div class="left">
-            <img src="mini.png" />
-            <div class="vehicle-info">
-              <span class="name">Mini</span>
-              <span class="meta">Affordable • 4 seats</span>
+        <label
+          class="vcard"
+          [class.active]="selectedValue === vehicle.name"
+        >
+
+          <input
+            type="radio"
+            name="vehicle"
+            [value]="vehicle.name"
+            [(ngModel)]="selectedValue"
+            [disabled]="loading()"
+          />
+
+          <div class="vcard-content">
+
+            <div class="left">
+
+              <img [src]="vehicle.image" />
+
+              <div class="vehicle-info">
+                <span class="name">
+                  {{ vehicle.name }}
+                </span>
+
+                <span class="meta">
+                  {{ vehicle.desc }} • {{ vehicle.seats }} seats
+                </span>
+              </div>
+
             </div>
+
+            <p class="price">
+              ₹ {{ calculateFare(vehicle) | number }}
+            </p>
+
           </div>
 
-          <p class="price">
-            ₹ {{ 50 + (+ride().distance * 10) | number }}
-          </p>
-        </div>
-      </label>
+        </label>
+      }
 
-      <label class="vcard" [class.active]="selectedValue === 'Sedan'">
-        <input type="radio" name="vehicle" value="Sedan" [(ngModel)]="selectedValue" [disabled]="loading()" />
-
-        <div class="vcard-content">
-          <div class="left">
-            <img src="sedan.png" />
-            <div class="vehicle-info">
-              <span class="name">Sedan</span>
-              <span class="meta">Comfort • 4 seats</span>
-            </div>
-          </div>
-
-          <p class="price">
-            ₹ {{ 70 + (+ride().distance * 14) | number }}
-          </p>
-        </div>
-      </label>
-
-      <label class="vcard" [class.active]="selectedValue === 'SUV'">
-        <input type="radio" name="vehicle" value="SUV" [(ngModel)]="selectedValue" [disabled]="loading()" />
-
-        <div class="vcard-content">
-          <div class="left">
-            <img src="suv.png" />
-            <div class="vehicle-info">
-              <span class="name">SUV</span>
-              <span class="meta">Spacious • 6 seats</span>
-            </div>
-          </div>
-
-          <p class="price">
-            ₹ {{ 100 + (+ride().distance * 18) | number }}
-          </p>
-        </div>
-      </label>
-
-      <label class="vcard" [class.active]="selectedValue === 'Premium'">
-        <input type="radio" name="vehicle" value="Premium" [(ngModel)]="selectedValue" [disabled]="loading()" />
-
-        <div class="vcard-content">
-          <div class="left">
-            <img src="premium.png" />
-            <div class="vehicle-info">
-              <span class="name">Premium</span>
-              <span class="meta">Luxury • 4 seats</span>
-            </div>
-          </div>
-
-          <p class="price">
-            ₹ {{ 150 + (+ride().distance * 25) | number }}
-          </p>
-        </div>
-      </label>
-
-      <button (click)="checkoutDetails()" class="checkout-btn" [disabled]="loading()">
+      <button
+        (click)="checkoutDetails()"
+        class="checkout-btn"
+        [disabled]="loading() || !selectedValue"
+      >
         {{ loading() ? 'Calculating...' : 'Go to Checkout' }}
       </button>
 

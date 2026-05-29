@@ -12,14 +12,48 @@ import { FormsModule } from '@angular/forms';
 })
 export class VehicleSelection {
 
-
   rideService = inject(RideService);
-  loading = this.rideService.mapLoading;
   router = inject(Router);
+
+  loading = this.rideService.mapLoading;
+  ride = this.rideService.booking;
 
   selectedValue = '';
 
-  ride = this.rideService.booking;
+  vehicles = [
+    {
+      name: 'Mini',
+      image: 'mini.png',
+      seats: 4,
+      desc: 'Affordable',
+      baseFare: 50,
+      perKm: 10
+    },
+    {
+      name: 'Sedan',
+      image: 'sedan.png',
+      seats: 4,
+      desc: 'Comfort',
+      baseFare: 70,
+      perKm: 14
+    },
+    {
+      name: 'SUV',
+      image: 'suv.png',
+      seats: 6,
+      desc: 'Spacious',
+      baseFare: 100,
+      perKm: 18
+    },
+    {
+      name: 'Premium',
+      image: 'premium.png',
+      seats: 4,
+      desc: 'Luxury',
+      baseFare: 150,
+      perKm: 25
+    }
+  ];
 
   constructor() {
     const ride = this.rideService.booking();
@@ -29,42 +63,31 @@ export class VehicleSelection {
     }
   }
 
-  checkoutDetails() {
-
+  calculateFare(vehicle: any) {
     const distance = Number(this.ride().distance);
 
-    let fare = 0;
+    return vehicle.baseFare + (distance * vehicle.perKm);
+  }
 
-    switch (this.selectedValue) {
-      case 'Mini':
-        fare = 50 + distance * 10;
-        break;
+  checkoutDetails() {
 
-      case 'Sedan':
-        fare = 70 + distance * 14;
-        break;
+    const selectedVehicle = this.vehicles.find(
+      vehicle => vehicle.name === this.selectedValue
+    );
 
-      case 'SUV':
-        fare = 100 + distance * 18;
-        break;
+    if (!selectedVehicle) return;
 
-      case 'Premium':
-        fare = 150 + distance * 25;
-        break;
-
-      default:
-        return;
-    }
+    const fare = this.calculateFare(selectedVehicle);
 
     const gst = fare * 0.18;
     const total = fare + gst;
 
     this.rideService.updateRide({
-      vehicle: this.selectedValue,
+      vehicle: selectedVehicle.name,
       fare: fare.toFixed(2),
       gst: gst.toFixed(2),
       total: total.toFixed(2)
-    })
+    });
 
     this.router.navigate(['/checkout']);
   }
