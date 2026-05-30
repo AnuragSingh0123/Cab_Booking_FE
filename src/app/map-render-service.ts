@@ -11,10 +11,9 @@ export class MapRenderService {
   dropMarker: any;
 
   initMap(containerId: string) {
-    this.map = L.map(containerId).setView([13.0475, 77.6200], 10);
+    this.map = L.map(containerId).setView([13.0475, 77.62], 10);
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
-      .addTo(this.map);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(this.map);
   }
 
   drawRoute(latlngs: any, start: any, end: any) {
@@ -37,9 +36,7 @@ export class MapRenderService {
       .addTo(this.map)
       .bindPopup('Pickup');
 
-    this.dropMarker = L.marker([end.lat, end.lng], { icon })
-      .addTo(this.map)
-      .bindPopup('Drop');
+    this.dropMarker = L.marker([end.lat, end.lng], { icon }).addTo(this.map).bindPopup('Drop');
 
     this.map.fitBounds(this.routeLine.getBounds());
   }

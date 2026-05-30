@@ -1,49 +1,61 @@
 <div>
-    <h1 class="title">Request a ride</h1>
-    <p class="subtitle">
-        Fast, safe, and affordable rides at your fingertips.
-    </p>
+  <h1 class="title">Request a ride</h1>
+  <p class="subtitle">Fast, safe, and affordable rides at your fingertips.</p>
 
+  <div class="form-container">
+    <div class="input-wrapper">
+      <input
+        [(ngModel)]="pickup"
+        (input)="onPickupChange(pickup)"
+        class="input"
+        type="text"
+        placeholder="Pickup location"
+      />
 
-    <div class="form-container">
-
-        <div class="input-wrapper">
-            <input [(ngModel)]="pickup" (input)="onPickupChange(pickup)" class="input" type="text"
-                placeholder="Pickup location">
-
-            <div *ngIf="pickupSuggestions.length" class="dropdown">
-                <div *ngFor="let place of pickupSuggestions" (click)="selectPickup(place)" class="dropdown-item">
-                    {{ place.display_name }}
-                </div>
-            </div>
+      <div *ngIf="pickupSuggestions.length" class="dropdown">
+        <div
+          *ngFor="let place of pickupSuggestions"
+          (click)="selectPickup(place)"
+          class="dropdown-item"
+        >
+          {{ place.display_name }}
         </div>
-
-
-        <div class="input-wrapper">
-            <input [(ngModel)]="drop" (input)="onDropChange(drop)" class="input" type="text"
-                placeholder="Dropoff location">
-
-            <div *ngIf="dropSuggestions.length" class="dropdown">
-                <div *ngFor="let place of dropSuggestions" (click)="selectDrop(place)" class="dropdown-item">
-                    {{ place.display_name }}
-                </div>
-            </div>
-        </div>
-
-        <button (click)="rideRequest()" class="search-btn">
-            @if(rideService.mapLoading() === true) {
-            Searching....
-            }@else{
-            Search
-            }
-        </button>
-
-
-        @if(message()) {
-        <div class="message error">
-            <span class="icon">⚠</span>
-            <span>{{ message() }}</span>
-        </div>
-        }
+      </div>
     </div>
+
+    <div class="input-wrapper">
+      <input
+        [(ngModel)]="drop"
+        (input)="onDropChange(drop)"
+        class="input"
+        type="text"
+        placeholder="Dropoff location"
+      />
+
+      <div *ngIf="dropSuggestions.length" class="dropdown">
+        <div
+          *ngFor="let place of dropSuggestions"
+          (click)="selectDrop(place)"
+          class="dropdown-item"
+        >
+          {{ place.display_name }}
+        </div>
+      </div>
+    </div>
+
+    <button (click)="rideRequest()" class="search-btn">
+      @if (rideService.mapLoading() === true) {
+        Searching....
+      } @else {
+        Search
+      }
+    </button>
+
+    @if (message()) {
+      <div class="message error">
+        <span class="icon">⚠</span>
+        <span>{{ message() }}</span>
+      </div>
+    }
+  </div>
 </div>

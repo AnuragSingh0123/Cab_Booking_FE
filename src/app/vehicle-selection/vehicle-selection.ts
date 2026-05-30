@@ -11,11 +11,9 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './vehicle-selection.css',
 })
 export class VehicleSelection {
-
   rideService = inject(RideService);
   router = inject(Router);
 
-  loading = this.rideService.mapLoading;
   ride = this.rideService.booking;
 
   selectedValue = '';
@@ -27,7 +25,7 @@ export class VehicleSelection {
       seats: 4,
       desc: 'Affordable',
       baseFare: 50,
-      perKm: 10
+      perKm: 10,
     },
     {
       name: 'Sedan',
@@ -35,7 +33,7 @@ export class VehicleSelection {
       seats: 4,
       desc: 'Comfort',
       baseFare: 70,
-      perKm: 14
+      perKm: 14,
     },
     {
       name: 'SUV',
@@ -43,7 +41,7 @@ export class VehicleSelection {
       seats: 6,
       desc: 'Spacious',
       baseFare: 100,
-      perKm: 18
+      perKm: 18,
     },
     {
       name: 'Premium',
@@ -51,8 +49,8 @@ export class VehicleSelection {
       seats: 4,
       desc: 'Luxury',
       baseFare: 150,
-      perKm: 25
-    }
+      perKm: 25,
+    },
   ];
 
   constructor() {
@@ -66,14 +64,11 @@ export class VehicleSelection {
   calculateFare(vehicle: any) {
     const distance = Number(this.ride().distance);
 
-    return vehicle.baseFare + (distance * vehicle.perKm);
+    return vehicle.baseFare + distance * vehicle.perKm;
   }
 
   checkoutDetails() {
-
-    const selectedVehicle = this.vehicles.find(
-      vehicle => vehicle.name === this.selectedValue
-    );
+    const selectedVehicle = this.vehicles.find((vehicle) => vehicle.name === this.selectedValue);
 
     if (!selectedVehicle) return;
 
@@ -86,7 +81,7 @@ export class VehicleSelection {
       vehicle: selectedVehicle.name,
       fare: fare.toFixed(2),
       gst: gst.toFixed(2),
-      total: total.toFixed(2)
+      total: total.toFixed(2),
     });
 
     this.router.navigate(['/checkout']);

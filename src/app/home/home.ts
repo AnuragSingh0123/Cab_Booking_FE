@@ -4,7 +4,7 @@ import { Map } from '../map/map';
 
 @Component({
   selector: 'app-home',
-  imports: [RouterModule,Map],
+  imports: [RouterModule, Map],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })

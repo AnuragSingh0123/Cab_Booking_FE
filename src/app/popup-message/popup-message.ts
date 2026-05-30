@@ -8,8 +8,6 @@ import { PopupService } from '../popup-service';
   styleUrl: './popup-message.css',
 })
 export class PopupMessage {
-
   private popupService = inject(PopupService);
-
   message = this.popupService.message;
 }

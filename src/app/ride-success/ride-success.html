@@ -2,109 +2,109 @@
   @let ride = activeRide();
 
   @if (ride) {
-  @switch (ride.status) {
-  @case ('requested') {
-  <h1 class="title">Searching for Driver</h1>
+    @switch (ride.status) {
+      @case ('requested') {
+        <h1 class="title">Searching for Driver</h1>
 
-  <div class="searching-card">
-    <div class="searching-top">
-      <div class="spinner"></div>
+        <div class="searching-card">
+          <div class="searching-top">
+            <div class="spinner"></div>
 
-      <div class="searching-content">
-        <p class="searching-title">Finding your driver</p>
+            <div class="searching-content">
+              <p class="searching-title">Finding your driver</p>
 
-        <p class="searching-subtitle">Searching nearby drivers and sending ride requests.</p>
-      </div>
-    </div>
+              <p class="searching-subtitle">Searching nearby drivers and sending ride requests.</p>
+            </div>
+          </div>
 
-    <div class="progress-wrapper">
-      <div class="progress-bar" [style.width.%]="progress()"></div>
-    </div>
+          <div class="progress-wrapper">
+            <div class="progress-bar" [style.width.%]="progress()"></div>
+          </div>
 
-    <button class="cancel-btn" (click)="cancelRide()">Cancel Ride</button>
-  </div>
-  }
-
-  @case ('accepted') {
-  <h1 class="title">Your Driver is on the Way</h1>
-
-  <div class="driver-card">
-    <div class="avatar">
-      {{ ride.driver?.name?.charAt(0) || 'D' }}
-    </div>
-
-    <p class="driver-name">
-      {{ ride.driver?.name }}
-    </p>
-
-    <p class="vehicle-details">
-      {{ ride.driver?.vehicle }}
-      •
-      {{ ride.driver?.vehicleNo }}
-    </p>
-
-    <p class="helper-text">Please be ready at your pickup location.</p>
-
-    @if (ETA() !== null && ED() !== null) {
-    <div class="eta-card">
-      <p class="eta-title">
-        Arriving in
-        <b>{{ liveETA() | number: '1.0-1' }} min</b>
-      </p>
-
-      <p class="eta-subtitle">
-        Driver is
-        <b>{{ liveED() | number: '1.0-2' }} km</b>
-        away
-      </p>
-    </div>
-    } @else {
-    <p class="eta-loading">Estimating driver's arrival...</p>
-    }
-
-    <button class="cancel-btn" (click)="cancelRide()">Cancel Ride</button>
-  </div>
-  }
-
-  @case ('started') {
-  <h1 class="title">Ride Started</h1>
-
-  <div class="status-card">
-    <p>On Trip</p>
-
-    <p>
-      {{ ride.pickup }}
-      →
-      {{ ride.drop }}
-    </p>
-  </div>
-  }
-
-  @case ('completed') {
-  <h1 class="title">Ride Completed</h1>
-
-  <div class="status-card">
-    <p>₹ {{ ride.total | number }}</p>
-  </div>
-
-  <div class="feedback-card">
-    <div class="stars">
-      @for (star of [1, 2, 3, 4, 5]; track star) {
-      <button (click)="setRating(star)" [class.active]="rating() >= star">★</button>
+          <button class="cancel-btn" (click)="cancelRide()">Cancel Ride</button>
+        </div>
       }
-    </div>
 
-    <textarea [(ngModel)]="feedbackText" placeholder="Write your feedback..."> </textarea>
+      @case ('accepted') {
+        <h1 class="title">Your Driver is on the Way</h1>
 
-    <button (click)="submitFeedback()">Submit</button>
-  </div>
-  }
+        <div class="driver-card">
+          <div class="avatar">
+            {{ ride.driver?.name?.charAt(0) || 'D' }}
+          </div>
 
-  @case ('cancelled') {
-  <h1 class="title">Ride Cancelled</h1>
+          <p class="driver-name">
+            {{ ride.driver?.name }}
+          </p>
 
-  <button (click)="goHome()">Book Again</button>
-  }
-  }
+          <p class="vehicle-details">
+            {{ ride.driver?.vehicle }}
+            •
+            {{ ride.driver?.vehicleNo }}
+          </p>
+
+          <p class="helper-text">Please be ready at your pickup location.</p>
+
+          @if (ETA() !== null && ED() !== null) {
+            <div class="eta-card">
+              <p class="eta-title">
+                Arriving in
+                <b>{{ liveETA() | number: '1.0-1' }} min</b>
+              </p>
+
+              <p class="eta-subtitle">
+                Driver is
+                <b>{{ liveED() | number: '1.0-2' }} km</b>
+                away
+              </p>
+            </div>
+          } @else {
+            <p class="eta-loading">Estimating driver's arrival...</p>
+          }
+
+          <button class="cancel-btn" (click)="cancelRide()">Cancel Ride</button>
+        </div>
+      }
+
+      @case ('started') {
+        <h1 class="title">Ride Started</h1>
+
+        <div class="status-card">
+          <p>On Trip</p>
+
+          <p>
+            {{ ride.pickup }}
+            →
+            {{ ride.drop }}
+          </p>
+        </div>
+      }
+
+      @case ('completed') {
+        <h1 class="title">Ride Completed</h1>
+
+        <div class="status-card">
+          <p>₹ {{ ride.total | number }}</p>
+        </div>
+
+        <div class="feedback-card">
+          <div class="stars">
+            @for (star of [1, 2, 3, 4, 5]; track star) {
+              <button (click)="setRating(star)" [class.active]="rating() >= star">★</button>
+            }
+          </div>
+
+          <textarea [(ngModel)]="feedbackText" placeholder="Write your feedback..."> </textarea>
+
+          <button (click)="submitFeedback()">Submit</button>
+        </div>
+      }
+
+      @case ('cancelled') {
+        <h1 class="title">Ride Cancelled</h1>
+
+        <button (click)="goHome()">Book Again</button>
+      }
+    }
   }
 </div>

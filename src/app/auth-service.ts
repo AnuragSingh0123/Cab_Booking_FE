@@ -4,10 +4,9 @@ import { Router } from '@angular/router';
 import { environment } from '../environments/environment';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
-
   http = inject(HttpClient);
   router = inject(Router);
   authChecked = signal(false);
@@ -31,7 +30,7 @@ export class AuthService {
   logout() {
     this.http.post(`${environment.baseUrl}/auth/logout`, {}).subscribe({
       next: () => this.clearSession(),
-      error: () => this.clearSession()
+      error: () => this.clearSession(),
     });
   }
 
@@ -39,7 +38,6 @@ export class AuthService {
     this.user.set(null);
     this.router.navigate(['/']);
   }
-
 
   checkAuthStatus() {
     this.http.get<any>(`${environment.baseUrl}/auth/userAuth`).subscribe({
@@ -50,8 +48,7 @@ export class AuthService {
       error: () => {
         this.user.set(null);
         this.authChecked.set(true);
-      }
+      },
     });
   }
-
 }

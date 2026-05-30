@@ -3,7 +3,6 @@
 
   <div class="form-container">
     <div class="summary-card">
-
       <div class="row">
         <span class="label">FROM</span>
         <span class="value">{{ ride().pickup }}</span>
@@ -18,15 +17,13 @@
 
       <div class="row">
         <span class="label">DISTANCE</span>
-        <span class="value">
-          {{ ride().distance }} KM
-        </span>
+        <span class="value"> {{ ride().distance }} KM </span>
       </div>
 
       <div class="row">
         <span class="label">VEHICLE</span>
         <span class="value">
-          {{ ride().vehicle | titlecase }}
+          {{ ride().vehicle }}
         </span>
       </div>
 
@@ -34,29 +31,20 @@
 
       <div class="row">
         <span class="label">Fare</span>
-        <span class="value">
-          ₹ {{ ride().fare }}
-        </span>
+        <span class="value"> ₹ {{ ride().fare }} </span>
       </div>
 
       <div class="row">
         <span class="label">GST</span>
-        <span class="value">
-          ₹ {{ ride().gst }}
-        </span>
+        <span class="value"> ₹ {{ ride().gst }} </span>
       </div>
 
       <div class="total-row">
         <span>Total</span>
-        <span>
-          ₹ {{ ride().total }}
-        </span>
+        <span> ₹ {{ ride().total }} </span>
       </div>
-
     </div>
 
-    <button (click)="bookRide()" class="book-btn">
-      Book Ride
-    </button>
+    <button (click)="bookRide()" class="book-btn">Book Ride</button>
   </div>
 </div>

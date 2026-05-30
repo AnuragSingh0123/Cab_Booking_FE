@@ -1,160 +1,68 @@
 <div class="about-page">
+  <div class="main-container">
+    <div class="hero-section">
+      <img [src]="heroImage" alt="Cab Service" class="hero-image" />
 
-    <div class="main-container">
+      <div class="hero-overlay">
+        <div class="hero-content">
+          <h1 class="hero-title">
+            {{ heroTitle }}
+          </h1>
 
-        <div class="hero-section">
-
-            <img src="https://images.unsplash.com/photo-1556122071-e404eaedb77f?q=80&w=1600&auto=format&fit=crop"
-                alt="Cab Service" class="hero-image">
-
-            <div class="hero-overlay">
-
-                <div class="hero-content">
-
-                    <h1 class="hero-title">
-                        About Our Cab Service
-                    </h1>
-
-                    <p class="hero-description">
-                        Fast, reliable, and affordable rides designed to make your daily travel smooth and stress-free.
-                    </p>
-
-                </div>
-
-            </div>
-
+          <p class="hero-description">
+            {{ heroDescription }}
+          </p>
         </div>
-
-        <div class="about-card">
-
-            <div class="about-section">
-
-                <div class="about-left">
-
-                    <h2 class="section-title">
-                        Ride Smarter
-                    </h2>
-
-                    <p class="section-text">
-                        Our cab booking platform is built to provide a seamless and reliable transportation experience.
-                        Whether you need a quick city ride, airport transfer, or premium travel experience,
-                        we connect you with trusted drivers instantly.
-                    </p>
-
-                    <p class="section-text">
-                        We focus on safety, convenience, affordability, and modern technology
-                        to ensure every ride is comfortable and efficient.
-                    </p>
-
-                </div>
-
-                <div class="about-image-wrapper">
-
-                    <img src="https://images.unsplash.com/photo-1549399542-7e3f8b79c341?q=80&w=1200&auto=format&fit=crop"
-                        alt="Cab" class="about-image">
-
-                </div>
-
-            </div>
-
-            <div class="cab-types-section">
-
-                <div class="cab-types-header">
-
-                    <h2 class="cab-types-title">
-                        Our Cab Types
-                    </h2>
-
-                    <p class="cab-types-subtitle">
-                        Choose the perfect ride for every journey
-                    </p>
-
-                </div>
-
-                <div class="cab-cards-grid">
-
-                    <div class="cab-card">
-
-                        <img src="https://images.unsplash.com/photo-1646119253693-0b80f2906791?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                            class="cab-card-image">
-
-                        <div class="cab-card-content">
-
-                            <h3 class="cab-card-title">
-                                Mini
-                            </h3>
-
-                            <p class="cab-card-description">
-                                Affordable and compact rides perfect for daily city travel.
-                            </p>
-
-                        </div>
-
-                    </div>
-
-                    <div class="cab-card">
-
-                        <img src="https://images.unsplash.com/photo-1494976388531-d1058494cdd8?q=80&w=1200&auto=format&fit=crop"
-                            alt="Sedan" class="cab-card-image">
-
-                        <div class="cab-card-content">
-
-                            <h3 class="cab-card-title">
-                                Sedan
-                            </h3>
-
-                            <p class="cab-card-description">
-                                Comfortable rides ideal for family trips and business travel.
-                            </p>
-
-                        </div>
-
-                    </div>
-
-                    <div class="cab-card">
-
-                        <img src="https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?q=80&w=1200&auto=format&fit=crop"
-                            alt="SUV" class="cab-card-image">
-
-                        <div class="cab-card-content">
-
-                            <h3 class="cab-card-title">
-                                SUV
-                            </h3>
-
-                            <p class="cab-card-description">
-                                Spacious rides for group travel with extra comfort and luggage space.
-                            </p>
-
-                        </div>
-
-                    </div>
-
-                    <div class="cab-card">
-
-                        <img src="https://images.unsplash.com/photo-1503736334956-4c8f8e92946d?q=80&w=1200&auto=format&fit=crop"
-                            alt="Premium" class="cab-card-image">
-
-                        <div class="cab-card-content">
-
-                            <h3 class="cab-card-title">
-                                Premium
-                            </h3>
-
-                            <p class="cab-card-description">
-                                Luxury rides with premium comfort for special and executive travel.
-                            </p>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
+      </div>
     </div>
 
+    <div class="about-card">
+      <div class="about-section">
+        <div class="about-left">
+          <h2 class="section-title">Ride Smarter</h2>
+
+          <p class="section-text">
+            Our cab booking platform is built to provide a seamless and reliable transportation
+            experience. Whether you need a quick city ride, airport transfer, or premium travel
+            experience, we connect you with trusted drivers instantly.
+          </p>
+
+          <p class="section-text">
+            We focus on safety, convenience, affordability, and modern technology to ensure every
+            ride is comfortable and efficient.
+          </p>
+        </div>
+
+        <div class="about-image-wrapper">
+          <img [src]="aboutImage" alt="Cab" class="about-image" />
+        </div>
+      </div>
+
+      <div class="cab-types-section">
+        <div class="cab-types-header">
+          <h2 class="cab-types-title">Our Cab Types</h2>
+
+          <p class="cab-types-subtitle">Choose the perfect ride for every journey</p>
+        </div>
+
+        <div class="cab-cards-grid">
+          @for (cab of cabTypes; track cab.title) {
+            <div class="cab-card">
+              <img [src]="cab.image" [alt]="cab.title" class="cab-card-image" />
+
+              <div class="cab-card-content">
+                <h3 class="cab-card-title">
+                  {{ cab.title }}
+                </h3>
+
+                <p class="cab-card-description">
+                  {{ cab.description }}
+                </p>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

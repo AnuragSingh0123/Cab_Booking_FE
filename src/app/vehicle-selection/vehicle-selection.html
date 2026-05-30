@@ -1,5 +1,4 @@
 <div class="vehicle-page">
-
   <h1 class="title">Choose a ride</h1>
 
   <p class="route">
@@ -9,40 +8,17 @@
   </p>
 
   <p class="meta-info">
-    Distance: {{ ride().distance || '--' }} km •
-    Estimated Time: {{ ride().duration || '--' }} min
+    Distance: {{ ride().distance || '--' }} km • Estimated Time: {{ ride().duration || '--' }} min
   </p>
 
   <div class="vehicle-wrapper">
-
-    @if(loading()) {
-      <div class="vehicle-loader">
-        <div class="spinner"></div>
-        <p>Finding available rides...</p>
-      </div>
-    }
-
-    <div class="form-container" [style.opacity]="loading() ? 0.4 : 1">
-
-      @for(vehicle of vehicles; track vehicle.name) {
-
-        <label
-          class="vcard"
-          [class.active]="selectedValue === vehicle.name"
-        >
-
-          <input
-            type="radio"
-            name="vehicle"
-            [value]="vehicle.name"
-            [(ngModel)]="selectedValue"
-            [disabled]="loading()"
-          />
+    <div class="form-container">
+      @for (vehicle of vehicles; track vehicle.name) {
+        <label class="vcard" [class.active]="selectedValue === vehicle.name">
+          <input type="radio" name="vehicle" [value]="vehicle.name" [(ngModel)]="selectedValue" />
 
           <div class="vcard-content">
-
             <div class="left">
-
               <img [src]="vehicle.image" />
 
               <div class="vehicle-info">
@@ -50,30 +26,18 @@
                   {{ vehicle.name }}
                 </span>
 
-                <span class="meta">
-                  {{ vehicle.desc }} • {{ vehicle.seats }} seats
-                </span>
+                <span class="meta"> {{ vehicle.desc }} • {{ vehicle.seats }} seats </span>
               </div>
-
             </div>
 
-            <p class="price">
-              ₹ {{ calculateFare(vehicle) | number }}
-            </p>
-
+            <p class="price">₹ {{ calculateFare(vehicle) | number }}</p>
           </div>
-
         </label>
       }
 
-      <button
-        (click)="checkoutDetails()"
-        class="checkout-btn"
-        [disabled]="loading() || !selectedValue"
-      >
-        {{ loading() ? 'Calculating...' : 'Go to Checkout' }}
+      <button (click)="checkoutDetails()" class="checkout-btn" [disabled]="!selectedValue">
+        Go to Checkout
       </button>
-
     </div>
   </div>
 </div>

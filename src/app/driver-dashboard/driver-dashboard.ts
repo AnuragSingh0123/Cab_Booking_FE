@@ -1,11 +1,4 @@
-import {
-  Component,
-  OnDestroy,
-  OnInit,
-  inject,
-  signal,
-  effect,
-} from '@angular/core';
+import { Component, OnDestroy, OnInit, inject, signal, effect } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
 import { interval, Subscription } from 'rxjs';
@@ -36,7 +29,7 @@ export class DriverDashboard implements OnInit, OnDestroy {
     vehicle: '',
     vehicleNo: '',
     rating: 0,
-    isAvailable: null
+    isAvailable: null,
   });
 
   stats = signal({
@@ -52,7 +45,7 @@ export class DriverDashboard implements OnInit, OnDestroy {
     effect(() => {
       const currentUser = this.authService.user();
       if (currentUser) {
-        this.driver.update(d => ({
+        this.driver.update((d) => ({
           ...d,
           id: currentUser._id || currentUser.id || '',
           name: currentUser.name || '',
@@ -84,24 +77,24 @@ export class DriverDashboard implements OnInit, OnDestroy {
   refresh() {
     this.driverService.getDriverDashboard().subscribe({
       next: (data: any) => {
-
         this.reviews.set(data?.reviews ?? []);
 
         this.driverToggleStatus = data?.driver?.isAvailable ?? false;
         const availableRide = data?.availableRide ?? null;
 
-        if (this.driverToggleStatus && availableRide?.vehicle &&
+        if (
+          this.driverToggleStatus &&
+          availableRide?.vehicle &&
           this.driver()?.vehicle.toLowerCase() === availableRide?.vehicle.toLowerCase()
         ) {
           this.availableRide.set(availableRide);
-        }
-        else {
+        } else {
           this.availableRide.set(null);
         }
 
         this.activeRide.set(data?.activeRide ?? null);
 
-        this.driver.update(d => ({
+        this.driver.update((d) => ({
           ...d,
           vehicle: data?.driver?.vehicleType ?? '',
           vehicleNo: data?.driver?.vehicleNumber ?? '',
@@ -116,7 +109,7 @@ export class DriverDashboard implements OnInit, OnDestroy {
           hours: data?.stats?.hours ?? 0,
         });
       },
-      error: err => {
+      error: (err) => {
         console.log('dashboard error', err);
       },
     });
@@ -125,16 +118,14 @@ export class DriverDashboard implements OnInit, OnDestroy {
   toggleStatus() {
     this.driverToggleStatus = !this.driverToggleStatus;
 
-    this.driverService
-      .toggleDriverStatus(this.driverToggleStatus)
-      .subscribe({
-        next: res => {
-          console.log('status updated', res);
-        },
-        error: err => {
-          console.log('status update failed', err);
-        },
-      });
+    this.driverService.toggleDriverStatus(this.driverToggleStatus).subscribe({
+      next: (res) => {
+        console.log('status updated', res);
+      },
+      error: (err) => {
+        console.log('status update failed', err);
+      },
+    });
   }
 
   acceptRide() {
@@ -143,7 +134,7 @@ export class DriverDashboard implements OnInit, OnDestroy {
 
     this.driverService.acceptRide(rideId).subscribe({
       next: () => this.refresh(),
-      error: err => console.log(err),
+      error: (err) => console.log(err),
     });
   }
 
@@ -153,7 +144,7 @@ export class DriverDashboard implements OnInit, OnDestroy {
 
     this.driverService.startRide(rideId).subscribe({
       next: () => this.refresh(),
-      error: err => console.log(err),
+      error: (err) => console.log(err),
     });
   }
 
@@ -166,19 +157,19 @@ export class DriverDashboard implements OnInit, OnDestroy {
         const ride = this.activeRide();
         if (ride?.drop && ride?.dropCoordinates) {
           this.driverService.addDirverLocation(ride?.drop, ride?.dropCoordinates).subscribe({
-            next: res => {
-              console.log("location Updated", res);
+            next: (res) => {
+              console.log('location Updated', res);
               this.refresh();
             },
-            error: err => {
-              console.log("location update failed", err);
-            }
+            error: (err) => {
+              console.log('location update failed', err);
+            },
           });
         } else {
           this.refresh();
         }
       },
-      error: err => console.log(err),
+      error: (err) => console.log(err),
     });
   }
 
@@ -193,7 +184,7 @@ export class DriverDashboard implements OnInit, OnDestroy {
       },
       error: (err) => {
         console.error('Error while rejecting', err);
-      }
+      },
     });
   }
 }
