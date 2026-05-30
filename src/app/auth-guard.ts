@@ -9,7 +9,7 @@ export const authGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);
 
   return toObservable(auth.authChecked).pipe(
-    filter((checked) => checked),
+    filter((checked) => checked === true),
     map(() => {
       const user = auth.user();
       if (!user) {
