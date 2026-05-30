@@ -20,7 +20,6 @@ import { PopupService } from '../popup-service';
   styleUrl: './ride-request.css',
 })
 export class RideRequest {
-
   router = inject(Router);
   rideService = inject(RideService);
   locationService = inject(LocationService);
@@ -40,7 +39,6 @@ export class RideRequest {
   pickupSubject = new Subject<string>();
   dropSubject = new Subject<string>();
 
-
   constructor() {
     effect(() => {
       const user = this.authService.user();
@@ -52,17 +50,17 @@ export class RideRequest {
   }
 
   ngOnInit() {
-    this.pickupSubject.pipe(
-      debounceTime(300),
-      switchMap(value => {
+    this.pickupSubject
+      .pipe(
+        debounceTime(300),
+        switchMap((value) => {
+          if (value.trim().length < 3) {
+            return of([]);
+          }
 
-        if (value.trim().length < 3) {
-          return of([]);
-        }
-
-        return this.locationService.searchLocation(value);
-      })
-    )
+          return this.locationService.searchLocation(value);
+        }),
+      )
       .subscribe({
         next: (res: any) => {
           this.pickupSuggestions = res || [];
@@ -70,20 +68,19 @@ export class RideRequest {
         error: () => {
           this.notify.show('Failed to search pickup location');
           this.pickupSuggestions = [];
-        }
+        },
       });
 
-
-    this.dropSubject.pipe(
-      debounceTime(300),
-      switchMap(value => {
-        if (value.trim().length < 3) {
-          return of([]);
-        }
-        return this.locationService.searchLocation(value);
-      })
-
-    )
+    this.dropSubject
+      .pipe(
+        debounceTime(300),
+        switchMap((value) => {
+          if (value.trim().length < 3) {
+            return of([]);
+          }
+          return this.locationService.searchLocation(value);
+        }),
+      )
       .subscribe({
         next: (res: any) => {
           this.dropSuggestions = res || [];
@@ -92,7 +89,7 @@ export class RideRequest {
         error: () => {
           this.notify.show('Failed to search drop location');
           this.dropSuggestions = [];
-        }
+        },
       });
   }
 
@@ -115,21 +112,15 @@ export class RideRequest {
   }
 
   rideRequest() {
-
     this.rideService.mapLoading.set(true);
 
     this.buildRouteService.buildRoute(
-
       this.pickup,
       this.drop,
 
       (data: any) => {
-
         if (data.distanceKm > 60) {
-
-          this.rideService.msg.set(
-            "Sorry, we can’t process rides over 60 km"
-          );
+          this.rideService.msg.set('Sorry, we can’t process rides over 60 km');
 
           this.rideService.mapLoading.set(false);
 
@@ -137,40 +128,25 @@ export class RideRequest {
         }
 
         this.rideService.updateRide({
-
           pickup: this.pickup,
           drop: this.drop,
 
-          pickUpCoordinates: [
-            data.start.lat,
-            data.start.lng
-          ],
+          pickUpCoordinates: [data.start.lat, data.start.lng],
 
-          dropCoordinates: [
-            data.end.lat,
-            data.end.lng
-          ],
+          dropCoordinates: [data.end.lat, data.end.lng],
 
           distance: data.distanceKm,
-          duration: data.durationMin
+          duration: data.durationMin,
         });
 
-        const latlngs =
-          data.route.geometry.coordinates.map(
-            (c: any) => [c[1], c[0]]
-          );
+        const latlngs = data.route.geometry.coordinates.map((c: any) => [c[1], c[0]]);
 
-        this.mapRender.drawRoute(
-          latlngs,
-          data.start,
-          data.end
-        );
+        this.mapRender.drawRoute(latlngs, data.start, data.end);
 
         this.rideService.mapLoading.set(false);
 
         this.router.navigate(['vehicle']);
-      }
+      },
     );
   }
-
 }

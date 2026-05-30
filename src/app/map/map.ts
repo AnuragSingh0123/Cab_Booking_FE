@@ -14,5 +14,4 @@ export class Map {
   ngAfterViewInit() {
     this.mapRender.initMap('map');
   }
-
 }

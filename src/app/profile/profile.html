@@ -1,41 +1,33 @@
 <div class="profile-page">
-
   <h1 class="title">Profile</h1>
 
   <div class="profile-card">
     <div class="avatar">
-      {{ user()?.name?.substring(0,1) }}
+      {{ user()?.name?.substring(0, 1) }}
     </div>
 
     <div class="user-info">
-      <p class="name">{{ user()?.name}}</p>
-      <p class="email">{{ user()?.email}}</p>
-      <p class="joined">Member since Apr 2026</p>
-
-    </div>
-
-    <div class="edit-profile">
-      @if(editP){
-      <input type="text" class="form-input" [(ngModel)]="editName" placeholder="Enter Name">
-      <input type="email" class="form-input" [(ngModel)]="editEmail" placeholder="Enter Email">
+      @if (editP) {
+        <input type="text" class="form-input" [(ngModel)]="editName" placeholder="Enter Name" />
+        <input type="email" class="form-input" [(ngModel)]="editEmail" placeholder="Enter Email" />
+      } @else {
+        <p class="name">{{ user()?.name }}</p>
+        <p class="email">{{ user()?.email }}</p>
       }
+      <p class="joined">Member since {{ memberSince }}</p>
     </div>
 
-    <div style="margin-left: auto; padding-right: 40px;">
-      @if(!editP){
-
-      <button class="edit-btn" (click)="startEditing()">Edit Profile</button>
-      }@else{
-      <button class="edit-btn" (click)="editProfile()">Update Profile</button>
-      <button class="edit-btn" style="margin-left: 10px;" (click)="editP = false">Cancel</button>
-
+    <div style="margin-left: auto; padding-right: 40px">
+      @if (!editP) {
+        <button class="edit-btn" (click)="startEditing()">Edit Profile</button>
+      } @else {
+        <button class="edit-btn" (click)="editProfile()">Update Profile</button>
+        <button class="edit-btn" style="margin-left: 10px" (click)="editP = false">Cancel</button>
       }
     </div>
   </div>
 
-
   <div class="stats-grid">
-
     <div class="stat-card">
       <span class="stat-label">Total Rides</span>
       <p class="stat-value">{{ rideDetails().totalRides | number }}</p>
@@ -43,9 +35,7 @@
 
     <div class="stat-card">
       <span class="stat-label">Distance Travelled</span>
-      <p class="stat-value">
-        {{ rideDetails().distanceTravelled | number }} km
-      </p>
+      <p class="stat-value">{{ rideDetails().distanceTravelled | number }} km</p>
     </div>
 
     <div class="stat-card">
@@ -53,58 +43,66 @@
         {{ user()?.role === 'driver' ? 'Total Earnings' : 'Total Spent' }}
       </span>
 
-      <p class="stat-value">
-        ₹ {{ rideDetails().totalSpent | number }}
-      </p>
+      <p class="stat-value">₹ {{ rideDetails().totalSpent | number }}</p>
     </div>
-
   </div>
 
+  @if (user()?.role === 'driver') {
+    <div class="stat-card">
+      <span class="stat-label">
+        @if (!editLocation) {
+          Current Location
+        } @else {
+          Enter Current Location
+        }
+      </span>
+      @if (editLocation) {
+        <div class="input-group">
+          <input
+            type="text"
+            [(ngModel)]="pickup"
+            (input)="onPickupChange(pickup)"
+            class="location-input"
+            placeholder="Enter current city or coordinates..."
+          />
 
-  @if(user()?.role === 'driver'){
-
-  <div class="stat-card">
-    <span class="stat-label">
-      @if(!editLocation){
-      Current Location
-      }@else {
-      Enter Current Location
-      }
-    </span>
-    @if(editLocation) {
-
-    <div class="input-group">
-      <input type="text" [(ngModel)]="pickup" (input)="onPickupChange(pickup)" class="location-input"
-        placeholder="Enter current city or coordinates...">
-
-      <div *ngIf="pickupSuggestions.length" class="dropdown">
-        <div *ngFor="let place of pickupSuggestions" (click)="selectPickup(place)" class="dropdown-item">
-          {{ place.display_name }}
+          <div *ngIf="pickupSuggestions.length" class="dropdown">
+            <div
+              *ngFor="let place of pickupSuggestions"
+              (click)="selectPickup(place)"
+              class="dropdown-item"
+            >
+              {{ place.display_name }}
+            </div>
+          </div>
         </div>
-      </div>
+      } @else {
+        <span style="display: inline-block; width: 600px">{{ rideDetails().driverLocation }}</span>
+      }
     </div>
 
-    }@else {
-    <span style="display: inline-block; width: 600px;">{{rideDetails().driverLocation}}</span>
-    }
-  </div>
+    <div>
+      <button
+        class="update-btn"
+        style="border: none; margin-bottom: 10px"
+        (click)="updateLocation()"
+      >
+        @if (editLocation) {
+          Update Location
+        } @else {
+          Change Location
+        }
+      </button>
 
-  <div>
-    <button class="update-btn" style="border: none; margin-bottom: 10px;" (click)="updateLocation()">
-      @if(editLocation){
-      Update Location
-      }@else {
-      Change Location
+      @if (editLocation) {
+        <button
+          class="update-btn"
+          style="border: none; margin-left: 20px"
+          (click)="editLocation = false"
+        >
+          Cancel
+        </button>
       }
-    </button>
-
-    @if(editLocation){
-
-    <button class="update-btn" style="border: none; margin-left: 20px;" (click)="editLocation = false">
-      Cancel
-    </button>
-    }
-  </div>
+    </div>
   }
-
 </div>

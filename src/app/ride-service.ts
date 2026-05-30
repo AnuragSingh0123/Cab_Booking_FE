@@ -34,7 +34,6 @@ export class RideService {
     }));
   }
 
-
   bookRide(data: any) {
     return this.http.post(`${environment.baseUrl}/api/rides`, data);
   }
@@ -47,16 +46,13 @@ export class RideService {
     return this.http.get(`${environment.baseUrl}/api/rides/${rideID}`);
   }
 
-
   submitFeedback(data: any) {
     return this.http.post(`${environment.baseUrl}/api/reviews`, data);
   }
 
-
   getMyTrips() {
     return this.http.get(`${environment.baseUrl}/api/rides`);
   }
-
 
   getProfile() {
     return this.http.get(`${environment.baseUrl}/api/users/profile`);

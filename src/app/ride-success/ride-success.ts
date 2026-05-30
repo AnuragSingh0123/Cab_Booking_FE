@@ -1,11 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  OnDestroy,
-  OnInit,
-  inject,
-  signal,
-} from '@angular/core';
+import { Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { interval, Subscription } from 'rxjs';
@@ -44,38 +38,29 @@ export class RideSuccess implements OnInit, OnDestroy {
   private sub?: Subscription;
 
   ngOnInit() {
-
-    const bookingId =
-      this.route.snapshot.paramMap.get('id');
+    const bookingId = this.route.snapshot.paramMap.get('id');
 
     if (!bookingId) {
       this.goHome();
       return;
     }
 
-    this.rideService
-      .bookingProgress(bookingId)
-      .subscribe({
+    this.rideService.bookingProgress(bookingId).subscribe({
+      next: (res: any) => {
+        this.activeRide.set({
+          ...res.booking,
+          driver: res.driver,
+        });
 
-        next: (res: any) => {
+        this.sub = interval(1000).subscribe(() => {
+          this.updateRide();
+        });
+      },
 
-          this.activeRide.set({
-            ...res.booking,
-            driver: res.driver,
-          });
-
-          this.sub = interval(1000).subscribe(() => {
-            this.updateRide();
-          });
-
-        },
-
-        error: () => {
-          this.goHome();
-        }
-
-      });
-
+      error: () => {
+        this.goHome();
+      },
+    });
   }
 
   ngOnDestroy() {
@@ -84,7 +69,6 @@ export class RideSuccess implements OnInit, OnDestroy {
     if (this.etaInterval) {
       clearInterval(this.etaInterval);
     }
-
   }
 
   updateRide() {
@@ -97,7 +81,7 @@ export class RideSuccess implements OnInit, OnDestroy {
 
     const remaining = expiryTime - Date.now();
 
-    if (ride.status === "requested") {
+    if (ride.status === 'requested') {
       if (remaining <= 0) {
         this.progress.set(0);
         this.cancelRide();
@@ -111,7 +95,7 @@ export class RideSuccess implements OnInit, OnDestroy {
 
     this.rideService.bookingProgress(ride._id).subscribe({
       next: (res: any) => {
-        this.activeRide.update(current => ({
+        this.activeRide.update((current) => ({
           ...current,
           ...res.booking,
           driver: res.driver,
@@ -143,7 +127,6 @@ export class RideSuccess implements OnInit, OnDestroy {
       this.generatingETA.set(false);
       return;
     }
-
 
     const start = {
       lat: +driverCoordinates[0],
@@ -178,20 +161,18 @@ export class RideSuccess implements OnInit, OnDestroy {
       },
 
       error: (err) => {
-        console.log("ETA error:", err);
+        console.log('ETA error:', err);
         this.generatingETA.set(false);
       },
     });
   }
 
   startETA() {
-
     if (this.etaInterval) {
       clearInterval(this.etaInterval);
     }
 
     this.etaInterval = setInterval(() => {
-
       const currentETA = this.liveETA();
       const currentED = this.liveED();
 
@@ -199,8 +180,7 @@ export class RideSuccess implements OnInit, OnDestroy {
         return;
       }
 
-      if (currentETA <= (1 / 12)) {
-
+      if (currentETA <= 1 / 12) {
         this.liveETA.set(0);
         this.liveED.set(0);
 
@@ -211,38 +191,22 @@ export class RideSuccess implements OnInit, OnDestroy {
 
       const etaDecreasePerTick = 1 / 12;
 
-      this.liveETA.set(
-        currentETA - etaDecreasePerTick
-      );
-
-      const decreasePerMinute =
-        (this.ED() || 0) / (this.ETA() || 1);
-
-      const decreasePer5Sec =
-        decreasePerMinute / 12;
-
-      const newDistance = Math.max(
-        0,
-        currentED - decreasePer5Sec
-      );
-
+      this.liveETA.set(currentETA - etaDecreasePerTick);
+      const decreasePerMinute = (this.ED() || 0) / (this.ETA() || 1);
+      const decreasePer5Sec = decreasePerMinute / 12;
+      const newDistance = Math.max(0, currentED - decreasePer5Sec);
       this.liveED.set(newDistance);
-
     }, 5000);
-
   }
-
 
   cancelRide() {
     const rideId = this.activeRide()?._id;
 
     if (!rideId) return;
 
-    this.rideService
-      .cancelBooking(rideId, { status: 'cancelled' })
-      .subscribe((updated: any) => {
-        this.activeRide.set(updated);
-      });
+    this.rideService.cancelBooking(rideId, { status: 'cancelled' }).subscribe((updated: any) => {
+      this.activeRide.set(updated);
+    });
   }
 
   setRating(stars: number) {

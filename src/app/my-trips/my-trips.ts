@@ -14,7 +14,6 @@ export class MyTrips {
   loading = signal(true);
 
   ngOnInit() {
-
     this.rideService.getMyTrips().subscribe({
       next: (res: any) => {
         this.userRides.set(res);
@@ -23,7 +22,7 @@ export class MyTrips {
       error: (err) => {
         console.log(err);
         this.loading.set(false);
-      }
+      },
     });
   }
 }

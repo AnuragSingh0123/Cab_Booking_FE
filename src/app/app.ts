@@ -7,7 +7,7 @@ import { PopupMessage } from './popup-message/popup-message';
   selector: 'app-root',
   imports: [RouterModule, Navbar, PopupMessage],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrl: './app.css',
 })
 export class App {
   protected readonly title = signal('client');

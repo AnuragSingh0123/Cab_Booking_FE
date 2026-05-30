@@ -10,9 +10,7 @@ import { AuthService } from '../auth-service';
   templateUrl: './user-signup.html',
   styleUrl: './user-signup.css',
 })
-
 export class UserSignup {
-
   notify = inject(PopupService);
   router = inject(Router);
 
@@ -35,7 +33,6 @@ export class UserSignup {
   }
 
   signup() {
-
     if (this.signUpForm.invalid) {
       this.signUpForm.markAllAsTouched();
       return;
@@ -46,8 +43,7 @@ export class UserSignup {
       return;
     }
 
-    const { confirmPassword, ...formValues } =
-      this.signUpForm.value;
+    const { confirmPassword, ...formValues } = this.signUpForm.value;
 
     const formData = {
       ...formValues,
@@ -55,12 +51,12 @@ export class UserSignup {
     };
 
     this.authService.signUp(formData).subscribe({
-      next: res => {
+      next: (res) => {
         this.notify.show(res.message);
         this.router.navigate(['/login']);
       },
 
-      error: err => {
+      error: (err) => {
         this.notify.show(err.error.message);
       },
     });

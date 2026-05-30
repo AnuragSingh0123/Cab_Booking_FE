@@ -11,7 +11,6 @@ import { PopupService } from '../popup-service';
   styleUrl: './navbar.css',
 })
 export class Navbar {
-
   notify = inject(PopupService);
 
   auth = inject(AuthService);
@@ -25,7 +24,7 @@ export class Navbar {
   logout() {
     this.auth.logout();
     this.showMenu = false;
-    this.notify.show("Logged out Successfully");
+    this.notify.show('Logged out Successfully');
   }
 
   get firstLetter(): string {

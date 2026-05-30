@@ -14,13 +14,9 @@ import { PopupService } from '../popup-service';
   styleUrl: './login.css',
 })
 export class Login {
-
   notify = inject(PopupService);
   router = inject(Router);
   authService = inject(AuthService);
-  rideService = inject(RideService);
-
-  ride = this.rideService.booking;
   loading = false;
 
   constructor() {
@@ -32,7 +28,6 @@ export class Login {
   }
 
   login(loginForm: NgForm) {
-
     if (loginForm.invalid) return;
     this.loading = true;
 
@@ -40,26 +35,19 @@ export class Login {
 
     this.authService.login({ email, password }).subscribe({
       next: (res: any) => {
-
         this.loading = false;
 
         this.authService.checkAuthStatus();
 
-        const ride = this.ride();
-
         this.notify.show(res.message);
 
-        if (ride?.pickup && ride?.drop) {
-          this.router.navigate(['/vehicle']);
-        } else {
-          this.router.navigate(['/']);
-        }
+        this.router.navigate(['/']);
       },
 
       error: (err) => {
         this.loading = false;
         this.notify.show(err.error.message);
-      }
+      },
     });
   }
 }
